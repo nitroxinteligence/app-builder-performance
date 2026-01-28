@@ -1,27 +1,33 @@
 -- ============================================================================
--- BUILDERS PERFORMANCE - EVENTS TABLE MIGRATION
+-- BUILDERS PERFORMANCE - EVENTS TABLE MIGRATION (Idempotent)
 -- ============================================================================
 -- Tabela para eventos da agenda (página /agenda)
 --
 -- Data: 2026-01-28
--- Versão: 1.0.0
+-- Versão: 1.1.0 (idempotent)
 -- ============================================================================
 
 -- ============================================================================
--- PART 1: CREATE ENUMS
+-- PART 1: CREATE ENUMS (idempotent)
 -- ============================================================================
 
--- Event status enum
-CREATE TYPE public.event_status AS ENUM ('confirmado', 'pendente', 'foco');
+DO $$ BEGIN
+  CREATE TYPE public.event_status AS ENUM ('confirmado', 'pendente', 'foco');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
--- Calendar integration source
-CREATE TYPE public.calendar_integration AS ENUM ('Manual', 'Google', 'Outlook');
+DO $$ BEGIN
+  CREATE TYPE public.calendar_integration AS ENUM ('Manual', 'Google', 'Outlook');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- ============================================================================
--- PART 2: CREATE TABLE
+-- PART 2: CREATE TABLE (idempotent)
 -- ============================================================================
 
-CREATE TABLE public.events (
+CREATE TABLE IF NOT EXISTS public.events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   titulo TEXT NOT NULL,
@@ -45,13 +51,13 @@ COMMENT ON COLUMN public.events.categoria IS 'Categoria do evento (Reunião, Blo
 COMMENT ON COLUMN public.events.calendario IS 'Fonte da integração do calendário';
 
 -- ============================================================================
--- PART 3: CREATE INDEXES
+-- PART 3: CREATE INDEXES (idempotent)
 -- ============================================================================
 
-CREATE INDEX idx_events_user_id ON public.events(user_id);
-CREATE INDEX idx_events_data ON public.events(data);
-CREATE INDEX idx_events_user_data ON public.events(user_id, data);
-CREATE INDEX idx_events_status ON public.events(status);
+CREATE INDEX IF NOT EXISTS idx_events_user_id ON public.events(user_id);
+CREATE INDEX IF NOT EXISTS idx_events_data ON public.events(data);
+CREATE INDEX IF NOT EXISTS idx_events_user_data ON public.events(user_id, data);
+CREATE INDEX IF NOT EXISTS idx_events_status ON public.events(status);
 
 -- ============================================================================
 -- PART 4: ENABLE ROW LEVEL SECURITY
@@ -60,19 +66,44 @@ CREATE INDEX idx_events_status ON public.events(status);
 ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- PART 5: CREATE RLS POLICIES
+-- PART 5: CREATE RLS POLICIES (idempotent)
 -- ============================================================================
 
-CREATE POLICY "events_select_own" ON public.events FOR SELECT TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "events_insert_own" ON public.events FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "events_update_own" ON public.events FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "events_delete_own" ON public.events FOR DELETE TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "events_service_role_all" ON public.events FOR ALL TO service_role USING (true) WITH CHECK (true);
+DO $$ BEGIN
+  CREATE POLICY "events_select_own" ON public.events FOR SELECT TO authenticated USING (auth.uid() = user_id);
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "events_insert_own" ON public.events FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "events_update_own" ON public.events FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "events_delete_own" ON public.events FOR DELETE TO authenticated USING (auth.uid() = user_id);
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "events_service_role_all" ON public.events FOR ALL TO service_role USING (true) WITH CHECK (true);
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- ============================================================================
--- PART 6: CREATE TRIGGER
+-- PART 6: CREATE TRIGGER (idempotent)
 -- ============================================================================
 
+DROP TRIGGER IF EXISTS update_events_updated_at ON public.events;
 CREATE TRIGGER update_events_updated_at
   BEFORE UPDATE ON public.events
   FOR EACH ROW
