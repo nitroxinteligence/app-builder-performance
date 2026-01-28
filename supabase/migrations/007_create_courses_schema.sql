@@ -121,27 +121,27 @@ ALTER TABLE public.lesson_progress ENABLE ROW LEVEL SECURITY;
 -- PART 5: CREATE RLS POLICIES
 -- ============================================================================
 
--- Courses - todos podem ver cursos publicados
-CREATE POLICY "courses_select_published" ON public.courses
-  FOR SELECT TO authenticated
+-- Courses - todos podem ver cursos publicados (incluindo anon)
+CREATE POLICY "courses_select_all" ON public.courses
+  FOR SELECT
   USING (status = 'publicado');
 
 CREATE POLICY "courses_service_role_all" ON public.courses
   FOR ALL TO service_role
   USING (true) WITH CHECK (true);
 
--- Modules - todos podem ver módulos de cursos publicados
-CREATE POLICY "modules_select_published" ON public.course_modules
-  FOR SELECT TO authenticated
+-- Modules - todos podem ver módulos de cursos publicados (incluindo anon)
+CREATE POLICY "modules_select_all" ON public.course_modules
+  FOR SELECT
   USING (EXISTS (SELECT 1 FROM public.courses c WHERE c.id = course_id AND c.status = 'publicado'));
 
 CREATE POLICY "modules_service_role_all" ON public.course_modules
   FOR ALL TO service_role
   USING (true) WITH CHECK (true);
 
--- Lessons - todos podem ver aulas de cursos publicados
-CREATE POLICY "lessons_select_published" ON public.lessons
-  FOR SELECT TO authenticated
+-- Lessons - todos podem ver aulas de cursos publicados (incluindo anon)
+CREATE POLICY "lessons_select_all" ON public.lessons
+  FOR SELECT
   USING (EXISTS (
     SELECT 1 FROM public.course_modules m
     JOIN public.courses c ON c.id = m.course_id
