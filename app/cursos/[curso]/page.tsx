@@ -1,0 +1,201 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import {
+  ArrowLeft,
+  BookOpenText,
+  CheckCircle2,
+  Clock,
+  PlayCircle,
+} from "lucide-react";
+
+import { Botao } from "@/componentes/ui/botao";
+import {
+  Cartao,
+  CartaoCabecalho,
+  CartaoConteudo,
+  CartaoDescricao,
+  CartaoTitulo,
+} from "@/componentes/ui/cartao";
+import { Progresso } from "@/componentes/ui/progresso";
+import { Sidebar } from "@/componentes/layout/sidebar";
+import { cn } from "@/lib/utilidades";
+
+import { cursos, obterResumoCurso } from "../dados-cursos";
+
+export default function PaginaCurso() {
+  const params = useParams();
+  const cursoParam = params?.curso;
+  const cursoSlug = Array.isArray(cursoParam) ? cursoParam[0] : cursoParam;
+  const [sidebarAberta, setSidebarAberta] = React.useState(false);
+
+  const cursoAtual = cursos.find((curso) => curso.slug === cursoSlug);
+
+  if (!cursoAtual) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
+          <h1 className="font-titulo text-2xl font-semibold">
+            Curso não encontrado
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Não encontramos este curso no catálogo atual.
+          </p>
+          <Botao asChild className="self-center">
+            <Link href="/cursos">Voltar para cursos</Link>
+          </Botao>
+        </main>
+      </div>
+    );
+  }
+
+  const resumo = obterResumoCurso(cursoAtual);
+  const primeiraAula = cursoAtual.modulos[0]?.aulas[0];
+  const linkPrimeiraAula = primeiraAula
+    ? `/cursos/${cursoAtual.slug}/${primeiraAula.id}`
+    : "/cursos";
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+
+      <div
+        className={cn(
+          "flex min-h-screen flex-col transition-[padding] duration-300",
+          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+        )}
+      >
+        <main className="flex-1 px-6 py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+            <section className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/cursos"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
+                  aria-label="Voltar para cursos"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Link>
+                <div>
+                  <h1 className="font-titulo text-2xl font-semibold">
+                    {cursoAtual.titulo}
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    {cursoAtual.descricao}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1 font-semibold text-secondary-foreground">
+                  <BookOpenText className="h-3 w-3" />
+                  {cursoAtual.categoria}
+                </span>
+                <span>{cursoAtual.nivel}</span>
+                <span>•</span>
+                <span>{resumo.totalAulas} aulas</span>
+                <span>•</span>
+                <span>{resumo.progresso}% concluído</span>
+              </div>
+            </section>
+
+            <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+              <div className="space-y-4">
+                {cursoAtual.modulos.map((modulo) => (
+                  <Cartao key={modulo.id}>
+                    <CartaoCabecalho className="pb-3">
+                      <CartaoTitulo className="text-base">
+                        {modulo.titulo}
+                      </CartaoTitulo>
+                      <CartaoDescricao>{modulo.descricao}</CartaoDescricao>
+                    </CartaoCabecalho>
+                    <CartaoConteudo className="space-y-3">
+                      {modulo.aulas.map((aula) => (
+                        <Link
+                          key={aula.id}
+                          href={`/cursos/${cursoAtual.slug}/${aula.id}`}
+                          className="flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3 text-sm transition hover:bg-secondary/40"
+                        >
+                          <div className="space-y-1">
+                            <p className="font-medium text-foreground">
+                              {aula.titulo}
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Clock className="h-3 w-3" />
+                              {aula.duracao}
+                              <span>•</span>
+                              <span>{aula.xp}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            {aula.concluida ? (
+                              <>
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
+                                <span className="font-semibold text-primary">
+                                  Concluído
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <PlayCircle className="h-4 w-4 text-muted-foreground" />
+                                Assistir
+                              </>
+                            )}
+                          </div>
+                        </Link>
+                      ))}
+                    </CartaoConteudo>
+                  </Cartao>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                <Cartao>
+                  <CartaoConteudo className="space-y-4 p-5">
+                    <div>
+                      <CartaoTitulo className="text-base">
+                        Seu progresso
+                      </CartaoTitulo>
+                      <CartaoDescricao>
+                        {resumo.aulasConcluidas} de {resumo.totalAulas} aulas
+                        concluídas.
+                      </CartaoDescricao>
+                    </div>
+                    <Progresso value={resumo.progresso} />
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{resumo.progresso}% completo</span>
+                      <span>{cursoAtual.nivel}</span>
+                    </div>
+                    <Botao asChild>
+                      <Link href={linkPrimeiraAula}>Continuar</Link>
+                    </Botao>
+                  </CartaoConteudo>
+                </Cartao>
+
+                <Cartao>
+                  <CartaoConteudo className="space-y-3 p-5">
+                    <CartaoTitulo className="text-base">
+                      Estrutura do curso
+                    </CartaoTitulo>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      {cursoAtual.modulos.map((modulo) => (
+                        <div
+                          key={`info-${modulo.id}`}
+                          className="flex items-center justify-between"
+                        >
+                          <span>{modulo.titulo}</span>
+                          <span>{modulo.aulas.length} aulas</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CartaoConteudo>
+                </Cartao>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}

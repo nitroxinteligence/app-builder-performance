@@ -1,0 +1,1 @@
+1. Reativar posteriormente a funçao do botao "Próximo" de 4minutos de video até liberar o clique no botão.
