@@ -92,10 +92,10 @@ async function fetchDailyStats(userId: string): Promise<DailyStats> {
         .eq('ativo', true),
 
       supabase
-        .from('habit_checks')
+        .from('habit_history')
         .select('id')
         .eq('user_id', userId)
-        .eq('check_date', hoje),
+        .eq('data', hoje),
 
       supabase
         .from('users')
@@ -116,12 +116,13 @@ async function fetchDailyStats(userId: string): Promise<DailyStats> {
     throw new Error(`Erro ao buscar estatísticas diárias: ${errors.map((e) => e?.message).join(', ')}`)
   }
 
-  const tarefas = tarefasResult.data ?? []
+  type TarefaRow = { id: string; prioridade: string; concluida_em: string | null; data_limite: string | null }
+  const tarefas = (tarefasResult.data ?? []) as TarefaRow[]
   const tarefasHoje = tarefas.filter(
-    (t) => t.data_limite === hoje || (t.concluida_em && t.concluida_em.startsWith(hoje))
+    (t: TarefaRow) => t.data_limite === hoje || (t.concluida_em && t.concluida_em.startsWith(hoje))
   ).length
   const tarefasUrgentes = tarefas.filter(
-    (t) => t.prioridade === 'urgente' || t.prioridade === 'alta'
+    (t: TarefaRow) => t.prioridade === 'urgente' || t.prioridade === 'alta'
   ).length
 
   const focusStats = focusResult.data?.[0] as {
@@ -158,11 +159,11 @@ async function fetchWeeklyStats(userId: string): Promise<WeeklyStats> {
     supabase.rpc('get_focus_stats', { p_user_id: userId }),
 
     supabase
-      .from('habit_checks')
-      .select('check_date')
+      .from('habit_history')
+      .select('data')
       .eq('user_id', userId)
-      .gte('check_date', inicioSemana.split('T')[0])
-      .lte('check_date', hoje),
+      .gte('data', inicioSemana.split('T')[0])
+      .lte('data', hoje),
   ])
 
   const errors = [
@@ -186,8 +187,9 @@ async function fetchWeeklyStats(userId: string): Promise<WeeklyStats> {
   const focoMeta = DEFAULT_WEEKLY_FOCUS_GOAL_SECONDS
   const focoPercentual = Math.min(100, Math.round((focoSegundos / focoMeta) * 100))
 
+  type HabitoCheckRow = { data: string }
   const diasUnicos = new Set(
-    (habitosChecksResult.data ?? []).map((h) => h.check_date)
+    ((habitosChecksResult.data ?? []) as HabitoCheckRow[]).map((h: HabitoCheckRow) => h.data)
   )
   const habitosChecksDias = diasUnicos.size
   const diasSemana = 7

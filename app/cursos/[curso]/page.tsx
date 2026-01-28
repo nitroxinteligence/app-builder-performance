@@ -8,6 +8,7 @@ import {
   BookOpenText,
   CheckCircle2,
   Clock,
+  Loader2,
   PlayCircle,
 } from "lucide-react";
 
@@ -22,8 +23,8 @@ import {
 import { Progresso } from "@/componentes/ui/progresso";
 import { Sidebar } from "@/componentes/layout/sidebar";
 import { cn } from "@/lib/utilidades";
-
-import { cursos, obterResumoCurso } from "../dados-cursos";
+import { useCursoBySlug } from "@/hooks/useCursos";
+import type { CourseModuleWithLessons, LessonWithProgress } from "@/types/cursos";
 
 export default function PaginaCurso() {
   const params = useParams();
@@ -31,30 +32,56 @@ export default function PaginaCurso() {
   const cursoSlug = Array.isArray(cursoParam) ? cursoParam[0] : cursoParam;
   const [sidebarAberta, setSidebarAberta] = React.useState(false);
 
-  const cursoAtual = cursos.find((curso) => curso.slug === cursoSlug);
+  const { data, isLoading, error } = useCursoBySlug(cursoSlug ?? "");
 
-  if (!cursoAtual) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
-          <h1 className="font-titulo text-2xl font-semibold">
-            Curso não encontrado
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Não encontramos este curso no catálogo atual.
-          </p>
-          <Botao asChild className="self-center">
-            <Link href="/cursos">Voltar para cursos</Link>
-          </Botao>
-        </main>
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            "flex min-h-screen flex-col transition-[padding] duration-300",
+            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          )}
+        >
+          <main className="flex flex-1 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </main>
+        </div>
       </div>
     );
   }
 
-  const resumo = obterResumoCurso(cursoAtual);
-  const primeiraAula = cursoAtual.modulos[0]?.aulas[0];
+  if (error || !data) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            "flex min-h-screen flex-col transition-[padding] duration-300",
+            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          )}
+        >
+          <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
+            <h1 className="font-titulo text-2xl font-semibold">
+              Curso não encontrado
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {error?.message ?? "Não encontramos este curso no catálogo atual."}
+            </p>
+            <Botao asChild className="self-center">
+              <Link href="/cursos">Voltar para cursos</Link>
+            </Botao>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  const { curso, modulos, resumo } = data;
+  const primeiraAula = modulos[0]?.aulas[0];
   const linkPrimeiraAula = primeiraAula
-    ? `/cursos/${cursoAtual.slug}/${primeiraAula.id}`
+    ? `/cursos/${curso.slug}/${primeiraAula.id}`
     : "/cursos";
 
   return (
@@ -80,19 +107,19 @@ export default function PaginaCurso() {
                 </Link>
                 <div>
                   <h1 className="font-titulo text-2xl font-semibold">
-                    {cursoAtual.titulo}
+                    {curso.titulo}
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    {cursoAtual.descricao}
+                    {curso.descricao}
                   </p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1 font-semibold text-secondary-foreground">
                   <BookOpenText className="h-3 w-3" />
-                  {cursoAtual.categoria}
+                  {curso.categoria}
                 </span>
-                <span>{cursoAtual.nivel}</span>
+                <span>{curso.nivel}</span>
                 <span>•</span>
                 <span>{resumo.totalAulas} aulas</span>
                 <span>•</span>
@@ -102,7 +129,7 @@ export default function PaginaCurso() {
 
             <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div className="space-y-4">
-                {cursoAtual.modulos.map((modulo) => (
+                {modulos.map((modulo: CourseModuleWithLessons) => (
                   <Cartao key={modulo.id}>
                     <CartaoCabecalho className="pb-3">
                       <CartaoTitulo className="text-base">
@@ -111,10 +138,10 @@ export default function PaginaCurso() {
                       <CartaoDescricao>{modulo.descricao}</CartaoDescricao>
                     </CartaoCabecalho>
                     <CartaoConteudo className="space-y-3">
-                      {modulo.aulas.map((aula) => (
+                      {modulo.aulas.map((aula: LessonWithProgress) => (
                         <Link
                           key={aula.id}
-                          href={`/cursos/${cursoAtual.slug}/${aula.id}`}
+                          href={`/cursos/${curso.slug}/${aula.id}`}
                           className="flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3 text-sm transition hover:bg-secondary/40"
                         >
                           <div className="space-y-1">
@@ -165,7 +192,7 @@ export default function PaginaCurso() {
                     <Progresso value={resumo.progresso} />
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>{resumo.progresso}% completo</span>
-                      <span>{cursoAtual.nivel}</span>
+                      <span>{curso.nivel}</span>
                     </div>
                     <Botao asChild>
                       <Link href={linkPrimeiraAula}>Continuar</Link>
@@ -179,7 +206,7 @@ export default function PaginaCurso() {
                       Estrutura do curso
                     </CartaoTitulo>
                     <div className="space-y-2 text-sm text-muted-foreground">
-                      {cursoAtual.modulos.map((modulo) => (
+                      {modulos.map((modulo: CourseModuleWithLessons) => (
                         <div
                           key={`info-${modulo.id}`}
                           className="flex items-center justify-between"

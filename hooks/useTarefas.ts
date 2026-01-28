@@ -142,7 +142,7 @@ async function reordenarTarefas(
   )
 
   const results = await Promise.all(promises)
-  const errors = results.filter((r) => r.error)
+  const errors = results.filter((r: { error: unknown }) => r.error)
 
   if (errors.length > 0) {
     throw new Error('Erro ao reordenar tarefas')

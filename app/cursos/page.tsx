@@ -5,8 +5,8 @@ import Link from "next/link";
 import {
   BookOpenText,
   Lock,
-  PanelLeft,
   Search,
+  Loader2,
 } from "lucide-react";
 
 import { Botao } from "@/componentes/ui/botao";
@@ -19,67 +19,77 @@ import {
 import { Progresso } from "@/componentes/ui/progresso";
 import { cn } from "@/lib/utilidades";
 import { Sidebar } from "@/componentes/layout/sidebar";
-
-import { cursos, obterResumoCurso } from "./dados-cursos";
+import { useCursosData } from "@/hooks/useCursos";
 
 export default function PaginaCursos() {
   const [sidebarAberta, setSidebarAberta] = React.useState(false);
-
-  const categorias = React.useMemo(
-    () => [
-      "Todos",
-      ...Array.from(new Set(cursos.map((curso) => curso.categoria))),
-    ],
-    []
-  );
   const [categoriaAtiva, setCategoriaAtiva] = React.useState("Todos");
   const [busca, setBusca] = React.useState("");
+
+  const {
+    cursos,
+    categorias,
+    cursosDestaque,
+    cursosContinuar,
+    novosConteudos,
+    isLoading,
+    error,
+  } = useCursosData();
+
   const textoBusca = busca.trim().toLowerCase();
 
-  const cursosComResumo = React.useMemo(
-    () =>
-      cursos.map((curso) => ({
-        curso,
-        resumo: obterResumoCurso(curso),
-      })),
-    []
-  );
+  const cursosFiltrados = React.useMemo(() => {
+    return cursos.filter(({ curso }) => {
+      if (categoriaAtiva !== "Todos" && curso.categoria !== categoriaAtiva) {
+        return false;
+      }
 
-  const cursosFiltrados = cursosComResumo.filter(({ curso }) => {
-    if (categoriaAtiva !== "Todos" && curso.categoria !== categoriaAtiva) {
-      return false;
-    }
+      if (!textoBusca) {
+        return true;
+      }
 
-    if (!textoBusca) {
-      return true;
-    }
+      return (
+        curso.titulo.toLowerCase().includes(textoBusca) ||
+        (curso.descricao?.toLowerCase().includes(textoBusca) ?? false)
+      );
+    });
+  }, [cursos, categoriaAtiva, textoBusca]);
 
+  if (isLoading) {
     return (
-      curso.titulo.toLowerCase().includes(textoBusca) ||
-      curso.descricao.toLowerCase().includes(textoBusca)
+      <div className="min-h-screen bg-background text-foreground">
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            "flex min-h-screen flex-col transition-[padding] duration-300",
+            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          )}
+        >
+          <main className="flex flex-1 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </main>
+        </div>
+      </div>
     );
-  });
+  }
 
-  const cursosDestaque = cursosComResumo.filter(
-    ({ curso }) => curso.destaque
-  );
-  const cursosContinuar = cursosComResumo.filter(({ resumo }) => {
-    return resumo.progresso > 0 && resumo.progresso < 100;
-  });
-  const novosConteudos = [
-    {
-      id: "novo-1",
-      titulo: "Builders Performance Intermediário",
-      descricao: "Táticas avançadas de execução e consistência.",
-      nivel: "Intermediário",
-    },
-    {
-      id: "novo-2",
-      titulo: "Imersão Hiperfoco",
-      descricao: "Sessões intensas para resultados rápidos.",
-      nivel: "Avançado",
-    },
-  ];
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            "flex min-h-screen flex-col transition-[padding] duration-300",
+            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          )}
+        >
+          <main className="flex flex-1 items-center justify-center">
+            <p className="text-destructive">Erro ao carregar cursos: {error.message}</p>
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -127,7 +137,7 @@ export default function PaginaCursos() {
               </div>
             </section>
 
-            {cursosContinuar.length ? (
+            {cursosContinuar.length > 0 && (
               <section className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="font-titulo text-lg font-semibold">
@@ -178,51 +188,53 @@ export default function PaginaCursos() {
                   </div>
                 </div>
               </section>
-            ) : null}
+            )}
 
-            <section className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-titulo text-lg font-semibold">
-                  Em destaque
-                </h2>
-              </div>
-              <div className="-mx-6 overflow-x-auto px-6">
-                <div className="flex min-w-[640px] gap-4">
-                  {cursosDestaque.map(({ curso, resumo }) => (
-                    <Cartao
-                      key={curso.id}
-                      className="min-w-[260px] overflow-hidden"
-                    >
-                      <div className="h-28 bg-gradient-to-br from-secondary via-accent to-background p-4">
-                        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-                          <span>{curso.categoria}</span>
-                          <BookOpenText className="h-4 w-4" />
-                        </div>
-                        <p className="mt-6 text-sm font-semibold text-foreground">
-                          {curso.titulo}
-                        </p>
-                      </div>
-                      <CartaoConteudo className="space-y-3 p-4">
-                        <div>
-                          <CartaoTitulo className="text-base">
-                            {curso.nivel}
-                          </CartaoTitulo>
-                          <CartaoDescricao>
-                            {resumo.totalAulas} aulas • {resumo.progresso}%{" "}
-                            concluído
-                          </CartaoDescricao>
-                        </div>
-                        <Botao asChild variant="outline" size="sm">
-                          <Link href={`/cursos/${curso.slug}`}>
-                            Ver curso
-                          </Link>
-                        </Botao>
-                      </CartaoConteudo>
-                    </Cartao>
-                  ))}
+            {cursosDestaque.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-titulo text-lg font-semibold">
+                    Em destaque
+                  </h2>
                 </div>
-              </div>
-            </section>
+                <div className="-mx-6 overflow-x-auto px-6">
+                  <div className="flex min-w-[640px] gap-4">
+                    {cursosDestaque.map(({ curso, resumo }) => (
+                      <Cartao
+                        key={curso.id}
+                        className="min-w-[260px] overflow-hidden"
+                      >
+                        <div className="h-28 bg-gradient-to-br from-secondary via-accent to-background p-4">
+                          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+                            <span>{curso.categoria}</span>
+                            <BookOpenText className="h-4 w-4" />
+                          </div>
+                          <p className="mt-6 text-sm font-semibold text-foreground">
+                            {curso.titulo}
+                          </p>
+                        </div>
+                        <CartaoConteudo className="space-y-3 p-4">
+                          <div>
+                            <CartaoTitulo className="text-base">
+                              {curso.nivel}
+                            </CartaoTitulo>
+                            <CartaoDescricao>
+                              {resumo.totalAulas} aulas • {resumo.progresso}%{" "}
+                              concluído
+                            </CartaoDescricao>
+                          </div>
+                          <Botao asChild variant="outline" size="sm">
+                            <Link href={`/cursos/${curso.slug}`}>
+                              Ver curso
+                            </Link>
+                          </Botao>
+                        </CartaoConteudo>
+                      </Cartao>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
 
             <section className="space-y-4">
               <div className="flex items-center justify-between">

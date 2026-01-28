@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   ChevronLeft,
   Clock,
+  Loader2,
   MessageSquare,
   PlayCircle,
   ThumbsUp,
@@ -23,8 +24,8 @@ import {
 } from "@/componentes/ui/cartao";
 import { cn } from "@/lib/utilidades";
 import { Sidebar } from "@/componentes/layout/sidebar";
-
-import { cursos } from "../../dados-cursos";
+import { useCursoBySlug, useCompleteLesson } from "@/hooks/useCursos";
+import type { CourseModuleWithLessons, LessonWithProgress } from "@/types/cursos";
 
 const comentariosExemplo = [
   {
@@ -46,43 +47,93 @@ export default function PaginaAula() {
   const cursoParam = params?.curso;
   const aulaParam = params?.aula;
   const cursoSlug = Array.isArray(cursoParam) ? cursoParam[0] : cursoParam;
-  const aulaSlug = Array.isArray(aulaParam) ? aulaParam[0] : aulaParam;
+  const aulaId = Array.isArray(aulaParam) ? aulaParam[0] : aulaParam;
   const [sidebarAberta, setSidebarAberta] = React.useState(false);
   const [sidebarAulasAberta, setSidebarAulasAberta] = React.useState(true);
   const [curtido, setCurtido] = React.useState(false);
 
-  const cursoAtual = cursos.find((curso) => curso.slug === cursoSlug);
-  const aulasDoCurso = cursoAtual
-    ? cursoAtual.modulos.flatMap((modulo) =>
-        modulo.aulas.map((aula) => ({
-          ...aula,
-          moduloId: modulo.id,
-          moduloTitulo: modulo.titulo,
-        }))
-      )
-    : [];
-  const aulaAtual = aulasDoCurso.find((aula) => aula.id === aulaSlug);
+  const { data, isLoading, error } = useCursoBySlug(cursoSlug ?? "");
+  const completeLessonMutation = useCompleteLesson();
+
+  type AulaComModulo = LessonWithProgress & {
+    moduloId: string;
+    moduloTitulo: string;
+  };
+
+  const aulasDoCurso = React.useMemo((): AulaComModulo[] => {
+    if (!data) return [];
+    return data.modulos.flatMap((modulo: CourseModuleWithLessons) =>
+      modulo.aulas.map((aula: LessonWithProgress) => ({
+        ...aula,
+        moduloId: modulo.id,
+        moduloTitulo: modulo.titulo,
+      }))
+    );
+  }, [data]);
+
+  const aulaAtual = React.useMemo((): AulaComModulo | undefined => {
+    return aulasDoCurso.find((aula: AulaComModulo) => aula.id === aulaId);
+  }, [aulasDoCurso, aulaId]);
+
   const indiceAula = aulaAtual
-    ? aulasDoCurso.findIndex((aula) => aula.id === aulaAtual.id) + 1
+    ? aulasDoCurso.findIndex((aula: AulaComModulo) => aula.id === aulaAtual.id) + 1
     : 0;
 
-  if (!cursoAtual || !aulaAtual) {
+  const handleMarcarConcluida = async () => {
+    if (!aulaId || aulaAtual?.concluida) return;
+
+    try {
+      await completeLessonMutation.mutateAsync(aulaId);
+    } catch (err) {
+      // Error handling is done by React Query
+    }
+  };
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
-          <h1 className="font-titulo text-2xl font-semibold">
-            Aula não encontrada
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Não encontramos esta aula no curso selecionado.
-          </p>
-          <Botao asChild className="self-center">
-            <Link href="/cursos">Voltar para cursos</Link>
-          </Botao>
-        </main>
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            "flex min-h-screen flex-col transition-[padding] duration-300",
+            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          )}
+        >
+          <main className="flex flex-1 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </main>
+        </div>
       </div>
     );
   }
+
+  if (error || !data || !aulaAtual) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            "flex min-h-screen flex-col transition-[padding] duration-300",
+            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          )}
+        >
+          <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
+            <h1 className="font-titulo text-2xl font-semibold">
+              Aula não encontrada
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {error?.message ?? "Não encontramos esta aula no curso selecionado."}
+            </p>
+            <Botao asChild className="self-center">
+              <Link href="/cursos">Voltar para cursos</Link>
+            </Botao>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  const { curso, modulos } = data;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -98,7 +149,7 @@ export default function PaginaAula() {
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
             <section className="flex items-center gap-3">
               <Link
-                href={`/cursos/${cursoAtual.slug}`}
+                href={`/cursos/${curso.slug}`}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
                 aria-label="Voltar para curso"
               >
@@ -109,7 +160,7 @@ export default function PaginaAula() {
                   {aulaAtual.titulo}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  {cursoAtual.titulo} • {aulaAtual.moduloTitulo}
+                  {curso.titulo} • {aulaAtual.moduloTitulo}
                 </p>
               </div>
             </section>
@@ -127,7 +178,7 @@ export default function PaginaAula() {
                     sidebarAulasAberta ? "justify-between" : "justify-center"
                   )}
                 >
-                  {sidebarAulasAberta ? (
+                  {sidebarAulasAberta && (
                     <div className="space-y-1">
                       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
                         Conteúdo
@@ -136,7 +187,7 @@ export default function PaginaAula() {
                         {aulasDoCurso.length} aulas
                       </p>
                     </div>
-                  ) : null}
+                  )}
                   <Botao
                     type="button"
                     variant="ghost"
@@ -153,20 +204,20 @@ export default function PaginaAula() {
                   </Botao>
                 </div>
 
-                {sidebarAulasAberta ? (
+                {sidebarAulasAberta && (
                   <div className="mt-4 space-y-4">
-                    {cursoAtual.modulos.map((modulo) => (
+                    {modulos.map((modulo: CourseModuleWithLessons) => (
                       <div key={modulo.id} className="space-y-2">
                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                           {modulo.titulo}
                         </p>
                         <div className="space-y-1">
-                          {modulo.aulas.map((aula) => {
+                          {modulo.aulas.map((aula: LessonWithProgress) => {
                             const ativo = aula.id === aulaAtual.id;
                             return (
                               <Link
                                 key={aula.id}
-                                href={`/cursos/${cursoAtual.slug}/${aula.id}`}
+                                href={`/cursos/${curso.slug}/${aula.id}`}
                                 className={cn(
                                   "flex items-center justify-between rounded-lg px-3 py-2 text-sm transition",
                                   ativo
@@ -175,9 +226,9 @@ export default function PaginaAula() {
                                 )}
                               >
                                 <span className="truncate">{aula.titulo}</span>
-                                {aula.concluida ? (
+                                {aula.concluida && (
                                   <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                ) : null}
+                                )}
                               </Link>
                             );
                           })}
@@ -185,7 +236,7 @@ export default function PaginaAula() {
                       </div>
                     ))}
                   </div>
-                ) : null}
+                )}
               </aside>
 
               <div className="flex-1 space-y-6">
@@ -200,7 +251,25 @@ export default function PaginaAula() {
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <Botao variant="secondary">Marcar como concluída</Botao>
+                    <Botao
+                      variant="secondary"
+                      onClick={handleMarcarConcluida}
+                      disabled={aulaAtual.concluida || completeLessonMutation.isPending}
+                    >
+                      {completeLessonMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Salvando...
+                        </>
+                      ) : aulaAtual.concluida ? (
+                        <>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />
+                          Concluída
+                        </>
+                      ) : (
+                        "Marcar como concluída"
+                      )}
+                    </Botao>
                     <Botao
                       variant="outline"
                       className={cn(
@@ -244,7 +313,7 @@ export default function PaginaAula() {
                         XP ao concluir: <span className="font-semibold">{aulaAtual.xp}</span>
                       </p>
                       <p>
-                        Curso: <span className="font-semibold">{cursoAtual.titulo}</span>
+                        Curso: <span className="font-semibold">{curso.titulo}</span>
                       </p>
                     </CartaoConteudo>
                   </Cartao>
