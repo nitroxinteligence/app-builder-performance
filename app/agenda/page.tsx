@@ -1,30 +1,31 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import Link from "next/link";
+import * as React from 'react'
+import Link from 'next/link'
 import {
   ArrowLeft,
   CalendarDays,
   CheckCircle2,
   Clock,
   Link2,
+  Loader2,
   MapPin,
   Pencil,
   Plus,
   Trash2,
-} from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+} from 'lucide-react'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
-import { Botao } from "@/componentes/ui/botao";
+import { Botao } from '@/componentes/ui/botao'
 import {
   Cartao,
   CartaoCabecalho,
   CartaoConteudo,
   CartaoDescricao,
   CartaoTitulo,
-} from "@/componentes/ui/cartao";
-import { Calendario } from "@/componentes/ui/calendario";
+} from '@/componentes/ui/cartao'
+import { Calendario } from '@/componentes/ui/calendario'
 import {
   Dialogo,
   DialogoCabecalho,
@@ -34,7 +35,7 @@ import {
   DialogoGatilho,
   DialogoRodape,
   DialogoTitulo,
-} from "@/componentes/ui/dialogo";
+} from '@/componentes/ui/dialogo'
 import {
   DialogoAlerta,
   DialogoAlertaAcao,
@@ -44,166 +45,190 @@ import {
   DialogoAlertaDescricao,
   DialogoAlertaRodape,
   DialogoAlertaTitulo,
-} from "@/componentes/ui/dialogo-alerta";
+} from '@/componentes/ui/dialogo-alerta'
 import {
   Seletor,
   SeletorConteudo,
   SeletorGatilho,
   SeletorItem,
   SeletorValor,
-} from "@/componentes/ui/seletor";
-import { cn } from "@/lib/utilidades";
-import { Sidebar } from "@/componentes/layout/sidebar";
-
+} from '@/componentes/ui/seletor'
+import { cn } from '@/lib/utilidades'
+import { Sidebar } from '@/componentes/layout/sidebar'
+import { useAgenda } from '@/hooks/useAgenda'
 import {
-  categoriasAgenda,
-  eventosAgenda,
-  type EventoAgenda,
-  type IntegracaoCalendario,
-  type StatusEvento,
-} from "./dados-agenda";
-import {
-  CHAVE_EVENTOS_AGENDA,
-  lerLocalStorage,
-  salvarLocalStorage,
-} from "@/lib/armazenamento";
+  EVENT_CATEGORIES,
+  type AgendaEvent,
+  type CalendarIntegration,
+  type CreateEventDto,
+  type EventStatus,
+} from '@/types/agenda'
 
 type FormularioEvento = {
-  titulo: string;
-  descricao: string;
-  data: string;
-  horarioInicio: string;
-  horarioFim: string;
-  categoria: string;
-  local: string;
-  status: StatusEvento;
-  calendario: IntegracaoCalendario;
-};
+  titulo: string
+  descricao: string
+  data: string
+  horarioInicio: string
+  horarioFim: string
+  categoria: string
+  local: string
+  status: EventStatus
+  calendario: CalendarIntegration
+}
 
-const formularioVazio: FormularioEvento = {
-  titulo: "",
-  descricao: "",
-  data: "2025-02-14",
-  horarioInicio: "09:00",
-  horarioFim: "09:30",
-  categoria: "Reunião",
-  local: "",
-  status: "confirmado",
-  calendario: "Manual",
-};
+const criarFormularioVazio = (data: string): FormularioEvento => ({
+  titulo: '',
+  descricao: '',
+  data,
+  horarioInicio: '09:00',
+  horarioFim: '09:30',
+  categoria: 'Reunião',
+  local: '',
+  status: 'confirmado',
+  calendario: 'Manual',
+})
 
 const estilosStatus = {
   confirmado:
-    "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300",
+    'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300',
   pendente:
-    "border-amber-200 bg-amber-50 text-amber-600 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300",
-  foco: "border-primary/40 bg-primary/10 text-primary",
-};
+    'border-amber-200 bg-amber-50 text-amber-600 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300',
+  foco: 'border-primary/40 bg-primary/10 text-primary',
+}
 
-const criarId = () => Math.random().toString(36).slice(2, 9);
+const labelStatus: Record<EventStatus, string> = {
+  confirmado: 'Confirmado',
+  pendente: 'Pendente',
+  foco: 'Foco',
+}
 
 export default function PaginaAgenda() {
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
-  const [dataSelecionada, setDataSelecionada] = React.useState<Date>(
-    new Date("2025-02-14T00:00:00")
-  );
-  const [eventos, setEventos] =
-    React.useState<EventoAgenda[]>(eventosAgenda);
-  const [eventosHidratados, setEventosHidratados] = React.useState(false);
-  const [novoEventoAberto, setNovoEventoAberto] = React.useState(false);
-  const [eventoEditando, setEventoEditando] =
-    React.useState<EventoAgenda | null>(null);
-  const [eventoExcluir, setEventoExcluir] =
-    React.useState<EventoAgenda | null>(null);
-  const [formEvento, setFormEvento] =
-    React.useState<FormularioEvento>(formularioVazio);
+  const [sidebarAberta, setSidebarAberta] = React.useState(false)
+  const [dataSelecionada, setDataSelecionada] = React.useState<Date>(new Date())
+  const [novoEventoAberto, setNovoEventoAberto] = React.useState(false)
+  const [eventoEditando, setEventoEditando] = React.useState<AgendaEvent | null>(null)
+  const [eventoExcluir, setEventoExcluir] = React.useState<AgendaEvent | null>(null)
+  const [formEvento, setFormEvento] = React.useState<FormularioEvento>(() =>
+    criarFormularioVazio(format(new Date(), 'yyyy-MM-dd'))
+  )
+  const [salvando, setSalvando] = React.useState(false)
 
-  const dataSelecionadaISO = format(dataSelecionada, "yyyy-MM-dd");
-  const eventosDoDia = eventos.filter(
-    (evento) => evento.data === dataSelecionadaISO
-  );
-  const proximosEventos = eventos
+  const { events, isLoading, error, createEvent, updateEvent, deleteEvent } =
+    useAgenda()
+
+  const dataSelecionadaISO = format(dataSelecionada, 'yyyy-MM-dd')
+  const eventosDoDia = events.filter((evento) => evento.data === dataSelecionadaISO)
+  const proximosEventos = events
     .filter((evento) => evento.data >= dataSelecionadaISO)
-    .slice(0, 5);
-
-  React.useEffect(() => {
-    const armazenados =
-      lerLocalStorage<EventoAgenda[]>(CHAVE_EVENTOS_AGENDA);
-    if (armazenados?.length) {
-      setEventos(armazenados);
-    }
-    setEventosHidratados(true);
-  }, []);
-
-  React.useEffect(() => {
-    if (!eventosHidratados) {
-      return;
-    }
-    salvarLocalStorage(CHAVE_EVENTOS_AGENDA, eventos);
-  }, [eventos, eventosHidratados]);
+    .slice(0, 5)
 
   React.useEffect(() => {
     if (novoEventoAberto) {
-      setFormEvento({
-        ...formularioVazio,
-        data: dataSelecionadaISO,
-      });
+      setFormEvento(criarFormularioVazio(dataSelecionadaISO))
     }
-  }, [novoEventoAberto, dataSelecionadaISO]);
+  }, [novoEventoAberto, dataSelecionadaISO])
 
   React.useEffect(() => {
     if (!eventoEditando) {
-      return;
+      return
     }
     setFormEvento({
       titulo: eventoEditando.titulo,
-      descricao: eventoEditando.descricao,
+      descricao: eventoEditando.descricao ?? '',
       data: eventoEditando.data,
-      horarioInicio: eventoEditando.horarioInicio,
-      horarioFim: eventoEditando.horarioFim,
+      horarioInicio: eventoEditando.horario_inicio,
+      horarioFim: eventoEditando.horario_fim,
       categoria: eventoEditando.categoria,
-      local: eventoEditando.local,
+      local: eventoEditando.local ?? '',
       status: eventoEditando.status,
       calendario: eventoEditando.calendario,
-    });
-  }, [eventoEditando]);
+    })
+  }, [eventoEditando])
 
   const atualizarFormulario = (parcial: Partial<FormularioEvento>) => {
-    setFormEvento((prev) => ({ ...prev, ...parcial }));
-  };
+    setFormEvento((prev) => ({ ...prev, ...parcial }))
+  }
 
-  const salvarEvento = () => {
+  const salvarEvento = async () => {
     if (!formEvento.titulo.trim()) {
-      return;
+      return
     }
 
-    if (eventoEditando) {
-      setEventos((prev) =>
-        prev.map((evento) =>
-          evento.id === eventoEditando.id
-            ? { ...evento, ...formEvento }
-            : evento
-        )
-      );
-      setEventoEditando(null);
-      return;
+    setSalvando(true)
+
+    try {
+      if (eventoEditando) {
+        await updateEvent(eventoEditando.id, {
+          titulo: formEvento.titulo,
+          descricao: formEvento.descricao || undefined,
+          data: formEvento.data,
+          horario_inicio: formEvento.horarioInicio,
+          horario_fim: formEvento.horarioFim,
+          categoria: formEvento.categoria,
+          local: formEvento.local || undefined,
+          status: formEvento.status,
+          calendario: formEvento.calendario,
+        })
+        setEventoEditando(null)
+      } else {
+        const novoEvento: CreateEventDto = {
+          titulo: formEvento.titulo,
+          descricao: formEvento.descricao || undefined,
+          data: formEvento.data,
+          horario_inicio: formEvento.horarioInicio,
+          horario_fim: formEvento.horarioFim,
+          categoria: formEvento.categoria,
+          local: formEvento.local || undefined,
+          status: formEvento.status,
+          calendario: formEvento.calendario,
+        }
+        await createEvent(novoEvento)
+        setNovoEventoAberto(false)
+      }
+    } catch (err) {
+      // Error handling is done via React Query
+    } finally {
+      setSalvando(false)
     }
+  }
 
-    const novoEvento: EventoAgenda = {
-      id: criarId(),
-      ...formEvento,
-    };
-    setEventos((prev) => [novoEvento, ...prev]);
-    setNovoEventoAberto(false);
-  };
-
-  const confirmarExclusao = () => {
+  const confirmarExclusao = async () => {
     if (!eventoExcluir) {
-      return;
+      return
     }
-    setEventos((prev) => prev.filter((evento) => evento.id !== eventoExcluir.id));
-    setEventoExcluir(null);
-  };
+
+    setSalvando(true)
+
+    try {
+      await deleteEvent(eventoExcluir.id)
+      setEventoExcluir(null)
+    } catch (err) {
+      // Error handling is done via React Query
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
+        <div
+          className={cn(
+            'flex min-h-screen flex-col transition-[padding] duration-300',
+            sidebarAberta ? 'lg:pl-56' : 'lg:pl-16'
+          )}
+        >
+          <main className="flex flex-1 items-center justify-center px-6 py-10">
+            <div className="text-center">
+              <p className="text-destructive">Erro ao carregar agenda</p>
+              <p className="text-sm text-muted-foreground">{error.message}</p>
+            </div>
+          </main>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -211,8 +236,8 @@ export default function PaginaAgenda() {
 
       <div
         className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
+          'flex min-h-screen flex-col transition-[padding] duration-300',
+          sidebarAberta ? 'lg:pl-56' : 'lg:pl-16'
         )}
       >
         <main className="flex-1 px-6 py-10">
@@ -278,7 +303,10 @@ export default function PaginaAgenda() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium" htmlFor="evento-categoria">
+                        <label
+                          className="text-sm font-medium"
+                          htmlFor="evento-categoria"
+                        >
                           Categoria
                         </label>
                         <Seletor
@@ -291,8 +319,11 @@ export default function PaginaAgenda() {
                             <SeletorValor placeholder="Selecione" />
                           </SeletorGatilho>
                           <SeletorConteudo>
-                            {categoriasAgenda.map((categoria) => (
-                              <SeletorItem key={categoria.id} value={categoria.titulo}>
+                            {EVENT_CATEGORIES.map((categoria) => (
+                              <SeletorItem
+                                key={categoria.id}
+                                value={categoria.titulo}
+                              >
                                 {categoria.titulo}
                               </SeletorItem>
                             ))}
@@ -321,10 +352,7 @@ export default function PaginaAgenda() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label
-                          className="text-sm font-medium"
-                          htmlFor="evento-fim"
-                        >
+                        <label className="text-sm font-medium" htmlFor="evento-fim">
                           Fim
                         </label>
                         <input
@@ -348,7 +376,7 @@ export default function PaginaAgenda() {
                         <Seletor
                           value={formEvento.status}
                           onValueChange={(valor) =>
-                            atualizarFormulario({ status: valor as StatusEvento })
+                            atualizarFormulario({ status: valor as EventStatus })
                           }
                         >
                           <SeletorGatilho id="evento-status">
@@ -372,7 +400,7 @@ export default function PaginaAgenda() {
                           value={formEvento.calendario}
                           onValueChange={(valor) =>
                             atualizarFormulario({
-                              calendario: valor as IntegracaoCalendario,
+                              calendario: valor as CalendarIntegration,
                             })
                           }
                         >
@@ -421,9 +449,14 @@ export default function PaginaAgenda() {
                   </div>
                   <DialogoRodape>
                     <DialogoFechar asChild>
-                      <Botao variant="secondary">Cancelar</Botao>
+                      <Botao variant="secondary" disabled={salvando}>
+                        Cancelar
+                      </Botao>
                     </DialogoFechar>
-                    <Botao onClick={salvarEvento}>Criar evento</Botao>
+                    <Botao onClick={salvarEvento} disabled={salvando}>
+                      {salvando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Criar evento
+                    </Botao>
                   </DialogoRodape>
                 </DialogoConteudo>
               </Dialogo>
@@ -441,7 +474,11 @@ export default function PaginaAgenda() {
                     </CartaoDescricao>
                   </CartaoCabecalho>
                   <CartaoConteudo className="space-y-3">
-                    {eventosDoDia.length === 0 ? (
+                    {isLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : eventosDoDia.length === 0 ? (
                       <div className="rounded-xl border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
                         Nenhum evento marcado para este dia.
                       </div>
@@ -453,35 +490,33 @@ export default function PaginaAgenda() {
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="space-y-1">
-                            <p className="text-sm font-semibold">
-                              {evento.titulo}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {evento.descricao}
-                            </p>
+                            <p className="text-sm font-semibold">{evento.titulo}</p>
+                            {evento.descricao && (
+                              <p className="text-xs text-muted-foreground">
+                                {evento.descricao}
+                              </p>
+                            )}
                           </div>
                           <span
                             className={cn(
-                              "rounded-full border px-2 py-0.5 text-[10px] font-semibold",
+                              'rounded-full border px-2 py-0.5 text-[10px] font-semibold',
                               estilosStatus[evento.status]
                             )}
                           >
-                            {evento.status === "foco"
-                              ? "Foco"
-                              : evento.status === "pendente"
-                              ? "Pendente"
-                              : "Confirmado"}
+                            {labelStatus[evento.status]}
                           </span>
                         </div>
                         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Clock className="h-3.5 w-3.5" />
-                            {evento.horarioInicio} - {evento.horarioFim}
+                            {evento.horario_inicio} - {evento.horario_fim}
                           </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3.5 w-3.5" />
-                            {evento.local}
-                          </span>
+                          {evento.local && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3.5 w-3.5" />
+                              {evento.local}
+                            </span>
+                          )}
                           <span className="flex items-center gap-1">
                             <CalendarDays className="h-3.5 w-3.5" />
                             {evento.categoria}
@@ -526,32 +561,38 @@ export default function PaginaAgenda() {
                     </CartaoDescricao>
                   </CartaoCabecalho>
                   <CartaoConteudo className="space-y-3">
-                    {proximosEventos.map((evento) => (
-                      <div
-                        key={evento.id}
-                        className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/60 px-3 py-2 text-sm"
-                      >
-                        <div>
-                          <p className="font-medium">{evento.titulo}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {format(new Date(`${evento.data}T00:00:00`), "dd/MM")}{" "}
-                            • {evento.horarioInicio}
-                          </p>
-                        </div>
-                        <span
-                          className={cn(
-                            "rounded-full border px-2 py-0.5 text-[10px] font-semibold",
-                            estilosStatus[evento.status]
-                          )}
-                        >
-                          {evento.status === "foco"
-                            ? "Foco"
-                            : evento.status === "pendente"
-                            ? "Pendente"
-                            : "Confirmado"}
-                        </span>
+                    {isLoading ? (
+                      <div className="flex items-center justify-center py-4">
+                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                       </div>
-                    ))}
+                    ) : proximosEventos.length === 0 ? (
+                      <div className="text-sm text-muted-foreground">
+                        Nenhum evento próximo.
+                      </div>
+                    ) : (
+                      proximosEventos.map((evento) => (
+                        <div
+                          key={evento.id}
+                          className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/60 px-3 py-2 text-sm"
+                        >
+                          <div>
+                            <p className="font-medium">{evento.titulo}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {format(new Date(`${evento.data}T00:00:00`), 'dd/MM')} •{' '}
+                              {evento.horario_inicio}
+                            </p>
+                          </div>
+                          <span
+                            className={cn(
+                              'rounded-full border px-2 py-0.5 text-[10px] font-semibold',
+                              estilosStatus[evento.status]
+                            )}
+                          >
+                            {labelStatus[evento.status]}
+                          </span>
+                        </div>
+                      ))
+                    )}
                   </CartaoConteudo>
                 </Cartao>
               </div>
@@ -578,9 +619,7 @@ export default function PaginaAgenda() {
 
                 <Cartao>
                   <CartaoCabecalho>
-                    <CartaoTitulo className="text-base">
-                      Integrações
-                    </CartaoTitulo>
+                    <CartaoTitulo className="text-base">Integrações</CartaoTitulo>
                     <CartaoDescricao>
                       Conecte seus calendários externos.
                     </CartaoDescricao>
@@ -614,11 +653,16 @@ export default function PaginaAgenda() {
         </main>
       </div>
 
-      <Dialogo open={Boolean(eventoEditando)} onOpenChange={() => setEventoEditando(null)}>
+      <Dialogo
+        open={Boolean(eventoEditando)}
+        onOpenChange={() => setEventoEditando(null)}
+      >
         <DialogoConteudo className="rounded-2xl border-border p-6">
           <DialogoCabecalho>
             <DialogoTitulo>Editar evento</DialogoTitulo>
-            <DialogoDescricao>Atualize os detalhes do compromisso.</DialogoDescricao>
+            <DialogoDescricao>
+              Atualize os detalhes do compromisso.
+            </DialogoDescricao>
           </DialogoCabecalho>
           <div className="grid gap-4">
             <div className="space-y-2">
@@ -663,7 +707,7 @@ export default function PaginaAgenda() {
                     <SeletorValor placeholder="Selecione" />
                   </SeletorGatilho>
                   <SeletorConteudo>
-                    {categoriasAgenda.map((categoria) => (
+                    {EVENT_CATEGORIES.map((categoria) => (
                       <SeletorItem key={categoria.id} value={categoria.titulo}>
                         {categoria.titulo}
                       </SeletorItem>
@@ -702,6 +746,50 @@ export default function PaginaAgenda() {
                 />
               </div>
             </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium" htmlFor="editar-status">
+                  Status
+                </label>
+                <Seletor
+                  value={formEvento.status}
+                  onValueChange={(valor) =>
+                    atualizarFormulario({ status: valor as EventStatus })
+                  }
+                >
+                  <SeletorGatilho id="editar-status">
+                    <SeletorValor placeholder="Selecione" />
+                  </SeletorGatilho>
+                  <SeletorConteudo>
+                    <SeletorItem value="confirmado">Confirmado</SeletorItem>
+                    <SeletorItem value="pendente">Pendente</SeletorItem>
+                    <SeletorItem value="foco">Foco</SeletorItem>
+                  </SeletorConteudo>
+                </Seletor>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium" htmlFor="editar-calendario">
+                  Calendário
+                </label>
+                <Seletor
+                  value={formEvento.calendario}
+                  onValueChange={(valor) =>
+                    atualizarFormulario({
+                      calendario: valor as CalendarIntegration,
+                    })
+                  }
+                >
+                  <SeletorGatilho id="editar-calendario">
+                    <SeletorValor placeholder="Selecione" />
+                  </SeletorGatilho>
+                  <SeletorConteudo>
+                    <SeletorItem value="Manual">Manual</SeletorItem>
+                    <SeletorItem value="Google">Google</SeletorItem>
+                    <SeletorItem value="Outlook">Outlook</SeletorItem>
+                  </SeletorConteudo>
+                </Seletor>
+              </div>
+            </div>
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="editar-local">
                 Local
@@ -715,12 +803,31 @@ export default function PaginaAgenda() {
                 className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="editar-descricao">
+                Descrição
+              </label>
+              <textarea
+                id="editar-descricao"
+                value={formEvento.descricao}
+                onChange={(event) =>
+                  atualizarFormulario({ descricao: event.target.value })
+                }
+                placeholder="Contexto do evento."
+                className="min-h-[90px] w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
           </div>
           <DialogoRodape>
             <DialogoFechar asChild>
-              <Botao variant="secondary">Cancelar</Botao>
+              <Botao variant="secondary" disabled={salvando}>
+                Cancelar
+              </Botao>
             </DialogoFechar>
-            <Botao onClick={salvarEvento}>Salvar alterações</Botao>
+            <Botao onClick={salvarEvento} disabled={salvando}>
+              {salvando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Salvar alterações
+            </Botao>
           </DialogoRodape>
         </DialogoConteudo>
       </Dialogo>
@@ -729,7 +836,7 @@ export default function PaginaAgenda() {
         open={Boolean(eventoExcluir)}
         onOpenChange={(aberto) => {
           if (!aberto) {
-            setEventoExcluir(null);
+            setEventoExcluir(null)
           }
         }}
       >
@@ -741,13 +848,16 @@ export default function PaginaAgenda() {
             </DialogoAlertaDescricao>
           </DialogoAlertaCabecalho>
           <DialogoAlertaRodape>
-            <DialogoAlertaCancelar>Cancelar</DialogoAlertaCancelar>
-            <DialogoAlertaAcao onClick={confirmarExclusao}>
+            <DialogoAlertaCancelar disabled={salvando}>
+              Cancelar
+            </DialogoAlertaCancelar>
+            <DialogoAlertaAcao onClick={confirmarExclusao} disabled={salvando}>
+              {salvando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Excluir
             </DialogoAlertaAcao>
           </DialogoAlertaRodape>
         </DialogoAlertaConteudo>
       </DialogoAlerta>
     </div>
-  );
+  )
 }
