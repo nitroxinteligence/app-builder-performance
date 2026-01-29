@@ -48,9 +48,9 @@
 | Perfil | `/perfil` | ⚠️ | Preferências locais | `useAuth` | `useUpdateProfile`, `useChangePassword` |
 | Metas | `/habitos` (aba) | ⚠️ | Não | `useMetas` | Tabelas faltando |
 | **Dashboard** | `/inicio` | ❌ | Sim (`dados-dashboard.ts`) | `useAuth` (só nome) | `useDashboard`, `useStats`, `useMissoes` |
-| **Cursos** | `/cursos` | ❌ | Sim (`dados-cursos.ts`) | - | `useCursos`, `useProgresso` |
-| Curso Individual | `/cursos/[curso]` | ❌ | Sim | `useParams` | `useCurso` |
-| Aula | `/cursos/[curso]/[aula]` | ❌ | Sim | `useParams` | `useAula`, `useComentarios` |
+| **Cursos** | `/cursos` | ✅ | Não | `useCursosData` | - |
+| Curso Individual | `/cursos/[curso]` | ✅ | Não | `useCursoBySlug` | - |
+| Aula | `/cursos/[curso]/[aula]` | ✅ | Não | `useCursoBySlug`, `useCompleteLesson` | Comentários pendentes |
 | **Assistente** | `/assistente` | ❌ | Sim (`dados-assistente.ts`) | `useAuth` | `useChat`, API de IA |
 | **Agenda** | `/agenda` | ❌ | Sim (`dados-agenda.ts`) | localStorage | `useEventos`, OAuth calendars |
 | Teste Daily | `/testes/abertura-diaria` | ❌ | Sim | - | N/A (página de teste) |
@@ -60,17 +60,18 @@
 ```
 🔴 ALTA (Páginas core com mock):
 1. Dashboard (/inicio) - Página principal do usuário
-2. Cursos (/cursos) - Feature importante
-3. Assistente (/assistente) - Diferencial do produto
+2. Assistente (/assistente) - Diferencial do produto
 
 🟡 MÉDIA:
-4. Agenda (/agenda) - Integrações externas
-5. Perfil (/perfil) - Edição de dados
-6. Onboarding (/onboarding) - Tracking de progresso
+3. Perfil (/perfil) - Edição de dados
+4. Onboarding (/onboarding) - Tracking de progresso
 
 🟢 BAIXA:
-7. Aulas individuais - Depende de Cursos
-8. Metas - Tabelas faltando no DB
+5. Metas - Tabelas faltando no DB
+
+✅ IMPLEMENTADO:
+- Cursos (/cursos, /cursos/[curso], /cursos/[curso]/[aula])
+- Agenda (/agenda)
 ```
 
 ---
@@ -222,13 +223,16 @@ ALTER TABLE public.objective_columns ENABLE ROW LEVEL SECURITY;
 | | `missoesSemanais` (4 desafios) | `GET /api/user/weekly-challenges` |
 | | `textoAssistant` | `GET /api/assistant/daily-brief` |
 
-### `/cursos`
+### `/cursos` ✅ IMPLEMENTADO
 
-| Arquivo Mock | Conteúdo | Endpoint Necessário |
-|--------------|----------|---------------------|
-| `dados-cursos.ts` | `cursos[]` (4 cursos, módulos, aulas) | `GET /api/courses` |
-| | `novosConteudos` (em breve) | `GET /api/courses/upcoming` |
-| | `aula.concluida` (progresso) | `GET /api/user/progress/courses/{id}` |
+| Fonte | Conteúdo | Hook/Query |
+|-------|----------|------------|
+| Supabase `courses` | Lista de cursos | `useCursosData()` |
+| Supabase `course_modules` | Módulos por curso | `useCursoBySlug()` |
+| Supabase `lessons` | Aulas por módulo | `useCursoBySlug()` |
+| Supabase `lesson_progress` | Progresso do usuário | `fetchUserProgress()` |
+| RPC `complete_lesson` | Marcar aula como concluída | `useCompleteLesson()` |
+| Hardcoded | `NOVOS_CONTEUDOS` (em breve) | Placeholder para cursos futuros |
 
 ### `/assistente`
 

@@ -27,21 +27,6 @@ import { Sidebar } from "@/componentes/layout/sidebar";
 import { useCursoBySlug, useCompleteLesson } from "@/hooks/useCursos";
 import type { CourseModuleWithLessons, LessonWithProgress } from "@/types/cursos";
 
-const comentariosExemplo = [
-  {
-    id: "comentario-1",
-    autor: "Larissa Souza",
-    texto: "Gostei da explicação sobre rotina sustentável. Aplicável demais.",
-    tempo: "há 2 horas",
-  },
-  {
-    id: "comentario-2",
-    autor: "Felipe Martins",
-    texto: "O método ficou bem claro com os exemplos.",
-    tempo: "há 1 dia",
-  },
-];
-
 export default function PaginaAula() {
   const params = useParams();
   const cursoParam = params?.curso;
@@ -344,23 +329,11 @@ export default function PaginaAula() {
                     </CartaoDescricao>
                   </CartaoCabecalho>
                   <CartaoConteudo className="space-y-4">
-                    <div className="space-y-3">
-                      {comentariosExemplo.map((comentario) => (
-                        <div
-                          key={comentario.id}
-                          className="rounded-xl border border-border bg-background px-4 py-3"
-                        >
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span className="font-semibold text-foreground">
-                              {comentario.autor}
-                            </span>
-                            <span>{comentario.tempo}</span>
-                          </div>
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {comentario.texto}
-                          </p>
-                        </div>
-                      ))}
+                    <div className="rounded-xl border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
+                      <MessageSquare className="mx-auto h-8 w-8 text-muted-foreground/50" />
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Nenhum comentário ainda. Seja o primeiro a compartilhar!
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <label
@@ -377,9 +350,9 @@ export default function PaginaAula() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <MessageSquare className="h-3 w-3" />
-                          Seu comentário fica visível para a turma.
+                          Em breve: comentários da turma.
                         </div>
-                        <Botao variant="secondary" size="sm">
+                        <Botao variant="secondary" size="sm" disabled>
                           Enviar comentário
                         </Botao>
                       </div>
