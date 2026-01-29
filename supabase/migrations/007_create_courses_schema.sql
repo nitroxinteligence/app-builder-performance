@@ -7,11 +7,18 @@
 -- ============================================================================
 
 -- ============================================================================
--- PART 1: CREATE ENUMS
+-- PART 1: CREATE ENUMS (idempotent)
 -- ============================================================================
 
-CREATE TYPE public.course_level AS ENUM ('iniciante', 'intermediario', 'avancado');
-CREATE TYPE public.course_status AS ENUM ('rascunho', 'publicado', 'arquivado');
+DO $$ BEGIN
+  CREATE TYPE public.course_level AS ENUM ('iniciante', 'intermediario', 'avancado');
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE public.course_status AS ENUM ('rascunho', 'publicado', 'arquivado');
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
 
 -- ============================================================================
 -- PART 2: CREATE TABLES
@@ -20,7 +27,7 @@ CREATE TYPE public.course_status AS ENUM ('rascunho', 'publicado', 'arquivado');
 -- -----------------------------------------------------------------------------
 -- 2.1 COURSES - Cursos disponíveis
 -- -----------------------------------------------------------------------------
-CREATE TABLE public.courses (
+CREATE TABLE IF NOT EXISTS public.courses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL,
   titulo TEXT NOT NULL,
@@ -41,7 +48,7 @@ COMMENT ON COLUMN public.courses.destaque IS 'Curso em destaque na página princ
 -- -----------------------------------------------------------------------------
 -- 2.2 COURSE_MODULES - Módulos de cada curso
 -- -----------------------------------------------------------------------------
-CREATE TABLE public.course_modules (
+CREATE TABLE IF NOT EXISTS public.course_modules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id UUID NOT NULL REFERENCES public.courses(id) ON DELETE CASCADE,
   titulo TEXT NOT NULL,
@@ -56,7 +63,7 @@ COMMENT ON TABLE public.course_modules IS 'Módulos dentro de cada curso';
 -- -----------------------------------------------------------------------------
 -- 2.3 LESSONS - Aulas de cada módulo
 -- -----------------------------------------------------------------------------
-CREATE TABLE public.lessons (
+CREATE TABLE IF NOT EXISTS public.lessons (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   module_id UUID NOT NULL REFERENCES public.course_modules(id) ON DELETE CASCADE,
   titulo TEXT NOT NULL,
@@ -75,7 +82,7 @@ COMMENT ON COLUMN public.lessons.duracao_segundos IS 'Duração da aula em segun
 -- -----------------------------------------------------------------------------
 -- 2.4 LESSON_PROGRESS - Progresso do usuário nas aulas
 -- -----------------------------------------------------------------------------
-CREATE TABLE public.lesson_progress (
+CREATE TABLE IF NOT EXISTS public.lesson_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   lesson_id UUID NOT NULL REFERENCES public.lessons(id) ON DELETE CASCADE,
@@ -90,23 +97,23 @@ CREATE TABLE public.lesson_progress (
 COMMENT ON TABLE public.lesson_progress IS 'Progresso do usuário em cada aula';
 
 -- ============================================================================
--- PART 3: CREATE INDEXES
+-- PART 3: CREATE INDEXES (idempotent)
 -- ============================================================================
 
-CREATE INDEX idx_courses_slug ON public.courses(slug);
-CREATE INDEX idx_courses_categoria ON public.courses(categoria);
-CREATE INDEX idx_courses_destaque ON public.courses(destaque);
-CREATE INDEX idx_courses_status ON public.courses(status);
+CREATE INDEX IF NOT EXISTS idx_courses_slug ON public.courses(slug);
+CREATE INDEX IF NOT EXISTS idx_courses_categoria ON public.courses(categoria);
+CREATE INDEX IF NOT EXISTS idx_courses_destaque ON public.courses(destaque);
+CREATE INDEX IF NOT EXISTS idx_courses_status ON public.courses(status);
 
-CREATE INDEX idx_course_modules_course_id ON public.course_modules(course_id);
-CREATE INDEX idx_course_modules_ordem ON public.course_modules(course_id, ordem);
+CREATE INDEX IF NOT EXISTS idx_course_modules_course_id ON public.course_modules(course_id);
+CREATE INDEX IF NOT EXISTS idx_course_modules_ordem ON public.course_modules(course_id, ordem);
 
-CREATE INDEX idx_lessons_module_id ON public.lessons(module_id);
-CREATE INDEX idx_lessons_ordem ON public.lessons(module_id, ordem);
+CREATE INDEX IF NOT EXISTS idx_lessons_module_id ON public.lessons(module_id);
+CREATE INDEX IF NOT EXISTS idx_lessons_ordem ON public.lessons(module_id, ordem);
 
-CREATE INDEX idx_lesson_progress_user_id ON public.lesson_progress(user_id);
-CREATE INDEX idx_lesson_progress_lesson_id ON public.lesson_progress(lesson_id);
-CREATE INDEX idx_lesson_progress_user_lesson ON public.lesson_progress(user_id, lesson_id);
+CREATE INDEX IF NOT EXISTS idx_lesson_progress_user_id ON public.lesson_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_lesson_progress_lesson_id ON public.lesson_progress(lesson_id);
+CREATE INDEX IF NOT EXISTS idx_lesson_progress_user_lesson ON public.lesson_progress(user_id, lesson_id);
 
 -- ============================================================================
 -- PART 4: ENABLE ROW LEVEL SECURITY
@@ -118,28 +125,33 @@ ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.lesson_progress ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- PART 5: CREATE RLS POLICIES
+-- PART 5: CREATE RLS POLICIES (idempotent)
 -- ============================================================================
 
 -- Courses - todos podem ver cursos publicados (incluindo anon)
+DROP POLICY IF EXISTS "courses_select_all" ON public.courses;
 CREATE POLICY "courses_select_all" ON public.courses
   FOR SELECT
   USING (status = 'publicado');
 
+DROP POLICY IF EXISTS "courses_service_role_all" ON public.courses;
 CREATE POLICY "courses_service_role_all" ON public.courses
   FOR ALL TO service_role
   USING (true) WITH CHECK (true);
 
 -- Modules - todos podem ver módulos de cursos publicados (incluindo anon)
+DROP POLICY IF EXISTS "modules_select_all" ON public.course_modules;
 CREATE POLICY "modules_select_all" ON public.course_modules
   FOR SELECT
   USING (EXISTS (SELECT 1 FROM public.courses c WHERE c.id = course_id AND c.status = 'publicado'));
 
+DROP POLICY IF EXISTS "modules_service_role_all" ON public.course_modules;
 CREATE POLICY "modules_service_role_all" ON public.course_modules
   FOR ALL TO service_role
   USING (true) WITH CHECK (true);
 
 -- Lessons - todos podem ver aulas de cursos publicados (incluindo anon)
+DROP POLICY IF EXISTS "lessons_select_all" ON public.lessons;
 CREATE POLICY "lessons_select_all" ON public.lessons
   FOR SELECT
   USING (EXISTS (
@@ -148,27 +160,33 @@ CREATE POLICY "lessons_select_all" ON public.lessons
     WHERE m.id = module_id AND c.status = 'publicado'
   ));
 
+DROP POLICY IF EXISTS "lessons_service_role_all" ON public.lessons;
 CREATE POLICY "lessons_service_role_all" ON public.lessons
   FOR ALL TO service_role
   USING (true) WITH CHECK (true);
 
 -- Lesson progress - apenas o próprio usuário
+DROP POLICY IF EXISTS "lesson_progress_select_own" ON public.lesson_progress;
 CREATE POLICY "lesson_progress_select_own" ON public.lesson_progress
   FOR SELECT TO authenticated
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "lesson_progress_insert_own" ON public.lesson_progress;
 CREATE POLICY "lesson_progress_insert_own" ON public.lesson_progress
   FOR INSERT TO authenticated
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "lesson_progress_update_own" ON public.lesson_progress;
 CREATE POLICY "lesson_progress_update_own" ON public.lesson_progress
   FOR UPDATE TO authenticated
   USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "lesson_progress_delete_own" ON public.lesson_progress;
 CREATE POLICY "lesson_progress_delete_own" ON public.lesson_progress
   FOR DELETE TO authenticated
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "lesson_progress_service_role_all" ON public.lesson_progress;
 CREATE POLICY "lesson_progress_service_role_all" ON public.lesson_progress
   FOR ALL TO service_role
   USING (true) WITH CHECK (true);
@@ -261,27 +279,31 @@ END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 
 -- ============================================================================
--- PART 7: CREATE TRIGGERS
+-- PART 7: CREATE TRIGGERS (idempotent)
 -- ============================================================================
 
+DROP TRIGGER IF EXISTS update_courses_updated_at ON public.courses;
 CREATE TRIGGER update_courses_updated_at
   BEFORE UPDATE ON public.courses
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_course_modules_updated_at ON public.course_modules;
 CREATE TRIGGER update_course_modules_updated_at
   BEFORE UPDATE ON public.course_modules
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_lessons_updated_at ON public.lessons;
 CREATE TRIGGER update_lessons_updated_at
   BEFORE UPDATE ON public.lessons
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_lesson_progress_updated_at ON public.lesson_progress;
 CREATE TRIGGER update_lesson_progress_updated_at
   BEFORE UPDATE ON public.lesson_progress
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -- ============================================================================
--- PART 8: SEED DATA
+-- PART 8: SEED DATA (idempotent with ON CONFLICT)
 -- ============================================================================
 
 -- Curso 1: Builders Performance Júnior
@@ -295,26 +317,29 @@ VALUES (
   'iniciante',
   true,
   1
-);
+) ON CONFLICT (id) DO NOTHING;
 
 -- Módulos do Curso 1
 INSERT INTO public.course_modules (id, course_id, titulo, descricao, ordem)
 VALUES
   ('22221111-aaaa-4111-8111-111111111111'::UUID, '11111111-aaaa-4111-8111-111111111111'::UUID, 'Boas-vindas', 'Entenda o método e a visão do Builder Performance.', 1),
-  ('22222222-aaaa-4111-8111-111111111111'::UUID, '11111111-aaaa-4111-8111-111111111111'::UUID, 'Rotina que funciona', 'Estruturação diária e energia sustentável.', 2);
+  ('22222222-aaaa-4111-8111-111111111111'::UUID, '11111111-aaaa-4111-8111-111111111111'::UUID, 'Rotina que funciona', 'Estruturação diária e energia sustentável.', 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 1.1
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33331111-aaaa-4111-8111-111111111111'::UUID, '22221111-aaaa-4111-8111-111111111111'::UUID, 'Introdução ao programa', 'Panorama do curso e da sua evolução.', 380, 10, 1),
-  ('33332222-aaaa-4111-8111-111111111111'::UUID, '22221111-aaaa-4111-8111-111111111111'::UUID, 'O método Builder', 'Como as camadas de rotina se conectam.', 555, 15, 2);
+  ('33332222-aaaa-4111-8111-111111111111'::UUID, '22221111-aaaa-4111-8111-111111111111'::UUID, 'O método Builder', 'Como as camadas de rotina se conectam.', 555, 15, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 1.2
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33333333-aaaa-4111-8111-111111111111'::UUID, '22222222-aaaa-4111-8111-111111111111'::UUID, 'Rituais diários', 'Manhãs e finais de dia com consistência.', 760, 20, 1),
   ('33334444-aaaa-4111-8111-111111111111'::UUID, '22222222-aaaa-4111-8111-111111111111'::UUID, 'Ambiente e foco', 'Como preparar o espaço para alta performance.', 605, 20, 2),
-  ('33335555-aaaa-4111-8111-111111111111'::UUID, '22222222-aaaa-4111-8111-111111111111'::UUID, 'Gestão de energia', 'Alavancas simples para render mais.', 530, 15, 3);
+  ('33335555-aaaa-4111-8111-111111111111'::UUID, '22222222-aaaa-4111-8111-111111111111'::UUID, 'Gestão de energia', 'Alavancas simples para render mais.', 530, 15, 3)
+ON CONFLICT (id) DO NOTHING;
 
 -- Curso 2: Imersão Produto Rápido
 INSERT INTO public.courses (id, slug, titulo, descricao, categoria, nivel, destaque, ordem)
@@ -327,25 +352,28 @@ VALUES (
   'intermediario',
   true,
   2
-);
+) ON CONFLICT (id) DO NOTHING;
 
 -- Módulos do Curso 2
 INSERT INTO public.course_modules (id, course_id, titulo, descricao, ordem)
 VALUES
   ('22221111-bbbb-4111-8111-111111111111'::UUID, '11111111-bbbb-4111-8111-111111111111'::UUID, 'Alinhamento estratégico', 'Clareza de objetivo e foco de entrega.', 1),
-  ('22222222-bbbb-4111-8111-111111111111'::UUID, '11111111-bbbb-4111-8111-111111111111'::UUID, 'Entrega contínua', 'Cadência, feedback e evolução.', 2);
+  ('22222222-bbbb-4111-8111-111111111111'::UUID, '11111111-bbbb-4111-8111-111111111111'::UUID, 'Entrega contínua', 'Cadência, feedback e evolução.', 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 2.1
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33331111-bbbb-4111-8111-111111111111'::UUID, '22221111-bbbb-4111-8111-111111111111'::UUID, 'Definindo objetivos', 'Direção clara antes de construir.', 670, 20, 1),
-  ('33332222-bbbb-4111-8111-111111111111'::UUID, '22221111-bbbb-4111-8111-111111111111'::UUID, 'Roadmap em 3 semanas', 'Plano enxuto com entregas reais.', 842, 25, 2);
+  ('33332222-bbbb-4111-8111-111111111111'::UUID, '22221111-bbbb-4111-8111-111111111111'::UUID, 'Roadmap em 3 semanas', 'Plano enxuto com entregas reais.', 842, 25, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 2.2
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33333333-bbbb-4111-8111-111111111111'::UUID, '22222222-bbbb-4111-8111-111111111111'::UUID, 'Loop de feedback', 'Feedback rápido para decisão rápida.', 570, 15, 1),
-  ('33334444-bbbb-4111-8111-111111111111'::UUID, '22222222-bbbb-4111-8111-111111111111'::UUID, 'Ritmo de execução', 'Como manter velocidade sem burnout.', 825, 25, 2);
+  ('33334444-bbbb-4111-8111-111111111111'::UUID, '22222222-bbbb-4111-8111-111111111111'::UUID, 'Ritmo de execução', 'Como manter velocidade sem burnout.', 825, 25, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Curso 3: Foco Profundo
 INSERT INTO public.courses (id, slug, titulo, descricao, categoria, nivel, destaque, ordem)
@@ -358,25 +386,28 @@ VALUES (
   'intermediario',
   false,
   3
-);
+) ON CONFLICT (id) DO NOTHING;
 
 -- Módulos do Curso 3
 INSERT INTO public.course_modules (id, course_id, titulo, descricao, ordem)
 VALUES
   ('22221111-cccc-4111-8111-111111111111'::UUID, '11111111-cccc-4111-8111-111111111111'::UUID, 'Fundamentos do foco', 'O que rouba sua atenção e como recuperar.', 1),
-  ('22222222-cccc-4111-8111-111111111111'::UUID, '11111111-cccc-4111-8111-111111111111'::UUID, 'Sessões guiadas', 'Rotinas para entrar em flow rapidamente.', 2);
+  ('22222222-cccc-4111-8111-111111111111'::UUID, '11111111-cccc-4111-8111-111111111111'::UUID, 'Sessões guiadas', 'Rotinas para entrar em flow rapidamente.', 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 3.1
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33331111-cccc-4111-8111-111111111111'::UUID, '22221111-cccc-4111-8111-111111111111'::UUID, 'Mapa de distrações', 'Identifique seus principais gatilhos.', 460, 10, 1),
-  ('33332222-cccc-4111-8111-111111111111'::UUID, '22221111-cccc-4111-8111-111111111111'::UUID, 'Setup de imersão', 'Prepare a mente e o ambiente.', 620, 15, 2);
+  ('33332222-cccc-4111-8111-111111111111'::UUID, '22221111-cccc-4111-8111-111111111111'::UUID, 'Setup de imersão', 'Prepare a mente e o ambiente.', 620, 15, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 3.2
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33333333-cccc-4111-8111-111111111111'::UUID, '22222222-cccc-4111-8111-111111111111'::UUID, 'Pomodoro avançado', 'Como customizar ciclos sem perder ritmo.', 725, 20, 1),
-  ('33334444-cccc-4111-8111-111111111111'::UUID, '22222222-cccc-4111-8111-111111111111'::UUID, 'Recuperação ativa', 'Pausas que recuperam energia de verdade.', 535, 15, 2);
+  ('33334444-cccc-4111-8111-111111111111'::UUID, '22222222-cccc-4111-8111-111111111111'::UUID, 'Recuperação ativa', 'Pausas que recuperam energia de verdade.', 535, 15, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Curso 4: Rotina para Builders
 INSERT INTO public.courses (id, slug, titulo, descricao, categoria, nivel, destaque, ordem)
@@ -389,32 +420,40 @@ VALUES (
   'avancado',
   false,
   4
-);
+) ON CONFLICT (id) DO NOTHING;
 
 -- Módulos do Curso 4
 INSERT INTO public.course_modules (id, course_id, titulo, descricao, ordem)
 VALUES
   ('22221111-dddd-4111-8111-111111111111'::UUID, '11111111-dddd-4111-8111-111111111111'::UUID, 'Arquitetura da rotina', 'Estruture sua semana com intenção.', 1),
-  ('22222222-dddd-4111-8111-111111111111'::UUID, '11111111-dddd-4111-8111-111111111111'::UUID, 'Hábitos que sustentam', 'Mantenha consistência ao longo dos meses.', 2);
+  ('22222222-dddd-4111-8111-111111111111'::UUID, '11111111-dddd-4111-8111-111111111111'::UUID, 'Hábitos que sustentam', 'Mantenha consistência ao longo dos meses.', 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 4.1
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
   ('33331111-dddd-4111-8111-111111111111'::UUID, '22221111-dddd-4111-8111-111111111111'::UUID, 'Planejamento semanal', 'Priorização e execução realista.', 805, 25, 1),
-  ('33332222-dddd-4111-8111-111111111111'::UUID, '22221111-dddd-4111-8111-111111111111'::UUID, 'Revisões de progresso', 'Como ajustar o rumo toda semana.', 610, 20, 2);
+  ('33332222-dddd-4111-8111-111111111111'::UUID, '22221111-dddd-4111-8111-111111111111'::UUID, 'Revisões de progresso', 'Como ajustar o rumo toda semana.', 610, 20, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Aulas do Módulo 4.2
 INSERT INTO public.lessons (id, module_id, titulo, descricao, duracao_segundos, xp_recompensa, ordem)
 VALUES
-  ('33333333-dddd-4111-8111-111111111111'::UUID, '22222222-dddd-4111-8111-111111111111'::UUID, 'Gatilhos e recompensas', 'Estruture hábitos fáceis de cumprir.', 580, 15, 1);
+  ('33333333-dddd-4111-8111-111111111111'::UUID, '22222222-dddd-4111-8111-111111111111'::UUID, 'Gatilhos e recompensas', 'Estruture hábitos fáceis de cumprir.', 580, 15, 1)
+ON CONFLICT (id) DO NOTHING;
 
--- Progresso do usuário mock (algumas aulas concluídas)
-INSERT INTO public.lesson_progress (user_id, lesson_id, concluida, xp_ganho, concluida_em)
-VALUES
-  ('a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, '33331111-aaaa-4111-8111-111111111111'::UUID, true, 10, NOW() - INTERVAL '5 days'),
-  ('a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, '33332222-aaaa-4111-8111-111111111111'::UUID, true, 15, NOW() - INTERVAL '4 days'),
-  ('a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, '33331111-bbbb-4111-8111-111111111111'::UUID, true, 20, NOW() - INTERVAL '2 days')
-ON CONFLICT (user_id, lesson_id) DO NOTHING;
+-- Progresso do usuário mock (apenas se o usuário existir)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.users WHERE id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID) THEN
+    INSERT INTO public.lesson_progress (user_id, lesson_id, concluida, xp_ganho, concluida_em)
+    VALUES
+      ('a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, '33331111-aaaa-4111-8111-111111111111'::UUID, true, 10, NOW() - INTERVAL '5 days'),
+      ('a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, '33332222-aaaa-4111-8111-111111111111'::UUID, true, 15, NOW() - INTERVAL '4 days'),
+      ('a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, '33331111-bbbb-4111-8111-111111111111'::UUID, true, 20, NOW() - INTERVAL '2 days')
+    ON CONFLICT (user_id, lesson_id) DO NOTHING;
+  END IF;
+END $$;
 
 -- ============================================================================
 -- VERIFICATION QUERY
