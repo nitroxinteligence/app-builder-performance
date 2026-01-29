@@ -20,25 +20,6 @@ import type {
 } from '@/types/cursos'
 
 // ==========================================
-// CONSTANTS
-// ==========================================
-
-const NOVOS_CONTEUDOS: NovoConteudo[] = [
-  {
-    id: 'novo-1',
-    titulo: 'Builders Performance Intermediário',
-    descricao: 'Táticas avançadas de execução e consistência.',
-    nivel: 'Intermediário',
-  },
-  {
-    id: 'novo-2',
-    titulo: 'Imersão Hiperfoco',
-    descricao: 'Sessões intensas para resultados rápidos.',
-    nivel: 'Avançado',
-  },
-]
-
-// ==========================================
 // QUERY KEYS
 // ==========================================
 
@@ -155,8 +136,30 @@ async function fetchUserProgress(userId: string): Promise<Map<string, LessonProg
   return progressMap
 }
 
+async function fetchUpcomingCourses(): Promise<NovoConteudo[]> {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, titulo, descricao, nivel')
+    .eq('status', 'rascunho')
+    .order('ordem')
+
+  if (error) {
+    throw new Error(`Erro ao buscar novos conteúdos: ${error.message}`)
+  }
+
+  return (data ?? []).map((course) => ({
+    id: course.id,
+    titulo: course.titulo,
+    descricao: course.descricao ?? '',
+    nivel: mapNivelToLabel(course.nivel),
+  }))
+}
+
 async function fetchCursosData(userId: string | undefined): Promise<CursosData> {
-  const coursesWithRelations = await fetchCoursesWithRelations()
+  const [coursesWithRelations, novosConteudos] = await Promise.all([
+    fetchCoursesWithRelations(),
+    fetchUpcomingCourses(),
+  ])
 
   let progressMap = new Map<string, LessonProgress>()
   if (userId) {
@@ -193,7 +196,7 @@ async function fetchCursosData(userId: string | undefined): Promise<CursosData> 
     categorias,
     cursosDestaque,
     cursosContinuar,
-    novosConteudos: NOVOS_CONTEUDOS,
+    novosConteudos,
     isLoading: false,
     error: null,
   }
@@ -223,7 +226,7 @@ export function useCursosData(): CursosData {
       categorias: ['Todos'],
       cursosDestaque: [],
       cursosContinuar: [],
-      novosConteudos: NOVOS_CONTEUDOS,
+      novosConteudos: [],
       isLoading: true,
       error: null,
     }
