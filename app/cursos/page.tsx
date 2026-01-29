@@ -236,44 +236,46 @@ export default function PaginaCursos() {
               </section>
             )}
 
-            <section className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-titulo text-lg font-semibold">
-                  Novos conteúdos
-                </h2>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                {novosConteudos.map((curso) => (
-                  <Cartao key={curso.id} className="overflow-hidden">
-                    <div className="h-24 bg-gradient-to-br from-muted via-background to-secondary p-4">
-                      <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-                        <span>Em breve</span>
-                        <Lock className="h-4 w-4" />
-                      </div>
-                      <p className="mt-5 text-sm font-semibold text-foreground">
-                        {curso.titulo}
-                      </p>
-                    </div>
-                    <CartaoConteudo className="space-y-3 p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <CartaoTitulo className="text-base">
-                            {curso.nivel}
-                          </CartaoTitulo>
-                          <CartaoDescricao>{curso.descricao}</CartaoDescricao>
+            {novosConteudos.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-titulo text-lg font-semibold">
+                    Novos conteúdos
+                  </h2>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {novosConteudos.map((curso) => (
+                    <Cartao key={curso.id} className="overflow-hidden">
+                      <div className="h-24 bg-gradient-to-br from-muted via-background to-secondary p-4">
+                        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+                          <span>Em breve</span>
+                          <Lock className="h-4 w-4" />
                         </div>
-                        <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
-                          Bloqueado
-                        </span>
+                        <p className="mt-5 text-sm font-semibold text-foreground">
+                          {curso.titulo}
+                        </p>
                       </div>
-                      <Botao variant="outline" size="sm" disabled>
-                        Acesso bloqueado
-                      </Botao>
-                    </CartaoConteudo>
-                  </Cartao>
-                ))}
-              </div>
-            </section>
+                      <CartaoConteudo className="space-y-3 p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <CartaoTitulo className="text-base">
+                              {curso.nivel}
+                            </CartaoTitulo>
+                            <CartaoDescricao>{curso.descricao}</CartaoDescricao>
+                          </div>
+                          <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+                            Bloqueado
+                          </span>
+                        </div>
+                        <Botao variant="outline" size="sm" disabled>
+                          Acesso bloqueado
+                        </Botao>
+                      </CartaoConteudo>
+                    </Cartao>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <section className="space-y-4">
               <div className="flex items-center justify-between">
