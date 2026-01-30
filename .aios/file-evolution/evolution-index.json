@@ -1,0 +1,607 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-01-30T15:58:15.076Z",
+  "updatedAt": "2026-01-30T18:34:11.667Z",
+  "records": [
+    {
+      "id": "evo-ml12hstg-f2cfc476",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:14.702Z",
+      "eventType": "file_deleted",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:14.702Z"
+      }
+    },
+    {
+      "id": "evo-ml12htha-57d9c6ee",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:15.757Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:15.757Z"
+      }
+    },
+    {
+      "id": "evo-ml12hu3y-63d177e8",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:16.650Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:16.650Z"
+      }
+    },
+    {
+      "id": "evo-ml12hua3-7b114d2a",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:16.818Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:16.818Z"
+      }
+    },
+    {
+      "id": "evo-ml12hurp-425fa1ca",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:17.387Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:17.387Z"
+      }
+    },
+    {
+      "id": "evo-ml12hv1e-840e71a6",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:17.729Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:17.729Z"
+      }
+    },
+    {
+      "id": "evo-ml12hvdm-dffd682c",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:18.285Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:18.285Z"
+      }
+    },
+    {
+      "id": "evo-ml12hvhf-a4043de1",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:18.443Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:18.443Z"
+      }
+    },
+    {
+      "id": "evo-ml12igsa-035b54c6",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:45.632Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:45.632Z"
+      }
+    },
+    {
+      "id": "evo-ml12ih2q-1cb745e8",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:46.283Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:46.283Z"
+      }
+    },
+    {
+      "id": "evo-ml12ihgm-6da80dea",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:46.919Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:46.919Z"
+      }
+    },
+    {
+      "id": "evo-ml12ihmy-dd1d9a5b",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:47.084Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:47.084Z"
+      }
+    },
+    {
+      "id": "evo-ml12ihym-6956247a",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:47.570Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:47.570Z"
+      }
+    },
+    {
+      "id": "evo-ml12ii5f-67c2eaa3",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:47.722Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:47.722Z"
+      }
+    },
+    {
+      "id": "evo-ml12iipz-8b2cd4ce",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:48.527Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:48.527Z"
+      }
+    },
+    {
+      "id": "evo-ml12iix3-6e4c95b0",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T15:58:48.715Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T15:58:48.715Z"
+      }
+    },
+    {
+      "id": "evo-ml1822ea-8d6256e0",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T18:33:58.550Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T18:33:58.550Z"
+      }
+    },
+    {
+      "id": "evo-ml1822ig-2fd444bb",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T18:33:58.743Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T18:33:58.743Z"
+      }
+    },
+    {
+      "id": "evo-ml182ca6-edaa1391",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T18:34:11.385Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T18:34:11.385Z"
+      }
+    },
+    {
+      "id": "evo-ml182ceq-6be9b31d",
+      "filePath": "test-file.js",
+      "taskId": "task-1",
+      "timestamp": "2026-01-30T18:34:11.561Z",
+      "eventType": "file_modified",
+      "exists": false,
+      "hash": null,
+      "size": 0,
+      "lineCount": 0,
+      "git": {
+        "branch": "main",
+        "commit": "7ab267e949d24b266ed5b35891a34be0d0b9ae7e",
+        "isStaged": false,
+        "isModified": false,
+        "lastCommitForFile": "",
+        "commitsAhead": 0
+      },
+      "context": {
+        "storyId": null,
+        "subtaskId": null,
+        "agent": null,
+        "intent": null
+      },
+      "diff": null,
+      "metadata": {
+        "version": "1.0.0",
+        "trackedAt": "2026-01-30T18:34:11.561Z"
+      }
+    }
+  ]
+}

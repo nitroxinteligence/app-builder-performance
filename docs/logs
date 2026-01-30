@@ -1,0 +1,118 @@
+## Error Type
+Console Error
+
+## Error Message
+A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    ...
+      <TooltipTrigger asChild={true}>
+        <PopperAnchor asChild={true} __scopePopper={{Popper:[...]}}>
+          <Primitive.div asChild={true} ref={function}>
+            <Primitive.div.Slot ref={function}>
+              <Primitive.div.SlotClone ref={function}>
+                <Primitive.button aria-describedby={undefined} data-state="closed" asChild={true} ref={function} ...>
+                  <Primitive.button.Slot aria-describedby={undefined} data-state="closed" ...>
+                    <Primitive.button.SlotClone aria-describedby={undefined} data-state="closed" ...>
+                      <CollapsibleTrigger asChild={true} aria-describedby={undefined} data-state="closed" ...>
+                        <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                          <Primitive.button.Slot type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                            <Primitive.button.SlotClone type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                              <_c variant="secondary" size="icon" aria-label="Abrir barr..." className="h-10 w-10 ..." ...>
+                                <button
+                                  ref={function}
+                                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm f..."
+                                  aria-label="Abrir barra lateral"
+                                  type="button"
++                                 aria-controls="radix-_R_6bn6lb_"
+-                                 aria-controls="radix-_R_qbn6lb_"
+                                  aria-expanded={false}
+                                  data-state="closed"
+                                  data-disabled={undefined}
+                                  disabled={undefined}
+                                  aria-describedby={undefined}
+                                  onPointerMove={function handleEvent}
+                                  onPointerLeave={function handleEvent}
+                                  onPointerDown={function handleEvent}
+                                  onFocus={function handleEvent}
+                                  onBlur={function handleEvent}
+                                  onClick={function handleEvent}
+                                >
+      ...
+    ...
+      <MenuProvider scope={{Menu:[...], ...}} open={false} onOpenChange={function useCallbackRef.useMemo} content={null} ...>
+        <MenuProvider scope={{Menu:[...], ...}} onClose={function Menu.useCallback} isUsingKeyboardRef={{current:false}} ...>
+          <DropdownMenuTrigger asChild={true}>
+            <MenuAnchor asChild={true} __scopeMenu={{Menu:[...], ...}}>
+              <PopperAnchor __scopePopper={{Menu:[...], ...}} asChild={true} ref={null}>
+                <Primitive.div asChild={true} ref={function}>
+                  <Primitive.div.Slot ref={function}>
+                    <Primitive.div.SlotClone ref={function}>
+                      <Primitive.button type="button" id="radix-_R_1..." aria-haspopup="menu" aria-expanded={false} ...>
+                        <Primitive.button.Slot type="button" id="radix-_R_1..." aria-haspopup="menu" ...>
+                          <Primitive.button.SlotClone type="button" id="radix-_R_1..." aria-haspopup="menu" ...>
+                            <_c variant="ghost" size="default" aria-label="Abrir menu..." className="text-sm fo..." ...>
+                              <button
+                                ref={function}
+                                className="inline-flex items-center gap-2 whitespace-nowrap rounded-md transition-colo..."
+                                aria-label="Abrir menu do usuário"
+                                type="button"
++                               id="radix-_R_1ambn6lb_"
+-                               id="radix-_R_5aqbn6lb_"
+                                aria-haspopup="menu"
+                                aria-expanded={false}
+                                aria-controls={undefined}
+                                data-state="closed"
+                                data-disabled={undefined}
+                                disabled={false}
+                                onPointerDown={function handleEvent}
+                                onKeyDown={function handleEvent}
+                              >
+          ...
+
+
+
+    at createConsoleError (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_f3530cac._.js:2199:71)
+    at handleConsoleError (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_f3530cac._.js:2980:54)
+    at console.error (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_f3530cac._.js:3124:57)
+    at <unknown> (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:3469:25)
+    at runWithFiberInDEV (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:965:74)
+    at emitPendingHydrationWarnings (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:3468:13)
+    at completeWork (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6897:102)
+    at runWithFiberInDEV (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:965:131)
+    at completeUnitOfWork (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9627:23)
+    at performUnitOfWork (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9564:28)
+    at workLoopConcurrentByScheduler (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9558:58)
+    at renderRootConcurrent (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9541:71)
+    at performWorkOnRoot (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9068:150)
+    at performWorkOnRootViaSchedulerTask (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10230:9)
+    at MessagePort.performWorkUntilDeadline (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js:2647:64)
+    at button (<anonymous>:null:null)
+    at _c (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/_5e5552b6._.js:355:214)
+    at Sidebar (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/_5e5552b6._.js:850:249)
+    at Primitive.button.Slot (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:2294:210)
+    at Primitive.button (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:2435:210)
+    at CollapsibleTrigger (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:10468:206)
+    at Sidebar (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/_5e5552b6._.js:848:245)
+    at Primitive.button.Slot (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:2294:210)
+    at Primitive.button (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:2435:210)
+    at TooltipTrigger (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:14013:213)
+    at Primitive.div.Slot (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:2294:210)
+    at Primitive.div (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:2435:210)
+    at PopperAnchor (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:13302:226)
+    at TooltipTrigger (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_83a0fd38._.js:14010:206)
+    at Sidebar (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/_5e5552b6._.js:846:231)
+    at LayoutProtegido (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/_5e5552b6._.js:1259:215)
+    at ClientSegmentRoot (file:///Users/mateusmpz/Documents/Projetos Clientes - Code/app-builder-performance/.next/dev/static/chunks/node_modules_next_dist_be32b49c._.js:2465:50)
+
+Next.js version: 16.1.1 (Turbopack)
