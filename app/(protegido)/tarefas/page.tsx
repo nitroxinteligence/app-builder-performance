@@ -17,7 +17,6 @@ import {
   useUpdateTarefa,
   useDeleteTarefa,
   useMoverTarefa,
-  useReordenarTarefas,
 } from "@/hooks/useTarefas"
 import {
   usePendencias,
@@ -26,6 +25,7 @@ import {
 } from "@/hooks/usePendencias"
 import { useConfirmarComDados } from "@/hooks/useConfirmar"
 import type { Tarefa, Pendencia, Estagio } from "@/lib/supabase/types"
+import { XP_RECOMPENSA_TAREFA_NOVA, XP_RECOMPENSA_PENDENCIA_APROVADA } from "@/lib/constants"
 
 import { KanbanBoard } from "@/componentes/tarefas/kanban-board"
 import { FiltrosTarefas } from "@/componentes/tarefas/filtros-tarefas"
@@ -61,7 +61,6 @@ export default function PaginaTarefas() {
   const updateTarefa = useUpdateTarefa()
   const deleteTarefa = useDeleteTarefa()
   const moverTarefa = useMoverTarefa()
-  const _reordenarTarefas = useReordenarTarefas()
   const createPendencia = useCreatePendencia()
   const deletePendencia = useDeletePendencia()
 
@@ -210,7 +209,7 @@ export default function PaginaTarefas() {
         coluna: formNova.coluna,
         status: formNova.coluna === "concluido" ? "concluido" : "pendente",
         descricao: formNova.descricao || null,
-        xp_recompensa: 30,
+        xp_recompensa: XP_RECOMPENSA_TAREFA_NOVA,
         ordem: 0,
         tags: [],
       },
@@ -228,7 +227,7 @@ export default function PaginaTarefas() {
         coluna: "a_fazer",
         status: "pendente",
         descricao: pendencia.descricao || null,
-        xp_recompensa: 20,
+        xp_recompensa: XP_RECOMPENSA_PENDENCIA_APROVADA,
         ordem: 0,
         tags: [],
       },

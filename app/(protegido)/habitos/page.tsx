@@ -8,7 +8,6 @@ import { cn } from "@/lib/utilidades";
 
 // Sub-components
 import { ListaHabitos } from "@/componentes/habitos/lista-habitos";
-import { EstatisticasHabitos } from "@/componentes/habitos/estatisticas-habitos";
 import { KanbanObjetivos, KanbanMetas } from "@/componentes/habitos/aba-metas";
 import {
   FormularioNovoHabito,
@@ -17,7 +16,6 @@ import {
   DialogoEditarPlano,
   DialogoEditarMeta,
 } from "@/componentes/habitos/formulario-habito";
-import { consistenciaUltimos30Dias } from "@/componentes/habitos/tipos-habitos";
 import { useHabitosPage } from "@/componentes/habitos/useHabitosPage";
 
 // ==========================================
@@ -222,8 +220,6 @@ export default function PaginaHabitos() {
           />
         )}
 
-        {/* Consistency Stats */}
-        <EstatisticasHabitos consistencia={consistenciaUltimos30Dias} />
       </div>
     </main>
   );

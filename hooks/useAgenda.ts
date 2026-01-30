@@ -195,32 +195,3 @@ export function useAgenda(): UseAgendaReturn {
   }
 }
 
-// ==========================================
-// HELPER HOOKS
-// ==========================================
-
-export function useEventsByDate(date: string) {
-  const { events, isLoading, error } = useAgenda()
-
-  const filteredEvents = events.filter((event) => event.data === date)
-
-  return {
-    events: filteredEvents,
-    isLoading,
-    error,
-  }
-}
-
-export function useUpcomingEvents(fromDate: string, limit = 5) {
-  const { events, isLoading, error } = useAgenda()
-
-  const upcomingEvents = events
-    .filter((event) => event.data >= fromDate)
-    .slice(0, limit)
-
-  return {
-    events: upcomingEvents,
-    isLoading,
-    error,
-  }
-}
