@@ -1,9 +1,10 @@
 "use client"
 
-import { CalendarDays, Check, Pencil, Trash2 } from "lucide-react"
+import { CalendarDays, Check, Pencil, Trash2, Zap } from "lucide-react"
 import { Draggable } from "@hello-pangea/dnd"
 
 import { Botao } from "@/componentes/ui/botao"
+import { Emblema } from "@/componentes/ui/emblema"
 import { cn } from "@/lib/utilidades"
 import type { Tarefa } from "@/lib/supabase/types"
 import { estilosPrioridade } from "./tipos"
@@ -31,20 +32,21 @@ export function TarefaCard({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           style={provided.draggableProps.style}
-          className="rounded-xl border border-border bg-background p-4"
+          className="rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card p-4 shadow-[var(--shadow-sm)] transition-shadow duration-200 hover:shadow-[var(--shadow-md)]"
         >
           <div className="flex items-start justify-between gap-2">
-            <span
+            <Emblema
               className={cn(
-                "rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em]",
+                "text-[10px] uppercase tracking-[0.2em]",
                 estilosPrioridade[tarefa.prioridade]
               )}
             >
               {tarefa.prioridade}
-            </span>
-            <span className="text-xs text-muted-foreground">
+            </Emblema>
+            <Emblema variant="default" className="gap-1">
+              <Zap className="h-3 w-3" />
               +{tarefa.xp_recompensa} XP
-            </span>
+            </Emblema>
           </div>
           <p className="mt-2 text-sm font-medium text-foreground">
             {tarefa.titulo}

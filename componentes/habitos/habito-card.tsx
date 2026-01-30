@@ -1,23 +1,19 @@
-"use client";
+"use client"
 
-import { Check, Circle } from "lucide-react";
-import { cn } from "@/lib/utilidades";
-import type { HabitoDiarioUI } from "./tipos-habitos";
+import { Check, Circle, Flame } from "lucide-react"
+import { motion } from "framer-motion"
 
-// ==========================================
-// PROPS
-// ==========================================
+import { Emblema } from "@/componentes/ui/emblema"
+import { cn } from "@/lib/utilidades"
+import { variantesHover, variantesClique, transicaoRapida } from "@/lib/animacoes"
+import type { HabitoDiarioUI } from "./tipos-habitos"
 
 export type HabitoCardProps = {
-  habito: HabitoDiarioUI;
-  categoriaId: string;
-  onAlternar: (categoriaId: string, habitoId: string) => void;
-  disabled?: boolean;
-};
-
-// ==========================================
-// COMPONENT
-// ==========================================
+  habito: HabitoDiarioUI
+  categoriaId: string
+  onAlternar: (categoriaId: string, habitoId: string) => void
+  disabled?: boolean
+}
 
 export function HabitoCard({
   habito,
@@ -26,18 +22,21 @@ export function HabitoCard({
   disabled = false,
 }: HabitoCardProps) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={() => onAlternar(categoriaId, habito.id)}
       aria-pressed={habito.feitoHoje}
       disabled={disabled}
-      className="flex w-full items-center gap-3 rounded-xl border border-border bg-background px-3 py-2 text-left transition hover:bg-secondary/50 disabled:opacity-50"
+      whileHover={variantesHover.escala}
+      whileTap={variantesClique.escala}
+      transition={transicaoRapida}
+      className="flex w-full items-center gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2.5 text-left shadow-[var(--shadow-sm)] transition-colors hover:bg-secondary/50 disabled:opacity-50"
     >
       <span
         className={cn(
-          "flex h-7 w-7 items-center justify-center rounded-full border text-xs",
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs transition-colors",
           habito.feitoHoje
-            ? "border-primary/40 bg-primary/10 text-primary"
+            ? "border-success/40 bg-success/10 text-success"
             : "border-border text-muted-foreground"
         )}
       >
@@ -47,15 +46,23 @@ export function HabitoCard({
           <Circle className="h-3.5 w-3.5" />
         )}
       </span>
-      <div className="flex-1">
-        <p className="text-sm font-medium">{habito.titulo}</p>
-        <p className="text-xs text-muted-foreground">{habito.streak} dias</p>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium truncate">{habito.titulo}</p>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          {habito.streak > 0 && (
+            <span className="flex items-center gap-0.5 text-warning">
+              <Flame className="h-3 w-3" />
+              {habito.streak}
+            </span>
+          )}
+          <span>{habito.streak} dias</span>
+        </div>
       </div>
-      {!habito.feitoHoje ? (
-        <span className="text-xs font-medium text-amber-600">Fazer hoje</span>
+      {habito.feitoHoje ? (
+        <Emblema variant="sucesso">Feito</Emblema>
       ) : (
-        <span className="text-xs font-medium text-emerald-600">Concluído</span>
+        <Emblema variant="aviso">Fazer</Emblema>
       )}
-    </button>
-  );
+    </motion.button>
+  )
 }
