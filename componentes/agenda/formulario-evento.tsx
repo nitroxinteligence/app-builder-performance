@@ -12,6 +12,7 @@ import {
   DialogoRodape,
   DialogoTitulo,
 } from '@/componentes/ui/dialogo'
+import { Entrada, AreaTexto } from '@/componentes/ui/entrada'
 import {
   Seletor,
   SeletorConteudo,
@@ -88,12 +89,11 @@ export function FormularioEventoDialogo({
             <label className="text-sm font-medium" htmlFor={`${prefixoId}-titulo`}>
               Título
             </label>
-            <input
+            <Entrada
               id={`${prefixoId}-titulo`}
               value={formulario.titulo}
               onChange={(event) => onAtualizar({ titulo: event.target.value })}
               placeholder="Ex: Call com cliente"
-              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -101,12 +101,11 @@ export function FormularioEventoDialogo({
               <label className="text-sm font-medium" htmlFor={`${prefixoId}-data`}>
                 Data
               </label>
-              <input
+              <Entrada
                 id={`${prefixoId}-data`}
                 type="date"
                 value={formulario.data}
                 onChange={(event) => onAtualizar({ data: event.target.value })}
-                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="space-y-2">
@@ -135,28 +134,26 @@ export function FormularioEventoDialogo({
               <label className="text-sm font-medium" htmlFor={`${prefixoId}-inicio`}>
                 Início
               </label>
-              <input
+              <Entrada
                 id={`${prefixoId}-inicio`}
                 type="time"
                 value={formulario.horarioInicio}
                 onChange={(event) =>
                   onAtualizar({ horarioInicio: event.target.value })
                 }
-                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor={`${prefixoId}-fim`}>
                 Fim
               </label>
-              <input
+              <Entrada
                 id={`${prefixoId}-fim`}
                 type="time"
                 value={formulario.horarioFim}
                 onChange={(event) =>
                   onAtualizar({ horarioFim: event.target.value })
                 }
-                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -206,26 +203,25 @@ export function FormularioEventoDialogo({
             <label className="text-sm font-medium" htmlFor={`${prefixoId}-local`}>
               Local
             </label>
-            <input
+            <Entrada
               id={`${prefixoId}-local`}
               value={formulario.local}
               onChange={(event) => onAtualizar({ local: event.target.value })}
               placeholder="Ex: Google Meet"
-              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor={`${prefixoId}-descricao`}>
               Descrição
             </label>
-            <textarea
+            <AreaTexto
               id={`${prefixoId}-descricao`}
               value={formulario.descricao}
               onChange={(event) =>
                 onAtualizar({ descricao: event.target.value })
               }
               placeholder="Contexto do evento."
-              className="min-h-[90px] w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-[90px] resize-none"
             />
           </div>
         </div>

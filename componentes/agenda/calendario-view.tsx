@@ -1,5 +1,7 @@
 'use client'
 
+import { ptBR } from 'date-fns/locale'
+
 import {
   Cartao,
   CartaoCabecalho,
@@ -45,6 +47,7 @@ export function CalendarioView({
             mode="single"
             selected={dataSelecionada}
             onSelect={(date) => onSelecionarData(date ?? dataSelecionada)}
+            locale={ptBR}
             className="w-full"
           />
         </CartaoConteudo>
