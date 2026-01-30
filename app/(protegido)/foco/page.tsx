@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
 import { Botao } from "@/componentes/ui/botao"
+import { AnimacaoPagina, SecaoAnimada } from "@/componentes/ui/animacoes"
 import { ConfiguracaoTimer } from "@/componentes/foco/configuracao-timer"
 import { EstatisticasFoco } from "@/componentes/foco/estatisticas-foco"
 import { HistoricoSessoes } from "@/componentes/foco/historico-sessoes"
@@ -171,10 +172,24 @@ export default function PaginaFoco() {
   // =========================================================================
   if (carregando) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Carregando...</p>
+      <div className="flex-1 px-6 py-10">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+            <div className="space-y-2">
+              <div className="h-7 w-32 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-48 animate-pulse rounded bg-muted" />
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-24 animate-pulse rounded-2xl border border-[color:var(--borda-cartao)] bg-card" />
+            ))}
+          </div>
+          <div className="h-64 animate-pulse rounded-2xl border border-[color:var(--borda-cartao)] bg-card" />
+          <div className="flex justify-center">
+            <div className="h-64 w-64 animate-pulse rounded-full bg-muted" />
+          </div>
         </div>
       </div>
     )
@@ -222,9 +237,9 @@ export default function PaginaFoco() {
       />
 
       <main id="main-content" className="flex-1 px-6 py-10">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
+          <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-10">
             {/* Header */}
-            <section className="flex items-center gap-3">
+            <SecaoAnimada className="flex items-center gap-3">
               <Link
                 href="/inicio"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
@@ -238,11 +253,13 @@ export default function PaginaFoco() {
                   Modo imersivo para sessões profundas.
                 </p>
               </div>
-            </section>
+            </SecaoAnimada>
 
             {/* Stats Cards */}
             {estatisticas && (
-              <EstatisticasFoco estatisticas={estatisticas} />
+              <SecaoAnimada>
+                <EstatisticasFoco estatisticas={estatisticas} />
+              </SecaoAnimada>
             )}
 
             {/* Task and Mode Selection */}
@@ -284,7 +301,7 @@ export default function PaginaFoco() {
               carregandoHistorico={carregandoHistorico}
               onCarregarHistorico={carregarHistorico}
             />
-          </div>
+          </AnimacaoPagina>
         </main>
     </>
   )

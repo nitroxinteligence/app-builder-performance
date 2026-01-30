@@ -25,6 +25,7 @@ import {
   DialogoTitulo,
 } from "@/componentes/ui/dialogo"
 import { EsqueletoCartao, EsqueletoEstatistica } from "@/componentes/ui/esqueleto"
+import { AnimacaoPagina, SecaoAnimada, DivAnimada } from "@/componentes/ui/animacoes"
 import { ErrorBoundary } from "@/componentes/erro"
 import { cn } from "@/lib/utilidades"
 import { useAuth } from "@/lib/providers/auth-provider"
@@ -220,11 +221,11 @@ function ConteudoPaginaInicio() {
       </Dialogo>
 
       {/* Main Dashboard Content */}
-      <div className="flex-1 px-6 py-8 lg:px-8" role="main" aria-label="Conteudo principal do painel">
+      <AnimacaoPagina className="flex-1 px-6 py-8 lg:px-8" role="main" aria-label="Conteudo principal do painel">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
 
           {/* Header: Greeting */}
-          <section className="space-y-1" aria-labelledby="saudacao-titulo">
+          <SecaoAnimada className="space-y-1" aria-labelledby="saudacao-titulo">
             <div className="flex items-center gap-3">
               <IconeSaudacao className="h-5 w-5 text-primary" aria-hidden="true" />
               <h1 id="saudacao-titulo" className="font-titulo text-2xl font-bold text-foreground">
@@ -234,14 +235,14 @@ function ConteudoPaginaInicio() {
             <p className="pl-8 text-sm capitalize text-muted-foreground">
               {dataHoraFormatada}
             </p>
-          </section>
+          </SecaoAnimada>
 
           {/* Level Progress Bar */}
           {carregando ? (
-            <div className="h-20 animate-pulse rounded-2xl bg-muted" />
+            <DivAnimada className="h-20 animate-pulse rounded-2xl bg-muted" />
           ) : (
-            <section
-              className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5"
+            <SecaoAnimada
+              className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5 shadow-sm"
               aria-label="Progresso de nivel"
             >
               <div className="flex items-center justify-between">
@@ -265,11 +266,11 @@ function ConteudoPaginaInicio() {
               <div className="mt-3">
                 <Progresso value={userLevel.percentual} aria-label={`Progresso para o proximo nivel: ${userLevel.percentual}%`} />
               </div>
-            </section>
+            </SecaoAnimada>
           )}
 
           {/* KPI Cards Row */}
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Indicadores de desempenho">
+          <SecaoAnimada className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Indicadores de desempenho">
             {carregando ? (
               <>
                 {[1, 2, 3, 4].map((i) => (
@@ -324,10 +325,10 @@ function ConteudoPaginaInicio() {
                 />
               </>
             )}
-          </section>
+          </SecaoAnimada>
 
           {/* Charts + Weekly Progress Row */}
-          <section className="grid gap-6 lg:grid-cols-5" aria-label="Graficos e progresso">
+          <SecaoAnimada className="grid gap-6 lg:grid-cols-5" aria-label="Graficos e progresso">
             <div className="lg:col-span-3">
               {carregando ? (
                 <EsqueletoCartao linhasConteudo={8} />
@@ -342,10 +343,10 @@ function ConteudoPaginaInicio() {
                 <ProgressoSemanal itens={progressoSemanal} />
               )}
             </div>
-          </section>
+          </SecaoAnimada>
 
           {/* Daily Quests + Agenda Row */}
-          <section className="grid gap-6 lg:grid-cols-2" aria-label="Missoes e agenda">
+          <SecaoAnimada className="grid gap-6 lg:grid-cols-2" aria-label="Missoes e agenda">
             {carregando ? (
               <>
                 <EsqueletoCartao linhasConteudo={5} />
@@ -357,10 +358,10 @@ function ConteudoPaginaInicio() {
                 <SecaoAgendaDia eventos={eventosHoje} />
               </>
             )}
-          </section>
+          </SecaoAnimada>
 
           {/* Conquistas + Briefing Row */}
-          <section className="grid gap-6 lg:grid-cols-2" aria-label="Conquistas e assistente">
+          <SecaoAnimada className="grid gap-6 lg:grid-cols-2" aria-label="Conquistas e assistente">
             {carregando ? (
               <>
                 <EsqueletoCartao linhasConteudo={3} />
@@ -375,9 +376,9 @@ function ConteudoPaginaInicio() {
                 />
               </>
             )}
-          </section>
+          </SecaoAnimada>
         </div>
-      </div>
+      </AnimacaoPagina>
 
       <AcoesRapidasInicio />
     </>

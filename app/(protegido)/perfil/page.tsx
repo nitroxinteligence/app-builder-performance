@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { Botao } from "@/componentes/ui/botao";
+import { AnimacaoPagina, SecaoAnimada } from "@/componentes/ui/animacoes";
 import {
   Cartao,
   CartaoCabecalho,
@@ -84,8 +85,8 @@ export default function PaginaPerfil() {
 
   return (
     <main id="main-content" className="flex-1 px-6 py-10">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-            <section className="flex items-center gap-3">
+          <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+            <SecaoAnimada className="flex items-center gap-3">
               <Link
                 href="/inicio"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
@@ -99,9 +100,9 @@ export default function PaginaPerfil() {
                   Gerencie suas informações e preferências.
                 </p>
               </div>
-            </section>
+            </SecaoAnimada>
 
-            <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <SecaoAnimada className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div className="space-y-6">
                 <Cartao>
                   <CartaoCabecalho>
@@ -310,8 +311,8 @@ export default function PaginaPerfil() {
                   </CartaoConteudo>
                 </Cartao>
               </div>
-            </section>
-          </div>
+            </SecaoAnimada>
+          </AnimacaoPagina>
     </main>
   );
 }

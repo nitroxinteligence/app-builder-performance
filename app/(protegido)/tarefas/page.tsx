@@ -8,6 +8,7 @@ import type { DropResult } from "@hello-pangea/dnd"
 import { Botao } from "@/componentes/ui/botao"
 import { EsqueletoKanban } from "@/componentes/ui/esqueleto"
 import { EstadoVazioTarefas } from "@/componentes/ui/estado-vazio"
+import { AnimacaoPagina } from "@/componentes/ui/animacoes"
 import { ErrorBoundary } from "@/componentes/erro"
 import { useAuth } from "@/lib/providers/auth-provider"
 
@@ -286,7 +287,7 @@ export default function PaginaTarefas() {
   return (
     <ErrorBoundary>
       <main id="main-content" className="flex-1 px-6 py-10">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+        <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
           <FiltrosTarefas
             buscaTarefa={buscaTarefa}
             onBuscaChange={setBuscaTarefa}
@@ -341,7 +342,7 @@ export default function PaginaTarefas() {
               onConcluir={concluirTarefa}
             />
           )}
-        </div>
+        </AnimacaoPagina>
       </main>
     </ErrorBoundary>
   )

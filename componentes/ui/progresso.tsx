@@ -5,7 +5,6 @@ import * as ProgressoPrimitivo from "@radix-ui/react-progress"
 import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utilidades"
-import { transicaoSuave } from "@/lib/animacoes"
 
 const Progresso = React.forwardRef<
   React.ElementRef<typeof ProgressoPrimitivo.Root>,
@@ -23,7 +22,12 @@ const Progresso = React.forwardRef<
       className="h-full rounded-full bg-gradient-to-r from-primary to-primary/80"
       initial={{ width: 0 }}
       animate={{ width: `${value || 0}%` }}
-      transition={transicaoSuave}
+      transition={{
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        mass: 0.8,
+      }}
     />
   </ProgressoPrimitivo.Root>
 ))

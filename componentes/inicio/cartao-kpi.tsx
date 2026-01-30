@@ -7,6 +7,8 @@ import type { LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utilidades"
 import { Progresso } from "@/componentes/ui/progresso"
+import { useContadorAnimado } from "@/hooks/useContadorAnimado"
+import { variantesHover } from "@/lib/animacoes"
 
 export interface PropsCartaoKpi {
   titulo: string
@@ -26,6 +28,11 @@ export interface PropsCartaoKpi {
   indice?: number
 }
 
+function extrairNumero(valor: string): number | null {
+  const match = valor.match(/^(\d+)/)
+  return match ? parseInt(match[1], 10) : null
+}
+
 export function CartaoKpi({
   titulo,
   valor,
@@ -36,10 +43,21 @@ export function CartaoKpi({
   progresso,
   indice = 0,
 }: PropsCartaoKpi) {
+  const numerico = extrairNumero(valor)
+  const contadorAnimado = useContadorAnimado(numerico ?? 0, {
+    duracao: 800,
+    atraso: indice * 80 + 200,
+  })
+
+  const valorExibido = numerico !== null
+    ? valor.replace(/^\d+/, String(contadorAnimado))
+    : valor
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={variantesHover.escalaComSombra}
       transition={{ duration: 0.4, delay: indice * 0.08, ease: [0.4, 0, 0.2, 1] }}
       className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5"
     >
@@ -49,7 +67,7 @@ export function CartaoKpi({
             {titulo}
           </p>
           <p className="font-titulo text-[28px] font-bold leading-none text-foreground">
-            {valor}
+            {valorExibido}
           </p>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground">{label}</span>

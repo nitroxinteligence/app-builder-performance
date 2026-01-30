@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { useAuth } from '@/lib/providers/auth-provider'
 import { Botao } from '@/componentes/ui/botao'
+import { AnimacaoPagina, SecaoAnimada } from '@/componentes/ui/animacoes'
 import {
   DialogoAlerta,
   DialogoAlertaAcao,
@@ -245,8 +246,8 @@ export default function PaginaAgenda() {
   return (
     <>
       <main id="main-content" className="flex-1 px-6 py-10">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-          <section className="flex flex-wrap items-center justify-between gap-4">
+        <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+          <SecaoAnimada className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Link
                 href="/inicio"
@@ -266,9 +267,9 @@ export default function PaginaAgenda() {
               <Plus className="h-4 w-4" />
               Novo evento
             </Botao>
-          </section>
+          </SecaoAnimada>
 
-          <section className="grid gap-6 md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[minmax(0,1fr)_320px]">
+          <SecaoAnimada className="grid gap-6 md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[minmax(0,1fr)_320px]">
             <ListaEventosDia
               dataSelecionada={dataSelecionada}
               eventosDoDia={eventosDoDia}
@@ -286,8 +287,8 @@ export default function PaginaAgenda() {
               integracao={integracao}
               onRequestDisconnect={setProviderDesconectar}
             />
-          </section>
-        </div>
+          </SecaoAnimada>
+        </AnimacaoPagina>
       </main>
 
       <FormularioEventoDialogo

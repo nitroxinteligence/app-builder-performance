@@ -9,8 +9,6 @@ import {
   Loader2,
   Award,
 } from "lucide-react"
-import { motion } from "framer-motion"
-
 import { Botao } from "@/componentes/ui/botao"
 import {
   Cartao,
@@ -20,7 +18,7 @@ import {
 } from "@/componentes/ui/cartao"
 import { Emblema } from "@/componentes/ui/emblema"
 import { Progresso } from "@/componentes/ui/progresso"
-import { variantesEntrada } from "@/lib/animacoes"
+import { AnimacaoPagina, SecaoAnimada } from "@/componentes/ui/animacoes"
 import { useCursosData } from "@/hooks/useCursos"
 
 export default function PaginaCursos() {
@@ -74,13 +72,8 @@ export default function PaginaCursos() {
 
   return (
     <main id="main-content" className="flex-1 px-6 py-10">
-      <motion.div
-        variants={variantesEntrada}
-        initial="oculto"
-        animate="visivel"
-        className="mx-auto flex w-full max-w-6xl flex-col gap-8"
-      >
-        <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+        <SecaoAnimada className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="font-titulo text-2xl font-semibold">
               Cursos e aulas
@@ -112,10 +105,10 @@ export default function PaginaCursos() {
               </Botao>
             ))}
           </div>
-        </section>
+        </SecaoAnimada>
 
         {cursosContinuar.length > 0 && (
-          <section className="space-y-4">
+          <SecaoAnimada className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-titulo text-lg font-semibold">
                 Continue assistindo
@@ -167,11 +160,11 @@ export default function PaginaCursos() {
                 ))}
               </div>
             </div>
-          </section>
+          </SecaoAnimada>
         )}
 
         {cursosDestaque.length > 0 && (
-          <section className="space-y-4">
+          <SecaoAnimada className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-titulo text-lg font-semibold">
                 Em destaque
@@ -221,11 +214,11 @@ export default function PaginaCursos() {
                 ))}
               </div>
             </div>
-          </section>
+          </SecaoAnimada>
         )}
 
         {novosConteudos.length > 0 && (
-          <section className="space-y-4">
+          <SecaoAnimada className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-titulo text-lg font-semibold">
                 Novos conteudos
@@ -262,10 +255,10 @@ export default function PaginaCursos() {
                 </Cartao>
               ))}
             </div>
-          </section>
+          </SecaoAnimada>
         )}
 
-        <section className="space-y-4">
+        <SecaoAnimada className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-titulo text-lg font-semibold">
               Catalogo completo
@@ -312,8 +305,8 @@ export default function PaginaCursos() {
               </Cartao>
             ))}
           </div>
-        </section>
-      </motion.div>
+        </SecaoAnimada>
+      </AnimacaoPagina>
     </main>
   )
 }

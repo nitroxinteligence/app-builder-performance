@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle } from "lucide-react";
 
 import { Botao } from "@/componentes/ui/botao";
+import { AnimacaoPagina, SecaoAnimada } from "@/componentes/ui/animacoes";
 import { cn } from "@/lib/utilidades";
 
 // Sub-components
@@ -70,10 +71,24 @@ export default function PaginaHabitos() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Carregando...</p>
+      <div className="flex-1 px-6 py-10">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+            <div className="space-y-2">
+              <div className="h-7 w-32 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-56 animate-pulse rounded bg-muted" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <div className="h-9 w-32 animate-pulse rounded-full bg-muted" />
+            <div className="h-9 w-28 animate-pulse rounded-full bg-muted" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-32 animate-pulse rounded-2xl border border-[color:var(--borda-cartao)] bg-card" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -102,9 +117,9 @@ export default function PaginaHabitos() {
 
   return (
     <main id="main-content" className="flex-1 px-6 py-10">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+      <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
         {/* Header */}
-        <section className="flex flex-wrap items-center justify-between gap-4">
+        <SecaoAnimada className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
               href="/inicio"
@@ -164,10 +179,10 @@ export default function PaginaHabitos() {
               isPending={isUpdatingMeta}
             />
           </div>
-        </section>
+        </SecaoAnimada>
 
         {/* Tab Switcher */}
-        <section className="flex flex-wrap items-center gap-2">
+        <SecaoAnimada className="flex flex-wrap items-center gap-2">
           <Botao
             type="button"
             variant="secondary"
@@ -196,7 +211,7 @@ export default function PaginaHabitos() {
           >
             Metas do ano
           </Botao>
-        </section>
+        </SecaoAnimada>
 
         {/* Tab Content */}
         {abaAtiva === "individual" ? (
@@ -220,7 +235,7 @@ export default function PaginaHabitos() {
           />
         )}
 
-      </div>
+      </AnimacaoPagina>
     </main>
   );
 }
