@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { BottomTabBar } from "@/componentes/layout/bottom-tab-bar"
+import { Cabecalho } from "@/componentes/layout/cabecalho"
 import { Sidebar } from "@/componentes/layout/sidebar"
 import { cn } from "@/lib/utilidades"
 
@@ -13,6 +14,10 @@ export default function LayoutProtegido({
 }) {
   const [sidebarAberta, setSidebarAberta] = React.useState(false)
 
+  const alternarSidebar = React.useCallback(() => {
+    setSidebarAberta((anterior) => !anterior)
+  }, [])
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
@@ -22,7 +27,10 @@ export default function LayoutProtegido({
           sidebarAberta ? "lg:pl-56" : "lg:pl-16"
         )}
       >
-        {children}
+        <Cabecalho onToggleSidebar={alternarSidebar} />
+        <main id="main-content" className="flex-1">
+          {children}
+        </main>
       </div>
       <BottomTabBar />
     </div>

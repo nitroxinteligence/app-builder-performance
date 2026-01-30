@@ -3,51 +3,23 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  BookOpenText,
-  Bot,
-  CalendarDays,
-  Columns,
-  LayoutGrid,
-  MoreHorizontal,
-  Repeat2,
-  Timer,
-  UserRound,
-  X,
-} from "lucide-react"
+import { MoreHorizontal, UserRound, X } from "lucide-react"
 import * as DialogoPrimitivo from "@radix-ui/react-dialog"
 
 import { cn } from "@/lib/utilidades"
-
-interface TabItem {
-  id: string
-  titulo: string
-  href: string
-  icone: React.ElementType
-}
-
-const tabsPrincipais: TabItem[] = [
-  { id: "inicio", titulo: "Início", href: "/inicio", icone: LayoutGrid },
-  { id: "tarefas", titulo: "Tarefas", href: "/tarefas", icone: Columns },
-  { id: "foco", titulo: "Foco", href: "/foco", icone: Timer },
-  { id: "habitos", titulo: "Hábitos", href: "/habitos", icone: Repeat2 },
-  { id: "agenda", titulo: "Agenda", href: "/agenda", icone: CalendarDays },
-]
-
-const rotasSecundarias: TabItem[] = [
-  { id: "cursos", titulo: "Cursos", href: "/cursos", icone: BookOpenText },
-  { id: "assistente", titulo: "Assistente", href: "/assistente", icone: Bot },
-  { id: "perfil", titulo: "Perfil", href: "/perfil", icone: UserRound },
-]
+import {
+  tabsPrincipaisMobile,
+  rotasSecundariasMobile,
+  rotaAtiva,
+} from "@/lib/navegacao"
 
 export function BottomTabBar() {
   const pathname = usePathname()
   const [drawerAberto, setDrawerAberto] = React.useState(false)
 
-  const rotaAtiva = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`)
-
-  const maisAtivo = rotasSecundarias.some((r) => rotaAtiva(r.href))
+  const maisAtivo =
+    rotasSecundariasMobile.some((r) => rotaAtiva(pathname, r.href)) ||
+    rotaAtiva(pathname, "/perfil")
 
   return (
     <>
@@ -56,8 +28,8 @@ export function BottomTabBar() {
         aria-label="Navegação principal"
       >
         <div className="flex items-stretch justify-around">
-          {tabsPrincipais.map((tab) => {
-            const ativo = rotaAtiva(tab.href)
+          {tabsPrincipaisMobile.map((tab) => {
+            const ativo = rotaAtiva(pathname, tab.href)
             return (
               <Link
                 key={tab.id}
@@ -114,8 +86,8 @@ export function BottomTabBar() {
               </DialogoPrimitivo.Close>
             </div>
             <div className="flex flex-col gap-1 px-3 pb-5">
-              {rotasSecundarias.map((rota) => {
-                const ativo = rotaAtiva(rota.href)
+              {rotasSecundariasMobile.map((rota) => {
+                const ativo = rotaAtiva(pathname, rota.href)
                 return (
                   <Link
                     key={rota.id}
@@ -125,7 +97,7 @@ export function BottomTabBar() {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
                       ativo
-                        ? "bg-secondary text-secondary-foreground"
+                        ? "bg-sidebar-accent text-sidebar-primary"
                         : "text-muted-foreground hover:bg-secondary/60 hover:text-secondary-foreground"
                     )}
                   >
@@ -137,6 +109,22 @@ export function BottomTabBar() {
                   </Link>
                 )
               })}
+              <Link
+                href="/perfil"
+                onClick={() => setDrawerAberto(false)}
+                aria-current={
+                  rotaAtiva(pathname, "/perfil") ? "page" : undefined
+                }
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                  rotaAtiva(pathname, "/perfil")
+                    ? "bg-sidebar-accent text-sidebar-primary"
+                    : "text-muted-foreground hover:bg-secondary/60 hover:text-secondary-foreground"
+                )}
+              >
+                <UserRound className="h-5 w-5 shrink-0" aria-hidden="true" />
+                Perfil
+              </Link>
             </div>
           </DialogoPrimitivo.Content>
         </DialogoPrimitivo.Portal>

@@ -31,7 +31,7 @@ import {
 } from "@/componentes/ui/menu-suspenso"
 import { cn } from "@/lib/utilidades"
 import { useAuth } from "@/lib/providers/auth-provider"
-import { marcaSidebar, secoesMenu } from "@/app/(protegido)/inicio/dados-dashboard"
+import { marcaSidebar, secoesMenu, rotaAtiva } from "@/lib/navegacao"
 
 interface SidebarProps {
   open: boolean
@@ -48,7 +48,10 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
     setTheme(temaEscuro ? "light" : "dark")
   }, [temaEscuro, setTheme])
 
-  const nomeUsuario = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Usuário"
+  const nomeUsuario =
+    user?.user_metadata?.full_name ||
+    user?.email?.split("@")[0] ||
+    "Usuário"
   const iniciaisUsuario = nomeUsuario
     .split(" ")
     .map((parte: string) => parte[0])
@@ -57,11 +60,11 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
     .toUpperCase()
 
   const toggleTemaClasses = cn(
-    "inline-flex h-5 w-9 items-center rounded-full border border-border p-0.5 transition-colors",
-    temaEscuro ? "bg-foreground" : "bg-secondary"
+    "inline-flex h-5 w-9 items-center rounded-full border border-sidebar-border p-0.5 transition-colors",
+    temaEscuro ? "bg-sidebar-foreground" : "bg-sidebar-accent"
   )
   const togglePinoClasses = cn(
-    "h-4 w-4 rounded-full bg-background shadow-sm transition-transform",
+    "h-4 w-4 rounded-full bg-sidebar shadow-sm transition-transform",
     temaEscuro ? "translate-x-4" : "translate-x-0"
   )
 
@@ -72,13 +75,13 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
         size="default"
         aria-label="Abrir menu do usuário"
         className={cn(
-          "text-sm font-semibold text-muted-foreground hover:bg-secondary/60 hover:text-secondary-foreground",
+          "text-sm font-semibold text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
           open
             ? "w-full justify-start gap-3 px-3"
             : "h-10 w-10 justify-center px-0"
         )}
       >
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-[10px] font-semibold text-sidebar-accent-foreground">
           {iniciaisUsuario}
         </div>
         <span
@@ -102,11 +105,12 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
       open={open}
       onOpenChange={onOpenChange}
       className={cn(
-        "fixed left-0 top-0 z-40 hidden h-screen flex-col border-r border-border bg-sidebar py-6 transition-all duration-300 lg:flex",
+        "fixed left-0 top-0 z-40 hidden h-screen flex-col border-r border-sidebar-border bg-sidebar py-6 transition-all duration-300 lg:flex",
         open ? "w-56 px-4" : "w-16 px-2"
       )}
     >
       <ProvedorDica delayDuration={150} skipDelayDuration={0}>
+        {/* Brand / Logo */}
         <div
           className={cn(
             "flex items-center gap-2",
@@ -116,14 +120,17 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
           {open ? (
             <>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <marcaSidebar.icone className="h-5 w-5" aria-hidden="true" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <marcaSidebar.icone
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  />
                 </div>
                 <div className="leading-tight transition-all">
-                  <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
+                  <p className="text-[11px] uppercase tracking-[0.25em] text-sidebar-foreground/60">
                     Builders
                   </p>
-                  <p className="font-titulo text-sm font-semibold">
+                  <p className="font-titulo text-sm font-semibold text-sidebar-foreground">
                     Performance
                   </p>
                 </div>
@@ -132,10 +139,10 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                 <DicaGatilho asChild>
                   <ColapsavelGatilho asChild>
                     <Botao
-                      variant="secondary"
+                      variant="ghost"
                       size="icon"
                       aria-label="Fechar barra lateral"
-                      className="h-10 w-10 rounded-md bg-secondary text-secondary-foreground"
+                      className="h-10 w-10 rounded-md text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     >
                       <PanelLeft className="h-4 w-4" aria-hidden="true" />
                     </Botao>
@@ -155,10 +162,10 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
               <DicaGatilho asChild>
                 <ColapsavelGatilho asChild>
                   <Botao
-                    variant="secondary"
+                    variant="ghost"
                     size="icon"
                     aria-label="Abrir barra lateral"
-                    className="h-10 w-10 rounded-md bg-secondary text-secondary-foreground"
+                    className="h-10 w-10 rounded-md text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   >
                     <PanelLeft className="h-4 w-4" aria-hidden="true" />
                   </Botao>
@@ -175,18 +182,22 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
           )}
         </div>
 
+        {/* Navigation */}
         <div className="mt-8 flex flex-1 flex-col">
-          <nav className="flex flex-1 flex-col gap-6" aria-label="Menu principal">
+          <nav
+            className="flex flex-1 flex-col gap-6"
+            aria-label="Menu principal"
+          >
             {secoesMenu.map((secao) => (
               <div key={secao.id} className="flex flex-col gap-2">
                 {open ? (
-                  <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-sidebar-foreground/50">
                     {secao.titulo}
                   </p>
                 ) : null}
                 <div className="flex flex-col gap-1" role="list">
                   {secao.itens.map((item) => {
-                    const ativo = pathname === item.href || pathname.startsWith(`${item.href}/`)
+                    const ativo = rotaAtiva(pathname, item.href)
                     const linkItem = (
                       <Link
                         key={item.id}
@@ -199,8 +210,8 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                             ? "justify-start gap-3 px-3"
                             : "justify-center gap-0 px-0",
                           ativo
-                            ? "bg-secondary text-secondary-foreground"
-                            : "text-muted-foreground hover:bg-secondary/60 hover:text-secondary-foreground"
+                            ? "bg-sidebar-accent text-sidebar-primary"
+                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         )}
                       >
                         <item.icone
@@ -248,15 +259,17 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                 </div>
                 <div
                   className={cn(
-                    "h-px bg-border",
+                    "h-px bg-sidebar-border",
                     open ? "mx-3" : "mx-2"
                   )}
                 />
               </div>
             ))}
           </nav>
+
+          {/* Footer - User profile */}
           <div className={cn("mt-auto", open ? "px-3" : "px-2")}>
-            <div className="h-px bg-border" />
+            <div className="h-px bg-sidebar-border" />
             <div
               className={cn(
                 "mt-3 flex flex-col gap-2",
@@ -272,11 +285,17 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                   className="w-56 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
                 >
                   <MenuSuspensoItem className="cursor-pointer gap-2 font-medium">
-                    <Settings className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    <Settings
+                      className="h-4 w-4 text-muted-foreground"
+                      aria-hidden="true"
+                    />
                     Configurações
                   </MenuSuspensoItem>
                   <MenuSuspensoItem className="cursor-pointer gap-2 font-medium">
-                    <Bell className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    <Bell
+                      className="h-4 w-4 text-muted-foreground"
+                      aria-hidden="true"
+                    />
                     Notificações
                   </MenuSuspensoItem>
                   <MenuSuspensoItem
@@ -288,9 +307,15 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                   >
                     <span className="flex items-center gap-2">
                       {temaEscuro ? (
-                        <Moon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                        <Moon
+                          className="h-4 w-4 text-muted-foreground"
+                          aria-hidden="true"
+                        />
                       ) : (
-                        <Sun className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                        <Sun
+                          className="h-4 w-4 text-muted-foreground"
+                          aria-hidden="true"
+                        />
                       )}
                       Tema
                     </span>
@@ -298,9 +323,19 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                       <span className={togglePinoClasses} />
                     </span>
                   </MenuSuspensoItem>
-                  <MenuSuspensoItem asChild className="cursor-pointer gap-2 font-medium">
-                    <Link href="/perfil" className="flex w-full items-center gap-2" aria-label="Ir para perfil do usuário">
-                      <UserRound className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <MenuSuspensoItem
+                    asChild
+                    className="cursor-pointer gap-2 font-medium"
+                  >
+                    <Link
+                      href="/perfil"
+                      className="flex w-full items-center gap-2"
+                      aria-label="Ir para perfil do usuário"
+                    >
+                      <UserRound
+                        className="h-4 w-4 text-muted-foreground"
+                        aria-hidden="true"
+                      />
                       Perfil
                     </Link>
                   </MenuSuspensoItem>
