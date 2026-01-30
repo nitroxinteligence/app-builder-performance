@@ -11,7 +11,7 @@ export function ProvedorToast() {
       toastOptions={{
         classNames: {
           toast:
-            "group border-border bg-card text-card-foreground rounded-xl",
+            "group border-border bg-card text-card-foreground shadow-lg rounded-xl",
           title: "text-sm font-semibold",
           description: "text-sm text-muted-foreground",
           actionButton: "bg-primary text-primary-foreground hover:bg-primary/90",

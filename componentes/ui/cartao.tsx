@@ -24,7 +24,7 @@ const Cartao = React.forwardRef<HTMLDivElement, PropsCartao>(
       whileHover={interativo ? variantesHover.escalaComSombra : undefined}
       transition={transicaoRapida}
       className={cn(
-        "rounded-2xl border border-[color:var(--borda-cartao)] bg-card text-card-foreground",
+        "rounded-2xl border border-[color:var(--borda-cartao)] bg-card text-card-foreground shadow-sm",
         interativo && "cursor-pointer",
         className
       )}

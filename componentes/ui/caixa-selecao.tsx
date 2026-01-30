@@ -13,7 +13,7 @@ const CaixaSelecao = React.forwardRef<
   <CaixaSelecaoPrimitivo.Root
     ref={ref}
     className={cn(
-      "peer h-4.5 w-4.5 shrink-0 rounded-[6px] border border-input bg-background transition-all data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
+      "peer h-4.5 w-4.5 shrink-0 rounded-[6px] border border-input bg-background shadow-sm transition-all data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
       className
     )}
     {...props}
