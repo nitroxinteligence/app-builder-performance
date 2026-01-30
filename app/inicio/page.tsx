@@ -480,7 +480,7 @@ function ConteudoPaginaInicio() {
           sidebarAberta ? "lg:pl-56" : "lg:pl-16"
         )}
       >
-        <main className="flex-1 px-6 py-10" role="main" aria-label="Conteúdo principal do painel">
+        <main id="main-content" className="flex-1 px-6 py-10" role="main" aria-label="Conteúdo principal do painel">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
             <section className="flex flex-col items-center gap-2 text-center" aria-labelledby="saudacao-titulo">
               <h1 id="saudacao-titulo" className="font-titulo text-2xl font-semibold text-foreground sm:text-3xl">

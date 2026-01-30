@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/providers/auth-provider'
 import {
@@ -227,7 +228,10 @@ async function registrarHabito(input: HistoricoHabitoCreateInput): Promise<Histo
 
   const { data, error } = await supabase
     .from('habit_history')
-    .insert(validated)
+    .upsert(validated, {
+      onConflict: 'habito_id,data',
+      ignoreDuplicates: false,
+    })
     .select()
     .single()
 
@@ -281,6 +285,12 @@ export function useCreateHabito() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: HABITOS_KEY })
+      toast.success('Hábito criado com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar hábito', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -292,6 +302,12 @@ export function useUpdateHabito() {
     mutationFn: updateHabito,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: HABITOS_KEY })
+      toast.success('Hábito atualizado!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar hábito', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -304,6 +320,12 @@ export function useDeleteHabito() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: HABITOS_KEY })
       queryClient.invalidateQueries({ queryKey: HISTORICO_HABITOS_KEY })
+      toast.success('Hábito excluído')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir hábito', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -336,6 +358,12 @@ export function useCreateCategoriaHabito() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CATEGORIAS_HABITOS_KEY })
+      toast.success('Categoria criada com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar categoria', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -347,6 +375,12 @@ export function useUpdateCategoriaHabito() {
     mutationFn: updateCategoriaHabito,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CATEGORIAS_HABITOS_KEY })
+      toast.success('Categoria atualizada!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar categoria', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -359,6 +393,12 @@ export function useDeleteCategoriaHabito() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CATEGORIAS_HABITOS_KEY })
       queryClient.invalidateQueries({ queryKey: HABITOS_KEY })
+      toast.success('Categoria excluída')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir categoria', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -392,6 +432,12 @@ export function useRegistrarHabito() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: HISTORICO_HABITOS_KEY })
       queryClient.invalidateQueries({ queryKey: HABITOS_KEY })
+      toast.success('Hábito registrado!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao registrar hábito', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }

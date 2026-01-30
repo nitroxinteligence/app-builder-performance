@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -133,6 +134,12 @@ export function useAgenda(): UseAgendaReturn {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: EVENTS_KEY(userId) })
+      toast.success('Evento criado com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar evento', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 
@@ -141,6 +148,12 @@ export function useAgenda(): UseAgendaReturn {
       updateEventApi(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: EVENTS_KEY(userId) })
+      toast.success('Evento atualizado!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar evento', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 
@@ -148,6 +161,12 @@ export function useAgenda(): UseAgendaReturn {
     mutationFn: (id: string) => deleteEventApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: EVENTS_KEY(userId) })
+      toast.success('Evento excluído')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir evento', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 

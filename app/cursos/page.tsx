@@ -101,7 +101,7 @@ export default function PaginaCursos() {
           sidebarAberta ? "lg:pl-56" : "lg:pl-16"
         )}
       >
-        <main className="flex-1 px-6 py-10">
+        <main id="main-content" className="flex-1 px-6 py-10">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
             <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>

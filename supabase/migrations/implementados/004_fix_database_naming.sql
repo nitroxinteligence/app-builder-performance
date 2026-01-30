@@ -374,16 +374,31 @@ ALTER TABLE public.objectives
   ON DELETE SET NULL;
 
 -- ============================================================================
--- PART 6: SEED DEFAULT OBJECTIVE COLUMNS (for existing users)
+-- PART 6: SYNC EXISTING AUTH USERS TO PUBLIC.USERS
 -- ============================================================================
+-- This ensures all authenticated users have a record in the users table
 
--- Create default columns for mock user
-INSERT INTO public.objective_columns (id, user_id, titulo, descricao, icone, cor, ordem)
-VALUES
-  ('eeee1111-1111-4111-8111-111111111111'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Backlog', 'Objetivos planejados', 'inbox', '#6b7280', '0'),
-  ('eeee2222-2222-4222-8222-222222222222'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Em Andamento', 'Objetivos em execução', 'play', '#3b82f6', '1'),
-  ('eeee3333-3333-4333-8333-333333333333'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Concluído', 'Objetivos finalizados', 'check-circle', '#22c55e', '2')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO public.users (id, email, name, avatar_url, total_xp, level, streak_shields, current_streak, longest_streak, created_at, updated_at)
+SELECT
+  au.id,
+  au.email,
+  COALESCE(au.raw_user_meta_data->>'full_name', split_part(au.email, '@', 1)),
+  au.raw_user_meta_data->>'avatar_url',
+  0,  -- total_xp
+  1,  -- level
+  2,  -- streak_shields
+  0,  -- current_streak
+  0,  -- longest_streak
+  au.created_at,
+  NOW()
+FROM auth.users au
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.users pu WHERE pu.id = au.id
+)
+ON CONFLICT (id) DO UPDATE SET
+  email = EXCLUDED.email,
+  name = COALESCE(EXCLUDED.name, public.users.name),
+  updated_at = NOW();
 
 -- ============================================================================
 -- VERIFICATION QUERY
@@ -392,4 +407,7 @@ ON CONFLICT (id) DO NOTHING;
 -- SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;
 -- Expected: focus_sessions, goal_milestones, goals, habit_categories, habit_history, habits,
 --           objective_columns, objectives, pending_items, tasks, users
+--
+-- Verify users synced:
+-- SELECT u.id, u.email, u.name FROM public.users u;
 -- ============================================================================
