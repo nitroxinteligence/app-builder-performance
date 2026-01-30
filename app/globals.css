@@ -44,77 +44,151 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-soft: var(--primary-soft);
 }
 
 :root {
   --radius: 1rem;
-  --background: #f6f6f6;
-  --foreground: #1f1f1f;
-  --card: #ffffff;
-  --card-foreground: #1f1f1f;
-  --popover: #ffffff;
-  --popover-foreground: #1f1f1f;
-  --primary: #f97316;
-  --primary-foreground: #ffffff;
-  --secondary: #fff1e6;
-  --secondary-foreground: #9a3412;
-  --muted: #f5f2ef;
-  --muted-foreground: #555555;
-  --accent: #fff7ed;
-  --accent-foreground: #9a3412;
-  --destructive: #ef4444;
-  --border: #eeeeee;
-  --input: #eeeeee;
-  --ring: #f97316;
-  --chart-1: #f97316;
-  --chart-2: #fb923c;
-  --chart-3: #fdba74;
-  --chart-4: #f97316;
-  --chart-5: #f59e0b;
-  --sidebar: #f4f4f4;
-  --sidebar-foreground: #1f1f1f;
-  --sidebar-primary: #f97316;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #fff1e6;
-  --sidebar-accent-foreground: #9a3412;
-  --sidebar-border: #eeeeee;
-  --sidebar-ring: #f97316;
-  --borda-cartao: #eeeeee;
+
+  /* Primaria */
+  --primary: #F26B2A;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #D95A1F;
+  --primary-active: #C04F1A;
+  --primary-soft: #FEF0E8;
+
+  /* Neutras */
+  --background: #F5F5F5;
+  --foreground: #1A1A1A;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+  --muted: #F0F0F0;
+  --muted-foreground: #6B6B6B;
+  --accent: #FEF0E8;
+  --accent-foreground: #C04F1A;
+  --secondary: #FEF0E8;
+  --secondary-foreground: #C04F1A;
+
+  /* Semanticas */
+  --destructive: #E74C3C;
+  --success: #2ECC71;
+  --warning: #F2C94C;
+  --info: #3498DB;
+  --success-soft: #E8F8F0;
+  --warning-soft: #FEF9E7;
+  --danger-soft: #FDE8E6;
+  --info-soft: #E8F4FD;
+
+  /* Bordas e interacao */
+  --border: #E8E8E8;
+  --input: #E8E8E8;
+  --ring: #F26B2A;
+  --borda-cartao: #E8E8E8;
+
+  /* Graficos */
+  --chart-1: #F26B2A;
+  --chart-2: #2ECC71;
+  --chart-3: #3498DB;
+  --chart-4: #F2C94C;
+  --chart-5: #9B59B6;
+
+  /* Sidebar */
+  --sidebar: #FAFAFA;
+  --sidebar-foreground: #1A1A1A;
+  --sidebar-primary: #F26B2A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FEF0E8;
+  --sidebar-accent-foreground: #C04F1A;
+  --sidebar-border: #E8E8E8;
+  --sidebar-ring: #F26B2A;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  /* Transicoes */
+  --transition-fast: 100ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  --transition-slower: 500ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-in: cubic-bezier(0, 0, 0.2, 1);
+  --easing-out: cubic-bezier(0.4, 0, 1, 1);
 }
 
 .dark {
-  --background: #151515;
-  --foreground: #f5f5f5;
-  --card: #1f1f1f;
-  --card-foreground: #f5f5f5;
-  --popover: #1f1f1f;
-  --popover-foreground: #f5f5f5;
-  --primary: #fb923c;
-  --primary-foreground: #151515;
-  --secondary: #2a1d16;
-  --secondary-foreground: #fdba74;
-  --muted: #201d1b;
-  --muted-foreground: #a0a0a0;
-  --accent: #2f1c12;
-  --accent-foreground: #fdba74;
-  --destructive: #ef4444;
-  --border: #2a2a2a;
-  --input: #2a2a2a;
-  --ring: #fb923c;
-  --chart-1: #fb923c;
-  --chart-2: #fdba74;
-  --chart-3: #c2410c;
-  --chart-4: #fb923c;
-  --chart-5: #f59e0b;
-  --sidebar: #1b1b1b;
-  --sidebar-foreground: #f5f5f5;
-  --sidebar-primary: #fb923c;
-  --sidebar-primary-foreground: #151515;
-  --sidebar-accent: #2a1d16;
-  --sidebar-accent-foreground: #fdba74;
-  --sidebar-border: #2a2a2a;
-  --sidebar-ring: #fb923c;
-  --borda-cartao: #2a2a2a;
+  /* Primaria */
+  --primary: #F26B2A;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #FF7E3F;
+  --primary-active: #E05E22;
+  --primary-soft: #3D2415;
+
+  /* Neutras */
+  --background: #1A1A1A;
+  --foreground: #F5F5F5;
+  --card: #242424;
+  --card-foreground: #F5F5F5;
+  --popover: #242424;
+  --popover-foreground: #F5F5F5;
+  --muted: #2A2A2A;
+  --muted-foreground: #A0A0A0;
+  --accent: #3D2415;
+  --accent-foreground: #FDBA74;
+  --secondary: #3D2415;
+  --secondary-foreground: #FDBA74;
+
+  /* Semanticas */
+  --destructive: #E74C3C;
+  --success: #2ECC71;
+  --warning: #F2C94C;
+  --info: #3498DB;
+  --success-soft: #1A2E22;
+  --warning-soft: #2E2A1A;
+  --danger-soft: #2E1A1A;
+  --info-soft: #1A2430;
+
+  /* Bordas e interacao */
+  --border: #333333;
+  --input: #333333;
+  --ring: #F26B2A;
+  --borda-cartao: #333333;
+
+  /* Graficos */
+  --chart-1: #F26B2A;
+  --chart-2: #2ECC71;
+  --chart-3: #3498DB;
+  --chart-4: #F2C94C;
+  --chart-5: #9B59B6;
+
+  /* Sidebar */
+  --sidebar: #1E1E1E;
+  --sidebar-foreground: #F5F5F5;
+  --sidebar-primary: #F26B2A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #3D2415;
+  --sidebar-accent-foreground: #FDBA74;
+  --sidebar-border: #333333;
+  --sidebar-ring: #F26B2A;
+
+  /* Sombras (removidas em dark mode) */
+  --shadow-sm: 0 0 0 transparent;
+  --shadow-md: 0 0 0 transparent;
+  --shadow-lg: 0 0 0 transparent;
+  --shadow-xl: 0 0 0 transparent;
 }
 
 @layer base {
@@ -128,7 +202,7 @@
 
 .kanban-scroll {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) hsl(var(--muted) / 0.3);
+  scrollbar-color: var(--border) transparent;
   overflow-y: auto;
 }
 
@@ -137,34 +211,18 @@
 }
 
 .kanban-scroll::-webkit-scrollbar-track {
-  background: hsl(var(--muted) / 0.3);
+  background: transparent;
   border-radius: 999px;
 }
 
 .kanban-scroll::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--border));
+  background-color: var(--border);
   border-radius: 999px;
   transition: background-color 0.2s ease;
 }
 
 .kanban-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground) / 0.5);
-}
-
-.dark .kanban-scroll {
-  scrollbar-color: hsl(var(--border)) hsl(var(--muted) / 0.2);
-}
-
-.dark .kanban-scroll::-webkit-scrollbar-track {
-  background: hsl(var(--muted) / 0.2);
-}
-
-.dark .kanban-scroll::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--border));
-}
-
-.dark .kanban-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground) / 0.6);
+  background-color: var(--muted-foreground);
 }
 
 @media (prefers-reduced-motion: reduce) {
