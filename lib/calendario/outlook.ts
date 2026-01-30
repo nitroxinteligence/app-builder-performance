@@ -1,4 +1,4 @@
-import type { CalendarProvider } from '@/types/calendario'
+import type { CalendarProvider, OutlookCalendarEvent, OutlookCalendarListResponse } from '@/types/calendario'
 
 // ==========================================
 // MICROSOFT OAUTH CONSTANTS
@@ -7,6 +7,7 @@ import type { CalendarProvider } from '@/types/calendario'
 const MS_AUTH_ENDPOINT = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
 const MS_TOKEN_ENDPOINT = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
 const MS_GRAPH_ME = 'https://graph.microsoft.com/v1.0/me'
+const MS_GRAPH_CALENDAR_VIEW = 'https://graph.microsoft.com/v1.0/me/calendarView'
 const MS_SCOPES = 'offline_access Calendars.Read User.Read'
 
 // ==========================================
@@ -95,6 +96,41 @@ export async function exchangeOutlookCode(code: string): Promise<OutlookTokenRes
   }
 
   return response.json() as Promise<OutlookTokenResponse>
+}
+
+export async function fetchOutlookCalendarEvents(
+  accessToken: string,
+  startDateTime: string,
+  endDateTime: string,
+): Promise<{ events: OutlookCalendarEvent[]; deltaLink: string | null }> {
+  const allEvents: OutlookCalendarEvent[] = []
+  let deltaLink: string | null = null
+
+  const params = new URLSearchParams({
+    startDateTime,
+    endDateTime,
+    $top: '1000',
+    $select: 'id,subject,bodyPreview,start,end,location,isAllDay,isCancelled',
+  })
+
+  let url: string | null = `${MS_GRAPH_CALENDAR_VIEW}?${params.toString()}`
+
+  while (url) {
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Outlook Calendar events: ${response.status}`)
+    }
+
+    const data = (await response.json()) as OutlookCalendarListResponse
+    allEvents.push(...data.value)
+    url = data['@odata.nextLink'] ?? null
+    deltaLink = data['@odata.deltaLink'] ?? null
+  }
+
+  return { events: allEvents, deltaLink }
 }
 
 export async function getOutlookUserEmail(accessToken: string): Promise<string> {

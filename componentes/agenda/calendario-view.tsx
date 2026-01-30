@@ -1,6 +1,6 @@
 'use client'
 
-import { CalendarDays, CheckCircle2, Loader2 } from 'lucide-react'
+import { CalendarDays, CheckCircle2, Loader2, RefreshCw } from 'lucide-react'
 
 import { Botao } from '@/componentes/ui/botao'
 import {
@@ -18,6 +18,8 @@ interface CalendarioViewProps {
   onConnectGoogle?: () => void
   onConnectOutlook?: () => void
   conectandoProvider?: string | null
+  onSync?: () => void
+  sincronizando?: boolean
 }
 
 export function CalendarioView({
@@ -26,6 +28,8 @@ export function CalendarioView({
   onConnectGoogle,
   onConnectOutlook,
   conectandoProvider,
+  onSync,
+  sincronizando,
 }: CalendarioViewProps) {
   return (
     <div className="space-y-6">
@@ -94,6 +98,22 @@ export function CalendarioView({
               Conectar
             </Botao>
           </div>
+          {onSync && (
+            <Botao
+              size="sm"
+              variant="outline"
+              className="w-full gap-2"
+              onClick={onSync}
+              disabled={sincronizando}
+            >
+              {sincronizando ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5" />
+              )}
+              Sincronizar agora
+            </Botao>
+          )}
         </CartaoConteudo>
       </Cartao>
     </div>

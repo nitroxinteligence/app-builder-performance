@@ -1,4 +1,4 @@
-import type { CalendarProvider } from '@/types/calendario'
+import type { CalendarProvider, GoogleCalendarEvent, GoogleCalendarListResponse } from '@/types/calendario'
 
 // ==========================================
 // GOOGLE OAUTH CONSTANTS
@@ -7,6 +7,7 @@ import type { CalendarProvider } from '@/types/calendario'
 const GOOGLE_AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token'
 const GOOGLE_CALENDAR_PRIMARY = 'https://www.googleapis.com/calendar/v3/calendars/primary'
+const GOOGLE_CALENDAR_EVENTS = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
 const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.readonly'
 
 // ==========================================
@@ -96,6 +97,45 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleTokenRespo
   }
 
   return response.json() as Promise<GoogleTokenResponse>
+}
+
+export async function fetchGoogleCalendarEvents(
+  accessToken: string,
+  timeMin: string,
+  timeMax: string,
+): Promise<{ events: GoogleCalendarEvent[]; syncToken: string | null }> {
+  const allEvents: GoogleCalendarEvent[] = []
+  let pageToken: string | undefined
+  let syncToken: string | null = null
+
+  do {
+    const params = new URLSearchParams({
+      timeMin,
+      timeMax,
+      singleEvents: 'true',
+      orderBy: 'startTime',
+      maxResults: '2500',
+    })
+
+    if (pageToken) {
+      params.set('pageToken', pageToken)
+    }
+
+    const response = await fetch(`${GOOGLE_CALENDAR_EVENTS}?${params.toString()}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Google Calendar events: ${response.status}`)
+    }
+
+    const data = (await response.json()) as GoogleCalendarListResponse
+    allEvents.push(...data.items)
+    pageToken = data.nextPageToken
+    syncToken = data.nextSyncToken ?? null
+  } while (pageToken)
+
+  return { events: allEvents, syncToken }
 }
 
 export async function getGoogleUserEmail(accessToken: string): Promise<string> {

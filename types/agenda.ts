@@ -38,6 +38,7 @@ export interface AgendaEvent {
   local: string | null
   status: EventStatus
   calendario: CalendarIntegration
+  external_event_id: string | null
   created_at: string
   updated_at: string
 }
@@ -56,6 +57,7 @@ export interface CreateEventDto {
   local?: string
   status: EventStatus
   calendario: CalendarIntegration
+  external_event_id?: string
 }
 
 export interface UpdateEventDto {

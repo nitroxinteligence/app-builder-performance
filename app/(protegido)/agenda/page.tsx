@@ -3,10 +3,12 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Loader2, Plus } from 'lucide-react'
+import { ArrowLeft, Loader2, Plus, RefreshCw } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
+import { useQueryClient } from '@tanstack/react-query'
 
+import { useAuth } from '@/lib/providers/auth-provider'
 import { Botao } from '@/componentes/ui/botao'
 import {
   DialogoAlerta,
@@ -43,6 +45,11 @@ export default function PaginaAgenda() {
   )
   const [salvando, setSalvando] = React.useState(false)
   const [conectandoProvider, setConectandoProvider] = React.useState<string | null>(null)
+  const [sincronizando, setSincronizando] = React.useState(false)
+  const syncDoneRef = React.useRef(false)
+
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
 
   const { events, isLoading, error, createEvent, updateEvent, deleteEvent } =
     useAgenda()
@@ -74,6 +81,51 @@ export default function PaginaAgenda() {
       router.replace('/agenda')
     }
   }, [searchParams, router])
+
+  // Auto-sync on page load (non-blocking)
+  React.useEffect(() => {
+    if (!user || syncDoneRef.current) return
+    syncDoneRef.current = true
+
+    const doSync = async () => {
+      try {
+        const response = await fetch('/api/calendario/sync', { method: 'POST' })
+        const data = await response.json()
+        if (response.ok && data.success && data.data.totalCreated + data.data.totalUpdated + data.data.totalDeleted > 0) {
+          queryClient.invalidateQueries({ queryKey: ['agenda', 'events', user.id] })
+        }
+      } catch {
+        // Silent — auto-sync should not disrupt the UI
+      }
+    }
+
+    doSync()
+  }, [user, queryClient])
+
+  const handleSync = async () => {
+    setSincronizando(true)
+    try {
+      const response = await fetch('/api/calendario/sync', { method: 'POST' })
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error ?? 'Falha ao sincronizar')
+      }
+
+      const { totalCreated, totalUpdated, totalDeleted } = data.data
+      if (totalCreated + totalUpdated + totalDeleted > 0) {
+        queryClient.invalidateQueries({ queryKey: ['agenda', 'events', user?.id] })
+        toast.success(`Sincronizado: ${totalCreated} novos, ${totalUpdated} atualizados, ${totalDeleted} removidos`)
+      } else {
+        toast.success('Calendarios sincronizados — nenhuma alteracao.')
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro desconhecido'
+      toast.error(`Erro ao sincronizar: ${message}`)
+    } finally {
+      setSincronizando(false)
+    }
+  }
 
   React.useEffect(() => {
     if (novoEventoAberto) {
@@ -237,6 +289,8 @@ export default function PaginaAgenda() {
               onConnectGoogle={() => handleConnectCalendar('Google')}
               onConnectOutlook={() => handleConnectCalendar('Outlook')}
               conectandoProvider={conectandoProvider}
+              onSync={handleSync}
+              sincronizando={sincronizando}
             />
           </section>
         </div>
