@@ -1,5 +1,7 @@
 import type { CreateEventDto, CalendarIntegration } from '@/types/agenda'
 import type { GoogleCalendarEvent, OutlookCalendarEvent } from '@/types/calendario'
+import { googleEventSchema, outlookEventSchema } from '@/lib/schemas/calendario'
+import { logSyncError } from './resilience'
 
 // ==========================================
 // INTERNAL TYPES
@@ -7,6 +9,42 @@ import type { GoogleCalendarEvent, OutlookCalendarEvent } from '@/types/calendar
 
 export interface SyncEventDto extends CreateEventDto {
   external_event_id: string
+}
+
+// ==========================================
+// ZOD VALIDATION WRAPPERS
+// ==========================================
+
+export function validateGoogleEvent(
+  raw: unknown,
+  userId: string,
+): GoogleCalendarEvent | null {
+  const result = googleEventSchema.safeParse(raw)
+  if (!result.success) {
+    logSyncError(
+      'Google',
+      userId,
+      `Invalid event data skipped: ${result.error.issues.map((i) => i.message).join(', ')}`,
+    )
+    return null
+  }
+  return raw as GoogleCalendarEvent
+}
+
+export function validateOutlookEvent(
+  raw: unknown,
+  userId: string,
+): OutlookCalendarEvent | null {
+  const result = outlookEventSchema.safeParse(raw)
+  if (!result.success) {
+    logSyncError(
+      'Outlook',
+      userId,
+      `Invalid event data skipped: ${result.error.issues.map((i) => i.message).join(', ')}`,
+    )
+    return null
+  }
+  return raw as OutlookCalendarEvent
 }
 
 // ==========================================

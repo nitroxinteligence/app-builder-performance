@@ -56,13 +56,17 @@ async function disconnectProvider(provider: CalendarProvider): Promise<{ eventsD
   return data.data
 }
 
-async function syncCalendars(): Promise<{
+async function syncCalendars(options?: { force?: boolean }): Promise<{
   results: SyncResult[]
   totalCreated: number
   totalUpdated: number
   totalDeleted: number
 }> {
-  const response = await fetch('/api/calendario/sync', { method: 'POST' })
+  const response = await fetch('/api/calendario/sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ force: options?.force ?? false }),
+  })
   const data = await response.json()
 
   if (!response.ok || !data.success) {
@@ -85,7 +89,7 @@ export interface UseIntegracaoCalendarioReturn {
   lastSyncAt: (provider: CalendarProvider) => Date | null
   getConnection: (provider: CalendarProvider) => CalendarConnection | undefined
   disconnect: (provider: CalendarProvider) => Promise<void>
-  sync: () => Promise<void>
+  sync: (options?: { force?: boolean }) => Promise<void>
 }
 
 export function useIntegracaoCalendario(): UseIntegracaoCalendarioReturn {
@@ -118,7 +122,7 @@ export function useIntegracaoCalendario(): UseIntegracaoCalendarioReturn {
   })
 
   const syncMutation = useMutation({
-    mutationFn: syncCalendars,
+    mutationFn: (options?: { force?: boolean }) => syncCalendars(options),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: CONNECTIONS_KEY(userId) })
       queryClient.invalidateQueries({ queryKey: EVENTS_KEY(userId) })
@@ -153,8 +157,8 @@ export function useIntegracaoCalendario(): UseIntegracaoCalendarioReturn {
     await disconnectMutation.mutateAsync(provider)
   }
 
-  const sync = async (): Promise<void> => {
-    await syncMutation.mutateAsync()
+  const sync = async (options?: { force?: boolean }): Promise<void> => {
+    await syncMutation.mutateAsync(options)
   }
 
   return {

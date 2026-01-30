@@ -12,6 +12,16 @@ export type CalendarProvider = 'Google' | 'Outlook'
 
 export type CalendarConnectionStatus = 'connected' | 'disconnected' | 'syncing' | 'error'
 
+export type CalendarSyncError =
+  | 'TOKEN_EXPIRED'
+  | 'TOKEN_REVOKED'
+  | 'RATE_LIMITED'
+  | 'NETWORK_ERROR'
+  | 'PERMISSION_DENIED'
+  | 'PROVIDER_UNAVAILABLE'
+  | 'INVALID_RESPONSE'
+  | 'UNKNOWN_ERROR'
+
 // ==========================================
 // CALENDAR CONNECTION (tabela calendar_connections)
 // ==========================================

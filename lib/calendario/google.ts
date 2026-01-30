@@ -1,4 +1,5 @@
 import type { CalendarProvider, GoogleCalendarEvent, GoogleCalendarListResponse } from '@/types/calendario'
+import { fetchWithRetry } from './resilience'
 
 // ==========================================
 // GOOGLE OAUTH CONSTANTS
@@ -99,14 +100,41 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleTokenRespo
   return response.json() as Promise<GoogleTokenResponse>
 }
 
+export async function refreshGoogleToken(
+  refreshToken: string,
+): Promise<GoogleTokenResponse> {
+  const response = await fetch(GOOGLE_TOKEN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: getGoogleClientId(),
+      client_secret: getGoogleClientSecret(),
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    }),
+  })
+
+  if (!response.ok) {
+    const errorBody = await response.text()
+    if (errorBody.includes('invalid_grant')) {
+      throw new Error('TOKEN_REVOKED')
+    }
+    throw new Error(`Google token refresh failed: ${response.status}`)
+  }
+
+  return response.json() as Promise<GoogleTokenResponse>
+}
+
 export async function fetchGoogleCalendarEvents(
   accessToken: string,
   timeMin: string,
   timeMax: string,
+  userId: string = 'unknown',
 ): Promise<{ events: GoogleCalendarEvent[]; syncToken: string | null }> {
   const allEvents: GoogleCalendarEvent[] = []
   let pageToken: string | undefined
   let syncToken: string | null = null
+  const context = { provider: 'Google', userId }
 
   do {
     const params = new URLSearchParams({
@@ -121,9 +149,11 @@ export async function fetchGoogleCalendarEvents(
       params.set('pageToken', pageToken)
     }
 
-    const response = await fetch(`${GOOGLE_CALENDAR_EVENTS}?${params.toString()}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
+    const response = await fetchWithRetry(
+      `${GOOGLE_CALENDAR_EVENTS}?${params.toString()}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+      context,
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to fetch Google Calendar events: ${response.status}`)

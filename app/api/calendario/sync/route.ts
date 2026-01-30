@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 import { createServerSupabaseClient, createServerSupabaseAdmin } from '@/lib/supabase/server'
 import { syncCalendarEvents, getActiveConnections } from '@/lib/calendario/sync'
+import { logSync, logSyncError } from '@/lib/calendario/resilience'
 import type { SyncResult } from '@/types/calendario'
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -14,6 +16,15 @@ export async function POST() {
         { success: false, error: 'Authentication required' },
         { status: 401 }
       )
+    }
+
+    // Parse optional force flag from body
+    let force = false
+    try {
+      const body = await request.json()
+      force = body?.force === true
+    } catch {
+      // No body or invalid JSON — default to force=false (auto-sync)
     }
 
     const supabaseAdmin = await createServerSupabaseAdmin()
@@ -31,6 +42,8 @@ export async function POST() {
       })
     }
 
+    logSync('All', user.id, `Syncing ${connections.length} connection(s), force=${force}`)
+
     const results: SyncResult[] = []
     let totalCreated = 0
     let totalUpdated = 0
@@ -38,13 +51,15 @@ export async function POST() {
 
     for (const connection of connections) {
       try {
-        const result = await syncCalendarEvents(supabaseAdmin, connection, user.id)
+        const result = await syncCalendarEvents(supabaseAdmin, connection, user.id, { force })
         results.push(result)
         totalCreated += result.created
         totalUpdated += result.updated
         totalDeleted += result.deleted
       } catch (error) {
-        // Task 11: Minimal error handling — don't break other connections
+        const errorMessage = error instanceof Error ? error.message : 'Unknown sync error'
+        logSyncError(connection.provider, user.id, `Sync failed: ${errorMessage}`)
+
         results.push({
           provider: connection.provider,
           created: 0,
@@ -52,7 +67,7 @@ export async function POST() {
           deleted: 0,
           errors: [{
             external_event_id: 'sync_failed',
-            message: error instanceof Error ? error.message : 'Unknown sync error',
+            message: errorMessage,
           }],
           sync_token: null,
         })

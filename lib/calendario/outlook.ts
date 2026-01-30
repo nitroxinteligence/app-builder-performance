@@ -1,4 +1,5 @@
 import type { CalendarProvider, OutlookCalendarEvent, OutlookCalendarListResponse } from '@/types/calendario'
+import { fetchWithRetry } from './resilience'
 
 // ==========================================
 // MICROSOFT OAUTH CONSTANTS
@@ -98,13 +99,41 @@ export async function exchangeOutlookCode(code: string): Promise<OutlookTokenRes
   return response.json() as Promise<OutlookTokenResponse>
 }
 
+export async function refreshOutlookToken(
+  refreshToken: string,
+): Promise<OutlookTokenResponse> {
+  const response = await fetch(MS_TOKEN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: getMicrosoftClientId(),
+      client_secret: getMicrosoftClientSecret(),
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+      scope: MS_SCOPES,
+    }),
+  })
+
+  if (!response.ok) {
+    const errorBody = await response.text()
+    if (errorBody.includes('invalid_grant') || errorBody.includes('interaction_required')) {
+      throw new Error('TOKEN_REVOKED')
+    }
+    throw new Error(`Microsoft token refresh failed: ${response.status}`)
+  }
+
+  return response.json() as Promise<OutlookTokenResponse>
+}
+
 export async function fetchOutlookCalendarEvents(
   accessToken: string,
   startDateTime: string,
   endDateTime: string,
+  userId: string = 'unknown',
 ): Promise<{ events: OutlookCalendarEvent[]; deltaLink: string | null }> {
   const allEvents: OutlookCalendarEvent[] = []
   let deltaLink: string | null = null
+  const context = { provider: 'Outlook', userId }
 
   const params = new URLSearchParams({
     startDateTime,
@@ -116,9 +145,11 @@ export async function fetchOutlookCalendarEvents(
   let url: string | null = `${MS_GRAPH_CALENDAR_VIEW}?${params.toString()}`
 
   while (url) {
-    const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
+    const response = await fetchWithRetry(
+      url,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+      context,
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to fetch Outlook Calendar events: ${response.status}`)

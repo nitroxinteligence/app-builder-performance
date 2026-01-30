@@ -161,7 +161,7 @@ export function StatusIntegracao({
             size="sm"
             variant="outline"
             className="w-full gap-2"
-            onClick={() => integracao.sync()}
+            onClick={() => integracao.sync({ force: true })}
             disabled={integracao.isSyncing}
           >
             {integracao.isSyncing ? (

@@ -92,7 +92,11 @@ export default function PaginaAgenda() {
 
     const doSync = async () => {
       try {
-        const response = await fetch('/api/calendario/sync', { method: 'POST' })
+        const response = await fetch('/api/calendario/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ force: false }),
+        })
         const data = await response.json()
         if (response.ok && data.success && data.data.totalCreated + data.data.totalUpdated + data.data.totalDeleted > 0) {
           queryClient.invalidateQueries({ queryKey: ['agenda', 'events', user.id] })

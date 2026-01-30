@@ -69,6 +69,72 @@ export const externalEventSchema = z.object({
 })
 
 // ==========================================
+// GOOGLE CALENDAR EVENT SCHEMA (API v3)
+// ==========================================
+
+const googleDateTimeSchema = z.object({
+  date: z.string().optional(),
+  dateTime: z.string().optional(),
+  timeZone: z.string().optional(),
+}).passthrough()
+
+export const googleEventSchema = z.object({
+  id: z.string().min(1),
+  status: z.string().optional(),
+  summary: z.string().optional(),
+  description: z.string().optional(),
+  location: z.string().optional(),
+  start: googleDateTimeSchema,
+  end: googleDateTimeSchema,
+}).passthrough()
+
+export const googleEventsResponseSchema = z.object({
+  items: z.array(z.unknown()).default([]),
+  nextPageToken: z.string().optional(),
+  nextSyncToken: z.string().optional(),
+}).passthrough()
+
+// ==========================================
+// OUTLOOK CALENDAR EVENT SCHEMA (Graph API)
+// ==========================================
+
+const outlookDateTimeSchema = z.object({
+  dateTime: z.string().min(1),
+  timeZone: z.string(),
+}).passthrough()
+
+export const outlookEventSchema = z.object({
+  id: z.string().min(1),
+  subject: z.string().optional(),
+  bodyPreview: z.string().optional(),
+  isAllDay: z.boolean().optional(),
+  isCancelled: z.boolean().optional(),
+  start: outlookDateTimeSchema,
+  end: outlookDateTimeSchema,
+  location: z.object({
+    displayName: z.string(),
+  }).passthrough().optional(),
+}).passthrough()
+
+export const outlookEventsResponseSchema = z.object({
+  value: z.array(z.unknown()).default([]),
+  '@odata.nextLink': z.string().optional(),
+  '@odata.deltaLink': z.string().optional(),
+}).passthrough()
+
+// ==========================================
+// TOKEN RESPONSE SCHEMA (Google + Outlook)
+// ==========================================
+
+export const tokenResponseSchema = z.object({
+  access_token: z.string().min(1),
+  expires_in: z.number().positive(),
+  token_type: z.string(),
+  scope: z.string().optional(),
+  refresh_token: z.string().optional(),
+}).passthrough()
+
+// ==========================================
 // TYPES INFERIDOS
 // ==========================================
 
@@ -78,3 +144,6 @@ export type ConnectRequestInput = z.infer<typeof connectRequestSchema>
 export type DisconnectRequestInput = z.infer<typeof disconnectRequestSchema>
 export type SyncRequestInput = z.infer<typeof syncRequestSchema>
 export type ExternalEventInput = z.infer<typeof externalEventSchema>
+export type GoogleEventInput = z.infer<typeof googleEventSchema>
+export type OutlookEventInput = z.infer<typeof outlookEventSchema>
+export type TokenResponseInput = z.infer<typeof tokenResponseSchema>
