@@ -1,17 +1,20 @@
 'use client'
 
+import * as React from 'react'
 import {
   CalendarDays,
+  CalendarPlus,
   Clock,
-  Link2,
+  Mail,
   MapPin,
   Pencil,
   Trash2,
 } from 'lucide-react'
 
 import { Botao } from '@/componentes/ui/botao'
+import { Dica, DicaGatilho, DicaConteudo } from '@/componentes/ui/dica'
 import { cn } from '@/lib/utilidades'
-import type { AgendaEvent, EventStatus } from '@/types/agenda'
+import type { AgendaEvent, CalendarIntegration, EventStatus } from '@/types/agenda'
 
 const estilosStatus: Record<EventStatus, string> = {
   confirmado:
@@ -25,6 +28,24 @@ const labelStatus: Record<EventStatus, string> = {
   confirmado: 'Confirmado',
   pendente: 'Pendente',
   foco: 'Foco',
+}
+
+const badgeCalendario: Record<CalendarIntegration, { icon: typeof CalendarDays; label: string; className: string }> = {
+  Google: {
+    icon: CalendarDays,
+    label: 'Google Calendar',
+    className: 'text-red-500 dark:text-red-400',
+  },
+  Outlook: {
+    icon: Mail,
+    label: 'Outlook Calendar',
+    className: 'text-blue-500 dark:text-blue-400',
+  },
+  Manual: {
+    icon: CalendarPlus,
+    label: 'Manual',
+    className: 'text-muted-foreground',
+  },
 }
 
 interface EventoCardProps {
@@ -69,10 +90,17 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
           <CalendarDays className="h-3.5 w-3.5" />
           {evento.categoria}
         </span>
-        <span className="flex items-center gap-1">
-          <Link2 className="h-3.5 w-3.5" />
-          {evento.calendario}
-        </span>
+        <Dica>
+          <DicaGatilho asChild>
+            <span className="flex items-center gap-1">
+              {React.createElement(badgeCalendario[evento.calendario].icon, {
+                className: cn('h-3.5 w-3.5', badgeCalendario[evento.calendario].className),
+              })}
+              {evento.calendario}
+            </span>
+          </DicaGatilho>
+          <DicaConteudo>{badgeCalendario[evento.calendario].label}</DicaConteudo>
+        </Dica>
       </div>
       <div className="flex items-center gap-2">
         <Botao

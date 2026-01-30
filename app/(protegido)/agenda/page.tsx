@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Loader2, Plus, RefreshCw } from 'lucide-react'
+import { ArrowLeft, Loader2, Plus } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
@@ -21,6 +21,7 @@ import {
   DialogoAlertaTitulo,
 } from '@/componentes/ui/dialogo-alerta'
 import { useAgenda } from '@/hooks/useAgenda'
+import { useIntegracaoCalendario } from '@/hooks/useIntegracaoCalendario'
 import type { AgendaEvent, CreateEventDto } from '@/types/agenda'
 import type { CalendarProvider } from '@/types/calendario'
 
@@ -45,7 +46,7 @@ export default function PaginaAgenda() {
   )
   const [salvando, setSalvando] = React.useState(false)
   const [conectandoProvider, setConectandoProvider] = React.useState<string | null>(null)
-  const [sincronizando, setSincronizando] = React.useState(false)
+  const [providerDesconectar, setProviderDesconectar] = React.useState<CalendarProvider | null>(null)
   const syncDoneRef = React.useRef(false)
 
   const { user } = useAuth()
@@ -53,6 +54,8 @@ export default function PaginaAgenda() {
 
   const { events, isLoading, error, createEvent, updateEvent, deleteEvent } =
     useAgenda()
+
+  const integracao = useIntegracaoCalendario()
 
   const dataSelecionadaISO = format(dataSelecionada, 'yyyy-MM-dd')
   const eventosDoDia = events.filter((evento) => evento.data === dataSelecionadaISO)
@@ -93,6 +96,7 @@ export default function PaginaAgenda() {
         const data = await response.json()
         if (response.ok && data.success && data.data.totalCreated + data.data.totalUpdated + data.data.totalDeleted > 0) {
           queryClient.invalidateQueries({ queryKey: ['agenda', 'events', user.id] })
+          queryClient.invalidateQueries({ queryKey: ['calendario', 'connections', user.id] })
         }
       } catch {
         // Silent — auto-sync should not disrupt the UI
@@ -101,31 +105,6 @@ export default function PaginaAgenda() {
 
     doSync()
   }, [user, queryClient])
-
-  const handleSync = async () => {
-    setSincronizando(true)
-    try {
-      const response = await fetch('/api/calendario/sync', { method: 'POST' })
-      const data = await response.json()
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error ?? 'Falha ao sincronizar')
-      }
-
-      const { totalCreated, totalUpdated, totalDeleted } = data.data
-      if (totalCreated + totalUpdated + totalDeleted > 0) {
-        queryClient.invalidateQueries({ queryKey: ['agenda', 'events', user?.id] })
-        toast.success(`Sincronizado: ${totalCreated} novos, ${totalUpdated} atualizados, ${totalDeleted} removidos`)
-      } else {
-        toast.success('Calendarios sincronizados — nenhuma alteracao.')
-      }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro desconhecido'
-      toast.error(`Erro ao sincronizar: ${message}`)
-    } finally {
-      setSincronizando(false)
-    }
-  }
 
   React.useEffect(() => {
     if (novoEventoAberto) {
@@ -170,6 +149,17 @@ export default function PaginaAgenda() {
       const message = err instanceof Error ? err.message : 'Erro desconhecido'
       toast.error(`Erro ao conectar: ${message}`)
       setConectandoProvider(null)
+    }
+  }
+
+  const confirmarDesconexao = async () => {
+    if (!providerDesconectar) return
+
+    try {
+      await integracao.disconnect(providerDesconectar)
+      setProviderDesconectar(null)
+    } catch {
+      // Error handling done in hook
     }
   }
 
@@ -257,7 +247,7 @@ export default function PaginaAgenda() {
               <Link
                 href="/inicio"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-                aria-label="Voltar para início"
+                aria-label="Voltar para inicio"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Link>
@@ -289,8 +279,8 @@ export default function PaginaAgenda() {
               onConnectGoogle={() => handleConnectCalendar('Google')}
               onConnectOutlook={() => handleConnectCalendar('Outlook')}
               conectandoProvider={conectandoProvider}
-              onSync={handleSync}
-              sincronizando={sincronizando}
+              integracao={integracao}
+              onRequestDisconnect={setProviderDesconectar}
             />
           </section>
         </div>
@@ -328,7 +318,7 @@ export default function PaginaAgenda() {
           <DialogoAlertaCabecalho>
             <DialogoAlertaTitulo>Excluir evento</DialogoAlertaTitulo>
             <DialogoAlertaDescricao>
-              Esse compromisso será removido do calendário.
+              Esse compromisso sera removido do calendario.
             </DialogoAlertaDescricao>
           </DialogoAlertaCabecalho>
           <DialogoAlertaRodape>
@@ -338,6 +328,41 @@ export default function PaginaAgenda() {
             <DialogoAlertaAcao onClick={confirmarExclusao} disabled={salvando}>
               {salvando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Excluir
+            </DialogoAlertaAcao>
+          </DialogoAlertaRodape>
+        </DialogoAlertaConteudo>
+      </DialogoAlerta>
+
+      <DialogoAlerta
+        open={Boolean(providerDesconectar)}
+        onOpenChange={(aberto) => {
+          if (!aberto) {
+            setProviderDesconectar(null)
+          }
+        }}
+      >
+        <DialogoAlertaConteudo className="rounded-2xl border-border p-6">
+          <DialogoAlertaCabecalho>
+            <DialogoAlertaTitulo>
+              Desconectar {providerDesconectar} Calendar?
+            </DialogoAlertaTitulo>
+            <DialogoAlertaDescricao>
+              Seus eventos importados do {providerDesconectar} serao removidos.
+              Voce pode reconectar a qualquer momento.
+            </DialogoAlertaDescricao>
+          </DialogoAlertaCabecalho>
+          <DialogoAlertaRodape>
+            <DialogoAlertaCancelar disabled={integracao.isDisconnecting}>
+              Cancelar
+            </DialogoAlertaCancelar>
+            <DialogoAlertaAcao
+              onClick={confirmarDesconexao}
+              disabled={integracao.isDisconnecting}
+            >
+              {integracao.isDisconnecting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Desconectar
             </DialogoAlertaAcao>
           </DialogoAlertaRodape>
         </DialogoAlertaConteudo>
