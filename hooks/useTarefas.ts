@@ -167,6 +167,7 @@ export function useTarefa(id: string | undefined) {
     queryKey: [...TAREFAS_KEY, user?.id, id],
     queryFn: () => (id ? fetchTarefa(id) : null),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   })
 }
 

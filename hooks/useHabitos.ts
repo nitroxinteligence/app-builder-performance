@@ -271,6 +271,7 @@ export function useHabito(id: string | undefined) {
     queryKey: [...HABITOS_KEY, user?.id, id],
     queryFn: () => (id ? fetchHabito(id) : null),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   })
 }
 

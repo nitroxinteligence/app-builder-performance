@@ -113,6 +113,7 @@ export function usePendencia(id: string | undefined) {
     queryKey: [...PENDENCIAS_KEY, user?.id, id],
     queryFn: () => (id ? fetchPendencia(id) : null),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   })
 }
 
