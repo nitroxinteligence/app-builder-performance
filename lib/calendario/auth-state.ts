@@ -1,4 +1,4 @@
-import { createHmac, randomUUID } from 'crypto'
+import { createHmac, randomUUID, timingSafeEqual } from 'crypto'
 
 import type { CalendarProvider } from '@/types/calendario'
 
@@ -89,7 +89,9 @@ export function validateStateToken(token: string): ValidatedState {
   const [encodedPayload, providedSignature] = parts
 
   const expectedSignature = sign(encodedPayload, secret)
-  if (providedSignature !== expectedSignature) {
+  const sigA = Buffer.from(providedSignature, 'utf-8')
+  const sigB = Buffer.from(expectedSignature, 'utf-8')
+  if (sigA.length !== sigB.length || !timingSafeEqual(sigA, sigB)) {
     throw new Error('Invalid state token signature')
   }
 

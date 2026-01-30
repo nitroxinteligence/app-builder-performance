@@ -28,7 +28,7 @@ export function validateGoogleEvent(
     )
     return null
   }
-  return raw as GoogleCalendarEvent
+  return result.data as unknown as GoogleCalendarEvent
 }
 
 export function validateOutlookEvent(
@@ -44,7 +44,7 @@ export function validateOutlookEvent(
     )
     return null
   }
-  return raw as OutlookCalendarEvent
+  return result.data as unknown as OutlookCalendarEvent
 }
 
 // ==========================================
