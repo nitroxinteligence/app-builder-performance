@@ -16,7 +16,7 @@ import { Botao } from '@/componentes/ui/botao'
 import { Emblema } from '@/componentes/ui/emblema'
 import { Dica, DicaGatilho, DicaConteudo } from '@/componentes/ui/dica'
 import { cn } from '@/lib/utilidades'
-import { variantesHover, transicaoRapida } from '@/lib/animacoes'
+import { transicaoRapida } from '@/lib/animacoes'
 import type { AgendaEvent, CalendarIntegration, EventStatus } from '@/types/agenda'
 
 const estilosStatus: Record<EventStatus, string> = {
@@ -70,7 +70,6 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
 
   return (
     <motion.div
-      whileHover={variantesHover.escala}
       transition={transicaoRapida}
       className={cn(
         "flex flex-col gap-2 rounded-2xl border border-[color:var(--borda-cartao)] border-l-4 bg-card p-4 shadow-[var(--shadow-sm)]",

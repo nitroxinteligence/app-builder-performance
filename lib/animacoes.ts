@@ -19,11 +19,9 @@ export const transicaoSuave: Transition = {
 
 export const variantesHover = {
   escala: {
-    scale: 1.02,
     transition: transicaoRapida,
   },
   escalaComSombra: {
-    scale: 1.02,
     boxShadow: "0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -6px rgba(0, 0, 0, 0.1)",
     transition: transicaoRapida,
   },
@@ -31,7 +29,6 @@ export const variantesHover = {
 
 export const variantesClique = {
   escala: {
-    scale: 0.98,
     transition: transicaoRapida,
   },
 } as const

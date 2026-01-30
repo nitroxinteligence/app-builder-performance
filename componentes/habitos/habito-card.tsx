@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 
 import { Emblema } from "@/componentes/ui/emblema"
 import { cn } from "@/lib/utilidades"
-import { variantesHover, variantesClique, transicaoRapida } from "@/lib/animacoes"
+import { transicaoRapida } from "@/lib/animacoes"
 import type { HabitoDiarioUI } from "./tipos-habitos"
 
 export type HabitoCardProps = {
@@ -27,8 +27,6 @@ export function HabitoCard({
       onClick={() => onAlternar(categoriaId, habito.id)}
       aria-pressed={habito.feitoHoje}
       disabled={disabled}
-      whileHover={variantesHover.escala}
-      whileTap={variantesClique.escala}
       transition={transicaoRapida}
       className="flex w-full items-center gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2.5 text-left shadow-[var(--shadow-sm)] transition-colors hover:bg-secondary/50 disabled:opacity-50"
     >

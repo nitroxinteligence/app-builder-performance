@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { motion, type HTMLMotionProps } from "framer-motion"
 
 import { cn } from "@/lib/utilidades"
-import { variantesClique, variantesHover, transicaoRapida } from "@/lib/animacoes"
+import { transicaoRapida } from "@/lib/animacoes"
 
 const estilosBotao = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
@@ -61,8 +61,6 @@ const Botao = React.forwardRef<HTMLButtonElement, PropsBotao>(
     return (
       <motion.button
         ref={ref}
-        whileHover={variantesHover.escala}
-        whileTap={variantesClique.escala}
         transition={transicaoRapida}
         className={cn(estilosBotao({ variant, size, className }))}
         {...(props as HTMLMotionProps<"button">)}
