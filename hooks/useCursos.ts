@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -290,7 +291,7 @@ export function useCursoBySlug(slug: string) {
 
       const lessons = (lessonsData ?? []) as Lesson[]
 
-      let progressMap = new Map<string, LessonProgress>()
+      const progressMap = new Map<string, LessonProgress>()
       if (userId) {
         const lessonIds = lessons.map((l: Lesson) => l.id)
         const { data: progress } = await supabase
@@ -369,6 +370,12 @@ export function useCompleteLesson() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cursos'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      toast.success('Aula concluída!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao completar aula', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }

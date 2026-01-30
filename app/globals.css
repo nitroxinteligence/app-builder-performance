@@ -59,7 +59,7 @@
   --secondary: #fff1e6;
   --secondary-foreground: #9a3412;
   --muted: #f5f2ef;
-  --muted-foreground: #6b6b6b;
+  --muted-foreground: #555555;
   --accent: #fff7ed;
   --accent-foreground: #9a3412;
   --destructive: #ef4444;
@@ -165,4 +165,15 @@
 
 .dark .kanban-scroll::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

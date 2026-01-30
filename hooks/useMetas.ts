@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/providers/auth-provider'
 import {
@@ -451,6 +452,12 @@ export function useCreateMeta() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: METAS_KEY })
+      toast.success('Meta criada com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar meta', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -462,6 +469,12 @@ export function useUpdateMeta() {
     mutationFn: updateMeta,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: METAS_KEY })
+      toast.success('Meta atualizada!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar meta', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -474,6 +487,12 @@ export function useDeleteMeta() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: METAS_KEY })
       queryClient.invalidateQueries({ queryKey: MARCOS_META_KEY })
+      toast.success('Meta excluída')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir meta', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -514,6 +533,12 @@ export function useCreateObjetivo() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OBJETIVOS_KEY })
+      toast.success('Objetivo criado com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar objetivo', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -525,6 +550,12 @@ export function useUpdateObjetivo() {
     mutationFn: updateObjetivo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OBJETIVOS_KEY })
+      toast.success('Objetivo atualizado!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar objetivo', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -536,6 +567,12 @@ export function useDeleteObjetivo() {
     mutationFn: deleteObjetivo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OBJETIVOS_KEY })
+      toast.success('Objetivo excluído')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir objetivo', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -607,6 +644,12 @@ export function useCreateColunaObjetivo() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: COLUNAS_OBJETIVO_KEY })
+      toast.success('Coluna criada com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar coluna', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -618,6 +661,12 @@ export function useUpdateColunaObjetivo() {
     mutationFn: updateColunaObjetivo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: COLUNAS_OBJETIVO_KEY })
+      toast.success('Coluna atualizada!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar coluna', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -630,6 +679,12 @@ export function useDeleteColunaObjetivo() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: COLUNAS_OBJETIVO_KEY })
       queryClient.invalidateQueries({ queryKey: OBJETIVOS_KEY })
+      toast.success('Coluna excluída')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir coluna', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -657,6 +712,12 @@ export function useCreateMarcoMeta() {
         queryKey: [...MARCOS_META_KEY, data.meta_id],
       })
       queryClient.invalidateQueries({ queryKey: METAS_KEY })
+      toast.success('Marco criado com sucesso!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao criar marco', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -669,6 +730,12 @@ export function useUpdateMarcoMeta() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: MARCOS_META_KEY })
       queryClient.invalidateQueries({ queryKey: METAS_KEY })
+      toast.success('Marco atualizado!')
+    },
+    onError: (error) => {
+      toast.error('Erro ao atualizar marco', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
@@ -681,6 +748,12 @@ export function useDeleteMarcoMeta() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: MARCOS_META_KEY })
       queryClient.invalidateQueries({ queryKey: METAS_KEY })
+      toast.success('Marco excluído')
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir marco', {
+        description: error instanceof Error ? error.message : 'Tente novamente',
+      })
     },
   })
 }
