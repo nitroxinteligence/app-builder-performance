@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/providers/auth-provider'
 import { pendenciaCreateSchema, pendenciaUpdateSchema } from '@/lib/schemas/tarefa'
-import type { Pendencia } from '@/types/database'
+import type { Pendencia } from '@/lib/supabase/types'
 import type { PendenciaCreateInput, PendenciaUpdateInput } from '@/lib/schemas/tarefa'
 
 const PENDENCIAS_KEY = ['pendencias']

@@ -11,7 +11,7 @@ import {
   categoriaHabitoUpdateSchema,
   historicoHabitoCreateSchema,
 } from '@/lib/schemas/habito'
-import type { Habito, CategoriaHabito, HistoricoHabito } from '@/types/database'
+import type { Habito, CategoriaHabito, HistoricoHabito } from '@/lib/supabase/types'
 import type {
   HabitoCreateInput,
   HabitoUpdateInput,

@@ -20,7 +20,7 @@ import type {
   Objetivo,
   ColunaObjetivo,
   MarcoMeta,
-} from '@/types/database'
+} from '@/lib/supabase/types'
 import type {
   MetaCreateInput,
   MetaUpdateInput,

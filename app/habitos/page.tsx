@@ -81,7 +81,7 @@ import type {
   Meta,
   StatusObjetivo,
   StatusMeta,
-} from "@/types/database";
+} from "@/lib/supabase/types";
 
 // ==========================================
 // UI TYPES (local to this page)

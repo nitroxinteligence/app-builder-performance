@@ -64,7 +64,7 @@ import { useTarefas } from "@/hooks/useTarefas";
 import { useCategoriasHabitos, useCreateHabito } from "@/hooks/useHabitos";
 import { useCreatePendencia } from "@/hooks/usePendencias";
 import { useAuth } from "@/lib/providers/auth-provider";
-import type { Prioridade } from "@/types/database";
+import type { Prioridade } from "@/lib/supabase/types";
 
 // Tipos locais para a UI de hábitos rápidos
 type HabitoDiarioUI = {

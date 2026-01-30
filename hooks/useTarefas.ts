@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/providers/auth-provider'
 import { tarefaCreateSchema, tarefaUpdateSchema } from '@/lib/schemas/tarefa'
-import type { Tarefa, TarefaUpdate, Estagio } from '@/types/database'
+import type { Tarefa, TarefaUpdate, Estagio } from '@/lib/supabase/types'
 import type { TarefaCreateInput, TarefaUpdateInput } from '@/lib/schemas/tarefa'
 
 const TAREFAS_KEY = ['tarefas']

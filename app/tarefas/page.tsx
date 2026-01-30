@@ -70,7 +70,7 @@ import {
 } from "@/hooks/usePendencias";
 import { useConfirmarComDados } from "@/hooks/useConfirmar";
 import { ConfirmarExclusao } from "@/componentes/ui/confirmar";
-import type { Tarefa, Pendencia, Prioridade, Estagio } from "@/types/database";
+import type { Tarefa, Pendencia, Prioridade, Estagio } from "@/lib/supabase/types";
 
 const estilosPrioridade: Record<Prioridade, string> = {
   urgente: "border-purple-200 bg-purple-50 text-purple-600 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300",
