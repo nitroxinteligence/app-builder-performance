@@ -281,6 +281,29 @@ export interface Evento {
   local: string | null
   status: EventStatus
   calendario: CalendarIntegration
+  external_event_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ==========================================
+// INTERFACES - CALENDAR CONNECTIONS
+// ==========================================
+
+export type CalendarProvider = 'Google' | 'Outlook'
+
+export interface ConexaoCalendario {
+  id: string
+  user_id: string
+  provider: CalendarProvider
+  access_token: string
+  refresh_token: string
+  token_expires_at: string
+  scopes: string[]
+  external_email: string | null
+  is_active: boolean
+  last_sync_at: string | null
+  sync_token: string | null
   created_at: string
   updated_at: string
 }
@@ -569,13 +592,52 @@ export interface Database {
       }
       events: {
         Row: Evento
-        Insert: Omit<Evento, 'id' | 'created_at' | 'updated_at'> & {
+        Insert: Omit<Evento, 'id' | 'created_at' | 'updated_at' | 'external_event_id'> & {
           id?: string
+          external_event_id?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: Partial<Omit<Evento, 'id' | 'user_id'>>
         Relationships: []
+      }
+      calendar_connections: {
+        Row: ConexaoCalendario
+        Insert: {
+          id?: string
+          user_id: string
+          provider: CalendarProvider
+          access_token: string
+          refresh_token: string
+          token_expires_at: string
+          scopes?: string[]
+          external_email?: string | null
+          is_active?: boolean
+          last_sync_at?: string | null
+          sync_token?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          provider?: CalendarProvider
+          access_token?: string
+          refresh_token?: string
+          token_expires_at?: string
+          scopes?: string[]
+          external_email?: string | null
+          is_active?: boolean
+          last_sync_at?: string | null
+          sync_token?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'calendar_connections_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
       }
       courses: {
         Row: Curso

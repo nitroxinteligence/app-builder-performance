@@ -1,6 +1,6 @@
 'use client'
 
-import { CalendarDays, CheckCircle2 } from 'lucide-react'
+import { CalendarDays, CheckCircle2, Loader2 } from 'lucide-react'
 
 import { Botao } from '@/componentes/ui/botao'
 import {
@@ -15,11 +15,17 @@ import { Calendario } from '@/componentes/ui/calendario'
 interface CalendarioViewProps {
   dataSelecionada: Date
   onSelecionarData: (data: Date) => void
+  onConnectGoogle?: () => void
+  onConnectOutlook?: () => void
+  conectandoProvider?: string | null
 }
 
 export function CalendarioView({
   dataSelecionada,
   onSelecionarData,
+  onConnectGoogle,
+  onConnectOutlook,
+  conectandoProvider,
 }: CalendarioViewProps) {
   return (
     <div className="space-y-6">
@@ -53,8 +59,18 @@ export function CalendarioView({
               <CalendarDays className="h-4 w-4 text-muted-foreground" />
               Google Calendar
             </div>
-            <Botao size="sm" variant="secondary" className="gap-1">
-              <CheckCircle2 className="h-3.5 w-3.5" />
+            <Botao
+              size="sm"
+              variant="secondary"
+              className="gap-1"
+              onClick={onConnectGoogle}
+              disabled={conectandoProvider !== null && conectandoProvider !== undefined}
+            >
+              {conectandoProvider === 'Google' ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-3.5 w-3.5" />
+              )}
               Conectar
             </Botao>
           </div>
@@ -63,8 +79,18 @@ export function CalendarioView({
               <CalendarDays className="h-4 w-4 text-muted-foreground" />
               Outlook Calendar
             </div>
-            <Botao size="sm" variant="secondary" className="gap-1">
-              <CheckCircle2 className="h-3.5 w-3.5" />
+            <Botao
+              size="sm"
+              variant="secondary"
+              className="gap-1"
+              onClick={onConnectOutlook}
+              disabled={conectandoProvider !== null && conectandoProvider !== undefined}
+            >
+              {conectandoProvider === 'Outlook' ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-3.5 w-3.5" />
+              )}
               Conectar
             </Botao>
           </div>

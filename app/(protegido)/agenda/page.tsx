@@ -2,8 +2,10 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Loader2, Plus } from 'lucide-react'
 import { format } from 'date-fns'
+import { toast } from 'sonner'
 
 import { Botao } from '@/componentes/ui/botao'
 import {
@@ -18,6 +20,7 @@ import {
 } from '@/componentes/ui/dialogo-alerta'
 import { useAgenda } from '@/hooks/useAgenda'
 import type { AgendaEvent, CreateEventDto } from '@/types/agenda'
+import type { CalendarProvider } from '@/types/calendario'
 
 import { CalendarioView } from '@/componentes/agenda/calendario-view'
 import { ListaEventosDia } from '@/componentes/agenda/lista-eventos-dia'
@@ -28,6 +31,9 @@ import {
 } from '@/componentes/agenda/formulario-evento'
 
 export default function PaginaAgenda() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [dataSelecionada, setDataSelecionada] = React.useState<Date>(new Date())
   const [novoEventoAberto, setNovoEventoAberto] = React.useState(false)
   const [eventoEditando, setEventoEditando] = React.useState<AgendaEvent | null>(null)
@@ -36,6 +42,7 @@ export default function PaginaAgenda() {
     criarFormularioVazio(format(new Date(), 'yyyy-MM-dd'))
   )
   const [salvando, setSalvando] = React.useState(false)
+  const [conectandoProvider, setConectandoProvider] = React.useState<string | null>(null)
 
   const { events, isLoading, error, createEvent, updateEvent, deleteEvent } =
     useAgenda()
@@ -45,6 +52,28 @@ export default function PaginaAgenda() {
   const proximosEventos = events
     .filter((evento) => evento.data >= dataSelecionadaISO)
     .slice(0, 5)
+
+  // Detect OAuth callback query params
+  React.useEffect(() => {
+    const connected = searchParams.get('connected')
+    const errorParam = searchParams.get('error')
+
+    if (connected) {
+      const providerName = connected === 'google' ? 'Google Calendar' : 'Outlook Calendar'
+      toast.success(`${providerName} conectado com sucesso!`)
+      router.replace('/agenda')
+    }
+
+    if (errorParam) {
+      const providerName = errorParam.includes('google') ? 'Google' : 'Outlook'
+      const isDenied = errorParam.includes('denied')
+      const message = isDenied
+        ? `Conexao com ${providerName} foi cancelada.`
+        : `Erro ao conectar ${providerName}. Tente novamente.`
+      toast.error(message)
+      router.replace('/agenda')
+    }
+  }, [searchParams, router])
 
   React.useEffect(() => {
     if (novoEventoAberto) {
@@ -68,6 +97,29 @@ export default function PaginaAgenda() {
       calendario: eventoEditando.calendario,
     })
   }, [eventoEditando])
+
+  const handleConnectCalendar = async (provider: CalendarProvider) => {
+    setConectandoProvider(provider)
+    try {
+      const response = await fetch('/api/calendario/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error ?? 'Failed to initiate connection')
+      }
+
+      window.location.href = data.data.url
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro desconhecido'
+      toast.error(`Erro ao conectar: ${message}`)
+      setConectandoProvider(null)
+    }
+  }
 
   const atualizarFormulario = (parcial: Partial<FormularioEvento>) => {
     setFormEvento((prev) => ({ ...prev, ...parcial }))
@@ -182,6 +234,9 @@ export default function PaginaAgenda() {
             <CalendarioView
               dataSelecionada={dataSelecionada}
               onSelecionarData={setDataSelecionada}
+              onConnectGoogle={() => handleConnectCalendar('Google')}
+              onConnectOutlook={() => handleConnectCalendar('Outlook')}
+              conectandoProvider={conectandoProvider}
             />
           </section>
         </div>

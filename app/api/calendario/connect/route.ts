@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 
 import { generateStateToken } from '@/lib/calendario/auth-state'
+import { buildGoogleAuthUrl } from '@/lib/calendario/google'
+import { buildOutlookAuthUrl } from '@/lib/calendario/outlook'
 import { connectRequestSchema } from '@/lib/schemas/calendario'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
@@ -33,9 +35,13 @@ export async function POST(request: Request) {
     const { provider } = parsed.data
     const state = generateStateToken(user.id, provider)
 
+    const url = provider === 'Google'
+      ? buildGoogleAuthUrl(state)
+      : buildOutlookAuthUrl(state)
+
     return NextResponse.json({
       success: true,
-      data: { provider, state },
+      data: { provider, state, url },
     })
   } catch (error) {
     return NextResponse.json(
