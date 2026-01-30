@@ -3,6 +3,7 @@
 import { Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { motion } from 'framer-motion'
 
 import {
   Cartao,
@@ -11,7 +12,9 @@ import {
   CartaoDescricao,
   CartaoTitulo,
 } from '@/componentes/ui/cartao'
+import { Emblema } from '@/componentes/ui/emblema'
 import { cn } from '@/lib/utilidades'
+import { variantesEntrada } from '@/lib/animacoes'
 import type { AgendaEvent } from '@/types/agenda'
 import { EventoCard, estilosStatus, labelStatus } from './evento-card'
 
@@ -33,7 +36,12 @@ export function ListaEventosDia({
   onExcluir,
 }: ListaEventosDiaProps) {
   return (
-    <div className="space-y-6">
+    <motion.div
+      variants={variantesEntrada}
+      initial="oculto"
+      animate="visivel"
+      className="space-y-6"
+    >
       <Cartao>
         <CartaoCabecalho>
           <CartaoTitulo className="text-base">Agenda do dia</CartaoTitulo>
@@ -67,10 +75,10 @@ export function ListaEventosDia({
       <Cartao>
         <CartaoCabecalho>
           <CartaoTitulo className="text-base">
-            Próximos compromissos
+            Proximos compromissos
           </CartaoTitulo>
           <CartaoDescricao>
-            Visão rápida dos próximos eventos agendados.
+            Visao rapida dos proximos eventos agendados.
           </CartaoDescricao>
         </CartaoCabecalho>
         <CartaoConteudo className="space-y-3">
@@ -80,13 +88,13 @@ export function ListaEventosDia({
             </div>
           ) : proximosEventos.length === 0 ? (
             <div className="text-sm text-muted-foreground">
-              Nenhum evento próximo.
+              Nenhum evento proximo.
             </div>
           ) : (
             proximosEventos.map((evento) => (
               <div
                 key={evento.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/60 px-3 py-2 text-sm"
+                className="flex items-center justify-between gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2 text-sm shadow-[var(--shadow-sm)]"
               >
                 <div>
                   <p className="font-medium">{evento.titulo}</p>
@@ -95,19 +103,16 @@ export function ListaEventosDia({
                     {evento.horario_inicio}
                   </p>
                 </div>
-                <span
-                  className={cn(
-                    'rounded-full border px-2 py-0.5 text-[10px] font-semibold',
-                    estilosStatus[evento.status]
-                  )}
+                <Emblema
+                  className={cn(estilosStatus[evento.status])}
                 >
                   {labelStatus[evento.status]}
-                </span>
+                </Emblema>
               </div>
             ))
           )}
         </CartaoConteudo>
       </Cartao>
-    </div>
+    </motion.div>
   )
 }
