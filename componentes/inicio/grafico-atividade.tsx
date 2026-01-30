@@ -32,7 +32,7 @@ function DicaPersonalizada({ active, payload, label }: {
   if (!active || !payload?.length) return null
 
   return (
-    <div className="rounded-xl border border-[color:var(--borda-cartao)] bg-card p-3 shadow-md">
+    <div className="rounded-xl border border-[color:var(--borda-cartao)] bg-card p-3">
       <p className="mb-1.5 text-xs font-medium text-foreground">{label}</p>
       {payload.map((item) => (
         <div key={item.name} className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -54,7 +54,7 @@ export function GraficoAtividade({ dados, titulo = "Atividade semanal" }: PropsG
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.3 }}
-      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-6 shadow-sm"
+      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-6"
     >
       <h3 className="mb-4 font-titulo text-base font-semibold text-foreground">
         {titulo}

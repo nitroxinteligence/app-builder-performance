@@ -64,7 +64,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
     temaEscuro ? "bg-sidebar-foreground" : "bg-sidebar-accent"
   )
   const togglePinoClasses = cn(
-    "h-4 w-4 rounded-full bg-sidebar shadow-sm transition-transform",
+    "h-4 w-4 rounded-full bg-sidebar transition-transform",
     temaEscuro ? "translate-x-4" : "translate-x-0"
   )
 

@@ -118,7 +118,7 @@ function EsqueletoCartaoKanban({
   return (
     <div
       className={cn(
-        "rounded-xl border bg-card p-4 shadow-sm",
+        "rounded-xl border bg-card p-4",
         className
       )}
       {...props}

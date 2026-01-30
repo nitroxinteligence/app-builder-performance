@@ -22,7 +22,7 @@ export function KanbanColuna({
   onConcluir,
 }: KanbanColunaProps) {
   return (
-    <div className="flex w-full flex-col gap-4 rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-4 shadow-[var(--shadow-sm)] md:w-[280px] lg:w-auto">
+    <div className="flex w-full flex-col gap-4 rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-4 md:w-[280px] lg:w-auto">
       <div className="space-y-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">

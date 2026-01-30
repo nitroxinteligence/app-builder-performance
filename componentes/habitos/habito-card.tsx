@@ -30,7 +30,7 @@ export function HabitoCard({
       whileHover={variantesHover.escala}
       whileTap={variantesClique.escala}
       transition={transicaoRapida}
-      className="flex w-full items-center gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2.5 text-left shadow-[var(--shadow-sm)] transition-colors hover:bg-secondary/50 disabled:opacity-50"
+      className="flex w-full items-center gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2.5 text-left transition-colors hover:bg-secondary/50 disabled:opacity-50"
     >
       <span
         className={cn(

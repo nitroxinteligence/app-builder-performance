@@ -41,7 +41,7 @@ export function CartaoKpi({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: indice * 0.08, ease: [0.4, 0, 0.2, 1] }}
-      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5 shadow-sm"
+      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5"
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2">

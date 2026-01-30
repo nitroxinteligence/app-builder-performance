@@ -65,7 +65,7 @@ export function TimerDisplay({
     somAtivado ? "bg-foreground" : "bg-secondary"
   )
   const togglePinoSomClasses = cn(
-    "h-4 w-4 rounded-full bg-background shadow-sm transition-transform",
+    "h-4 w-4 rounded-full bg-background transition-transform",
     somAtivado ? "translate-x-4" : "translate-x-0"
   )
 

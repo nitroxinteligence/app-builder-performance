@@ -46,7 +46,7 @@ const Alternador = React.forwardRef<HTMLButtonElement, PropsAlternador>(
       >
         <motion.span
           className={cn(
-            "pointer-events-none block rounded-full bg-background shadow-lg",
+            "pointer-events-none block rounded-full bg-background",
             thumbConfig.size
           )}
           animate={{

@@ -73,7 +73,7 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
       whileHover={variantesHover.escala}
       transition={transicaoRapida}
       className={cn(
-        "flex flex-col gap-2 rounded-2xl border border-[color:var(--borda-cartao)] border-l-4 bg-card p-4 shadow-[var(--shadow-sm)]",
+        "flex flex-col gap-2 rounded-2xl border border-[color:var(--borda-cartao)] border-l-4 bg-card p-4",
         estilosCategoria[categoriaKey]
       )}
     >

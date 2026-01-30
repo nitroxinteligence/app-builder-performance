@@ -960,7 +960,7 @@ export default function AcoesRapidasInicio() {
 
       <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
         <ProvedorDica delayDuration={150} skipDelayDuration={0}>
-          <div className="flex items-center gap-1.5 rounded-full bg-[#111111] px-1.5 py-1.5 shadow-lg">
+          <div className="flex items-center gap-1.5 rounded-full bg-[#111111] px-1.5 py-1.5">
             <MenuSuspenso modal={false} onOpenChange={setMenuAberto}>
               <MenuSuspensoGatilho asChild>
                 <Botao
@@ -980,7 +980,7 @@ export default function AcoesRapidasInicio() {
             <MenuSuspensoConteudo
               side="top"
               align="center"
-              className="w-56 rounded-2xl border-border/60 bg-background/95 p-3 shadow-lg backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              className="w-56 rounded-2xl border-border/60 bg-background/95 p-3 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
             >
                 <div className="flex flex-col gap-2">
                   <MenuSuspensoItem

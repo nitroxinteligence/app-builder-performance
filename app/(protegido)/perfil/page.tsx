@@ -259,7 +259,7 @@ export default function PaginaPerfil() {
                         >
                           <span
                             className={cn(
-                              "h-4 w-4 rounded-full bg-background shadow-sm transition-transform",
+                              "h-4 w-4 rounded-full bg-background transition-transform",
                               ativo ? "translate-x-4" : "translate-x-0"
                             )}
                           />

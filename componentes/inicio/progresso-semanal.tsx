@@ -17,7 +17,7 @@ export function ProgressoSemanal({ itens }: PropsProgressoSemanal) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.25 }}
-      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-6 shadow-sm"
+      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-6"
     >
       <div className="flex items-center gap-2">
         <TrendingUp className="h-4 w-4 text-primary" />

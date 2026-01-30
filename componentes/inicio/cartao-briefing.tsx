@@ -18,7 +18,7 @@ export function CartaoBriefing({ nomeUsuario, mensagem }: PropsCartaoBriefing) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.5 }}
-      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-6 shadow-sm"
+      className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-6"
     >
       <div className="flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">

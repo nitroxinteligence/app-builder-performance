@@ -241,7 +241,7 @@ function ConteudoPaginaInicio() {
             <div className="h-20 animate-pulse rounded-2xl bg-muted" />
           ) : (
             <section
-              className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5 shadow-sm"
+              className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5"
               aria-label="Progresso de nivel"
             >
               <div className="flex items-center justify-between">
