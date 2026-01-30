@@ -1,21 +1,23 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
 import {
   Inbox,
   ClipboardList,
   Target,
-  LucideIcon,
-} from "lucide-react";
+  type LucideIcon,
+} from "lucide-react"
+import { motion } from "framer-motion"
 
-import { cn } from "@/lib/utilidades";
+import { cn } from "@/lib/utilidades"
+import { variantesEntrada, transicaoSuave } from "@/lib/animacoes"
 
 interface PropsEstadoVazio {
-  icone?: React.ReactNode;
-  titulo: string;
-  descricao?: string;
-  acao?: React.ReactNode;
-  className?: string;
+  icone?: React.ReactNode
+  titulo: string
+  descricao?: string
+  acao?: React.ReactNode
+  className?: string
 }
 
 function EstadoVazio({
@@ -26,17 +28,24 @@ function EstadoVazio({
   className,
 }: PropsEstadoVazio) {
   return (
-    <div
+    <motion.div
+      variants={variantesEntrada}
+      initial="oculto"
+      animate="visivel"
       className={cn(
         "flex flex-col items-center justify-center py-12 px-4 text-center",
-        "animate-in fade-in-0 zoom-in-95 duration-300",
         className
       )}
     >
       {icone && (
-        <div className="mb-4 text-muted-foreground/50 animate-in fade-in-0 zoom-in-50 duration-500">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ ...transicaoSuave, delay: 0.1 }}
+          className="mb-4 text-muted-foreground/50"
+        >
           {icone}
-        </div>
+        </motion.div>
       )}
       <h3 className="font-titulo text-lg font-semibold text-foreground mb-1">
         {titulo}
@@ -47,19 +56,23 @@ function EstadoVazio({
         </p>
       )}
       {acao && (
-        <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-500 delay-150">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...transicaoSuave, delay: 0.15 }}
+        >
           {acao}
-        </div>
+        </motion.div>
       )}
-    </div>
-  );
+    </motion.div>
+  )
 }
 
-EstadoVazio.displayName = "EstadoVazio";
+EstadoVazio.displayName = "EstadoVazio"
 
 interface PropsEstadoVazioVariante {
-  acao?: React.ReactNode;
-  className?: string;
+  acao?: React.ReactNode
+  className?: string
 }
 
 function EstadoVazioTarefas({ acao, className }: PropsEstadoVazioVariante) {
@@ -78,10 +91,10 @@ function EstadoVazioTarefas({ acao, className }: PropsEstadoVazioVariante) {
       acao={acao}
       className={className}
     />
-  );
+  )
 }
 
-EstadoVazioTarefas.displayName = "EstadoVazioTarefas";
+EstadoVazioTarefas.displayName = "EstadoVazioTarefas"
 
 function EstadoVazioHabitos({ acao, className }: PropsEstadoVazioVariante) {
   return (
@@ -93,19 +106,19 @@ function EstadoVazioHabitos({ acao, className }: PropsEstadoVazioVariante) {
         </div>
       }
       titulo="Nenhum habito cadastrado"
-      descricao="Crie habitos para construir uma rotina mais saudavel e alcançar seus objetivos."
+      descricao="Crie habitos para construir uma rotina mais saudavel e alcancar seus objetivos."
       acao={acao}
       className={className}
     />
-  );
+  )
 }
 
-EstadoVazioHabitos.displayName = "EstadoVazioHabitos";
+EstadoVazioHabitos.displayName = "EstadoVazioHabitos"
 
 interface PropsEstadoVazioGenerico extends PropsEstadoVazioVariante {
-  icone?: LucideIcon;
-  titulo?: string;
-  descricao?: string;
+  icone?: LucideIcon
+  titulo?: string
+  descricao?: string
 }
 
 function EstadoVazioGenerico({
@@ -123,16 +136,16 @@ function EstadoVazioGenerico({
       acao={acao}
       className={className}
     />
-  );
+  )
 }
 
-EstadoVazioGenerico.displayName = "EstadoVazioGenerico";
+EstadoVazioGenerico.displayName = "EstadoVazioGenerico"
 
 export {
   EstadoVazio,
   EstadoVazioTarefas,
   EstadoVazioHabitos,
   EstadoVazioGenerico,
-};
+}
 
-export type { PropsEstadoVazio, PropsEstadoVazioVariante, PropsEstadoVazioGenerico };
+export type { PropsEstadoVazio, PropsEstadoVazioVariante, PropsEstadoVazioGenerico }

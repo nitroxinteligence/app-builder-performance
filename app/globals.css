@@ -167,6 +167,12 @@
   background-color: hsl(var(--muted-foreground) / 0.6);
 }
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
