@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Clock, Mic, Plus, Search, Send } from "lucide-react";
+import {
+  Clock,
+  FileText,
+  Mic,
+  Paperclip,
+  Plus,
+  Search,
+  Send,
+  X,
+} from "lucide-react";
 
 import { Botao } from "@/componentes/ui/botao";
 import { Cartao, CartaoConteudo } from "@/componentes/ui/cartao";
@@ -31,6 +40,10 @@ export default function PaginaAssistente() {
     conversasIniciais[0]?.id ?? ""
   );
   const [textoAtual, setTextoAtual] = React.useState("");
+  const [arquivoSelecionado, setArquivoSelecionado] =
+    React.useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+  const inputArquivoRef = React.useRef<HTMLInputElement>(null);
   const containerMensagensRef = React.useRef<HTMLDivElement>(null);
   const fimMensagensRef = React.useRef<HTMLDivElement>(null);
   const { user } = useAuth();
@@ -146,9 +159,39 @@ export default function PaginaAssistente() {
     }
   };
 
+  const TIPOS_ACEITOS =
+    "image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain";
+
+  const selecionarArquivo = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const arquivo = event.target.files?.[0];
+    if (!arquivo) {
+      return;
+    }
+    setArquivoSelecionado(arquivo);
+    if (arquivo.type.startsWith("image/")) {
+      const url = URL.createObjectURL(arquivo);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const removerArquivo = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setArquivoSelecionado(null);
+    setPreviewUrl(null);
+    if (inputArquivoRef.current) {
+      inputArquivoRef.current.value = "";
+    }
+  };
+
+  const ehImagem = arquivoSelecionado?.type.startsWith("image/") ?? false;
+
   return (
     <>
-      <aside className="w-full border-b border-border bg-sidebar p-6 lg:fixed lg:left-0 lg:top-0 lg:z-30 lg:ml-16 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:transition-all lg:duration-300">
+      <aside className="w-full border-b border-border bg-sidebar p-6 lg:fixed lg:left-0 lg:top-0 lg:z-30 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:transition-all lg:duration-300">
           <ProvedorDica delayDuration={150} skipDelayDuration={0}>
             <div className="flex h-full flex-col">
               <div className="flex items-center justify-between">
@@ -219,7 +262,7 @@ export default function PaginaAssistente() {
         <main
           className={cn(
             "flex-1 px-6 pt-10 pb-20 lg:transition-[padding] lg:duration-300",
-            "lg:pl-72"
+            "lg:pl-72 lg:ml-0"
           )}
         >
           <div className="mx-auto flex min-h-[calc(100vh-120px)] w-full max-w-5xl flex-col gap-8">
@@ -245,7 +288,7 @@ export default function PaginaAssistente() {
                         onClick={() => enviarMensagem(cartao.acao)}
                         className="text-left"
                       >
-                        <Cartao className="h-full transition hover:bg-secondary/50">
+                        <Cartao className="h-full shadow-none transition hover:bg-secondary/50">
                           <CartaoConteudo className="flex h-full flex-col gap-4 p-4">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                               <cartao.icone className="h-4 w-4" />
@@ -328,9 +371,60 @@ export default function PaginaAssistente() {
           </div>
         </main>
 
-      <div className="fixed bottom-6 left-0 right-0 z-30 px-6 lg:pl-24">
+      <div className="fixed bottom-6 left-0 right-0 z-30 px-6 lg:pl-8">
         <div className="mx-auto w-full max-w-3xl lg:pl-64">
-          <div className="flex items-center gap-2 rounded-full border border-border bg-[#F4F4F4] px-4 py-2">
+          <input
+            ref={inputArquivoRef}
+            type="file"
+            accept={TIPOS_ACEITOS}
+            onChange={selecionarArquivo}
+            className="hidden"
+            aria-label="Selecionar arquivo"
+          />
+
+          {arquivoSelecionado ? (
+            <div className="mb-2 flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3">
+              {ehImagem && previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt={arquivoSelecionado.name}
+                  className="h-12 w-12 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary">
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">
+                  {arquivoSelecionado.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {(arquivoSelecionado.size / 1024).toFixed(1)} KB
+                </p>
+              </div>
+              <Botao
+                variant="ghost"
+                size="icon"
+                aria-label="Remover arquivo"
+                onClick={removerArquivo}
+                className="h-8 w-8 shrink-0 rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </Botao>
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-2 rounded-full border border-border bg-[#F4F4F4] dark:bg-neutral-800 px-4 py-2">
+            <Botao
+              variant="ghost"
+              size="icon"
+              aria-label="Anexar arquivo"
+              onClick={() => inputArquivoRef.current?.click()}
+              className="rounded-full"
+            >
+              <Paperclip className="h-4 w-4" />
+            </Botao>
             <textarea
               value={textoAtual}
               onChange={(event) => setTextoAtual(event.target.value)}
@@ -351,7 +445,7 @@ export default function PaginaAssistente() {
               size="icon"
               aria-label="Enviar mensagem"
               onClick={tratarEnvio}
-              disabled={!textoAtual.trim()}
+              disabled={!textoAtual.trim() && !arquivoSelecionado}
               className="rounded-full"
             >
               <Send className="h-4 w-4" />

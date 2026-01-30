@@ -1,22 +1,38 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
 
 import { BottomTabBar } from "@/componentes/layout/bottom-tab-bar"
 import { Cabecalho } from "@/componentes/layout/cabecalho"
 import { Sidebar } from "@/componentes/layout/sidebar"
 import { cn } from "@/lib/utilidades"
 
+const ROTAS_SEM_SHELL = ["/assistente"]
+
 export default function LayoutProtegido({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
   const [sidebarAberta, setSidebarAberta] = React.useState(false)
+
+  const ocultarShell = ROTAS_SEM_SHELL.includes(pathname)
 
   const alternarSidebar = React.useCallback(() => {
     setSidebarAberta((anterior) => !anterior)
   }, [])
+
+  if (ocultarShell) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <main id="main-content" className="flex min-h-screen flex-col">
+          {children}
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
