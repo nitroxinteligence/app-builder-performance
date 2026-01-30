@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Cartao,
@@ -6,31 +6,26 @@ import {
   CartaoConteudo,
   CartaoDescricao,
   CartaoTitulo,
-} from "@/componentes/ui/cartao";
-import type { CategoriaHabitoUI } from "./tipos-habitos";
-import { HabitoCard } from "./habito-card";
-
-// ==========================================
-// PROPS
-// ==========================================
+} from "@/componentes/ui/cartao"
+import { Progresso } from "@/componentes/ui/progresso"
+import type { CategoriaHabitoUI } from "./tipos-habitos"
+import { HabitoCard } from "./habito-card"
 
 export type CategoriasHabitosProps = {
-  categoria: CategoriaHabitoUI;
-  onAlternarHabito: (categoriaId: string, habitoId: string) => void;
-  disabled?: boolean;
-};
-
-// ==========================================
-// COMPONENT
-// ==========================================
+  categoria: CategoriaHabitoUI
+  onAlternarHabito: (categoriaId: string, habitoId: string) => void
+  disabled?: boolean
+}
 
 export function CategoriasHabitos({
   categoria,
   onAlternarHabito,
   disabled = false,
 }: CategoriasHabitosProps) {
-  const feitos = categoria.habitos.filter((habito) => habito.feitoHoje).length;
-  const Icone = categoria.icone;
+  const feitos = categoria.habitos.filter((habito) => habito.feitoHoje).length
+  const total = categoria.habitos.length
+  const percentual = total > 0 ? Math.round((feitos / total) * 100) : 0
+  const Icone = categoria.icone
 
   return (
     <Cartao>
@@ -40,17 +35,18 @@ export function CategoriasHabitos({
             {categoria.titulo}
           </CartaoTitulo>
           <CartaoDescricao>
-            {feitos}/{categoria.habitos.length} concluídos
+            {feitos}/{total} concluidos
           </CartaoDescricao>
         </div>
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <Icone className="h-4 w-4" />
         </div>
       </CartaoCabecalho>
       <CartaoConteudo className="space-y-3">
-        {categoria.habitos.length === 0 ? (
+        <Progresso value={percentual} />
+        {total === 0 ? (
           <p className="text-xs text-muted-foreground">
-            Nenhum hábito nesta categoria.
+            Nenhum habito nesta categoria.
           </p>
         ) : (
           categoria.habitos.map((habito) => (
@@ -65,5 +61,5 @@ export function CategoriasHabitos({
         )}
       </CartaoConteudo>
     </Cartao>
-  );
+  )
 }

@@ -10,10 +10,13 @@ import {
   Pencil,
   Trash2,
 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 import { Botao } from '@/componentes/ui/botao'
+import { Emblema } from '@/componentes/ui/emblema'
 import { Dica, DicaGatilho, DicaConteudo } from '@/componentes/ui/dica'
 import { cn } from '@/lib/utilidades'
+import { variantesHover, transicaoRapida } from '@/lib/animacoes'
 import type { AgendaEvent, CalendarIntegration, EventStatus } from '@/types/agenda'
 
 const estilosStatus: Record<EventStatus, string> = {
@@ -28,6 +31,14 @@ const labelStatus: Record<EventStatus, string> = {
   confirmado: 'Confirmado',
   pendente: 'Pendente',
   foco: 'Foco',
+}
+
+const estilosCategoria: Record<string, string> = {
+  Trabalho: 'border-l-info',
+  Pessoal: 'border-l-success',
+  Estudo: 'border-l-warning',
+  Reuniao: 'border-l-primary',
+  Outro: 'border-l-muted-foreground',
 }
 
 const badgeCalendario: Record<CalendarIntegration, { icon: typeof CalendarDays; label: string; className: string }> = {
@@ -55,8 +66,17 @@ interface EventoCardProps {
 }
 
 export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
+  const categoriaKey = evento.categoria in estilosCategoria ? evento.categoria : 'Outro'
+
   return (
-    <div className="flex flex-col gap-2 rounded-2xl border border-border bg-background/60 p-4">
+    <motion.div
+      whileHover={variantesHover.escala}
+      transition={transicaoRapida}
+      className={cn(
+        "flex flex-col gap-2 rounded-2xl border border-[color:var(--borda-cartao)] border-l-4 bg-card p-4 shadow-[var(--shadow-sm)]",
+        estilosCategoria[categoriaKey]
+      )}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
           <p className="text-sm font-semibold">{evento.titulo}</p>
@@ -66,14 +86,13 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
             </p>
           )}
         </div>
-        <span
+        <Emblema
           className={cn(
-            'rounded-full border px-2 py-0.5 text-[10px] font-semibold',
             estilosStatus[evento.status]
           )}
         >
           {labelStatus[evento.status]}
-        </span>
+        </Emblema>
       </div>
       <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
@@ -86,13 +105,13 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
             {evento.local}
           </span>
         )}
-        <span className="flex items-center gap-1">
-          <CalendarDays className="h-3.5 w-3.5" />
+        <Emblema variant="outline" className="gap-1">
+          <CalendarDays className="h-3 w-3" />
           {evento.categoria}
-        </span>
+        </Emblema>
         <Dica>
           <DicaGatilho asChild>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 cursor-help">
               {React.createElement(badgeCalendario[evento.calendario].icon, {
                 className: cn('h-3.5 w-3.5', badgeCalendario[evento.calendario].className),
               })}
@@ -122,7 +141,7 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
           Excluir
         </Botao>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

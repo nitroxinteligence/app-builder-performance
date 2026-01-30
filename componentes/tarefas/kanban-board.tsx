@@ -1,8 +1,10 @@
 "use client"
 
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
+import { motion } from "framer-motion"
 
 import type { Tarefa } from "@/lib/supabase/types"
+import { variantesEntrada } from "@/lib/animacoes"
 import { KanbanColuna } from "./kanban-coluna"
 import type { ColunaComTarefas } from "./tipos"
 
@@ -23,8 +25,13 @@ export function KanbanBoard({
 }: KanbanBoardProps) {
   return (
     <DragDropContext onDragEnd={aoFinalizarArraste}>
-      <section className="-mx-6 overflow-x-auto px-6 pb-2 md:overflow-visible">
-        <div className="flex flex-col gap-4 md:flex-row md:min-w-[980px] lg:min-w-0 lg:grid lg:grid-cols-3">
+      <motion.section
+        variants={variantesEntrada}
+        initial="oculto"
+        animate="visivel"
+        className="-mx-6 overflow-x-auto px-6 pb-2 md:overflow-visible"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:min-w-[980px] lg:min-w-0 lg:grid lg:grid-cols-4">
           {colunas.map((coluna) => (
             <KanbanColuna
               key={coluna.id}
@@ -35,7 +42,7 @@ export function KanbanBoard({
             />
           ))}
         </div>
-      </section>
+      </motion.section>
     </DragDropContext>
   )
 }
