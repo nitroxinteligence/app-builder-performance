@@ -1,21 +1,39 @@
-import * as React from "react";
+"use client"
 
-import { cn } from "@/lib/utilidades";
+import * as React from "react"
+import { motion, type HTMLMotionProps } from "framer-motion"
 
-const Cartao = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
+import { cn } from "@/lib/utilidades"
+import {
+  variantesHover,
+  variantesEntrada,
+  transicaoRapida,
+} from "@/lib/animacoes"
+
+interface PropsCartao extends HTMLMotionProps<"div"> {
+  interativo?: boolean
+}
+
+const Cartao = React.forwardRef<HTMLDivElement, PropsCartao>(
+  ({ className, interativo = false, ...props }, ref) => (
+    <motion.div
       ref={ref}
+      variants={variantesEntrada}
+      initial="oculto"
+      animate="visivel"
+      whileHover={interativo ? variantesHover.escalaComSombra : undefined}
+      transition={transicaoRapida}
       className={cn(
-        "rounded-2xl border border-[color:var(--borda-cartao)] bg-card text-card-foreground",
+        "rounded-2xl border border-[color:var(--borda-cartao)] bg-card text-card-foreground shadow-sm",
+        interativo && "cursor-pointer",
         className
       )}
       {...props}
     />
   )
-);
+)
 
-Cartao.displayName = "Cartao";
+Cartao.displayName = "Cartao"
 
 const CartaoCabecalho = React.forwardRef<
   HTMLDivElement,
@@ -26,9 +44,9 @@ const CartaoCabecalho = React.forwardRef<
     className={cn("flex flex-col gap-1.5 p-6", className)}
     {...props}
   />
-));
+))
 
-CartaoCabecalho.displayName = "CartaoCabecalho";
+CartaoCabecalho.displayName = "CartaoCabecalho"
 
 const CartaoTitulo = React.forwardRef<
   HTMLHeadingElement,
@@ -39,9 +57,9 @@ const CartaoTitulo = React.forwardRef<
     className={cn("font-titulo text-lg font-semibold", className)}
     {...props}
   />
-));
+))
 
-CartaoTitulo.displayName = "CartaoTitulo";
+CartaoTitulo.displayName = "CartaoTitulo"
 
 const CartaoDescricao = React.forwardRef<
   HTMLParagraphElement,
@@ -52,18 +70,18 @@ const CartaoDescricao = React.forwardRef<
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
-));
+))
 
-CartaoDescricao.displayName = "CartaoDescricao";
+CartaoDescricao.displayName = "CartaoDescricao"
 
 const CartaoConteudo = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-));
+))
 
-CartaoConteudo.displayName = "CartaoConteudo";
+CartaoConteudo.displayName = "CartaoConteudo"
 
 const CartaoRodape = React.forwardRef<
   HTMLDivElement,
@@ -74,9 +92,9 @@ const CartaoRodape = React.forwardRef<
     className={cn("flex items-center p-6 pt-0", className)}
     {...props}
   />
-));
+))
 
-CartaoRodape.displayName = "CartaoRodape";
+CartaoRodape.displayName = "CartaoRodape"
 
 export {
   Cartao,
@@ -85,4 +103,6 @@ export {
   CartaoDescricao,
   CartaoRodape,
   CartaoTitulo,
-};
+}
+
+export type { PropsCartao }
