@@ -266,6 +266,25 @@ export interface MarcoMeta {
 }
 
 // ==========================================
+// INTERFACES - NOTIFICACOES
+// ==========================================
+
+export type TipoNotificacao = 'sistema' | 'conquista' | 'lembrete' | 'tarefa' | 'habito' | 'foco' | 'curso'
+
+export interface Notificacao {
+  id: string
+  user_id: string
+  titulo: string
+  mensagem: string
+  tipo: TipoNotificacao
+  lida: boolean
+  created_at: string
+}
+
+export type NotificacaoCreate = Omit<Notificacao, 'id' | 'created_at'>
+export type NotificacaoUpdate = Partial<Pick<Notificacao, 'lida'>>
+
+// ==========================================
 // INTERFACES - EVENTOS
 // ==========================================
 
@@ -590,6 +609,23 @@ export interface Database {
         }
         Relationships: []
       }
+      notifications: {
+        Row: Notificacao
+        Insert: Omit<Notificacao, 'id' | 'created_at'> & {
+          id?: string
+          created_at?: string
+        }
+        Update: Partial<Pick<Notificacao, 'lida'>>
+        Relationships: [
+          {
+            foreignKeyName: 'notifications_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       events: {
         Row: Evento
         Insert: Omit<Evento, 'id' | 'created_at' | 'updated_at' | 'external_event_id'> & {
@@ -743,6 +779,7 @@ export interface Database {
       calendar_integration: CalendarIntegration
       course_level: CourseLevel
       course_status: CourseStatus
+      notification_type: TipoNotificacao
     }
     CompositeTypes: Record<string, never>
   }

@@ -8,7 +8,6 @@ import {
   LogOut,
   Moon,
   PanelLeft,
-  Settings,
   Sun,
   UserRound,
 } from "lucide-react"
@@ -284,13 +283,6 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
                   sideOffset={8}
                   className="w-56 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
                 >
-                  <MenuSuspensoItem className="cursor-pointer gap-2 font-medium">
-                    <Settings
-                      className="h-4 w-4 text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                    Configurações
-                  </MenuSuspensoItem>
                   <MenuSuspensoItem className="cursor-pointer gap-2 font-medium">
                     <Bell
                       className="h-4 w-4 text-muted-foreground"

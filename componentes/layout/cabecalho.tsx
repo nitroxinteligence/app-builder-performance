@@ -3,15 +3,14 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, ChevronRight, Menu, Search } from "lucide-react"
+import { ChevronRight, Menu, Search } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/componentes/ui/avatar"
 import { Botao } from "@/componentes/ui/botao"
 import { Entrada } from "@/componentes/ui/entrada"
-import { Emblema } from "@/componentes/ui/emblema"
-import { cn } from "@/lib/utilidades"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { obterBreadcrumbs, obterTituloPagina } from "@/lib/navegacao"
+import { DropdownNotificacoes } from "@/componentes/layout/dropdown-notificacoes"
 
 interface CabecalhoProps {
   onToggleSidebar?: () => void
@@ -102,22 +101,7 @@ export function Cabecalho({ onToggleSidebar }: CabecalhoProps) {
       </div>
 
       {/* Notifications */}
-      <Botao
-        variant="ghost"
-        size="icon"
-        className="relative h-9 w-9"
-        aria-label="Notificações"
-      >
-        <Bell className="h-4 w-4" aria-hidden="true" />
-        <Emblema
-          className={cn(
-            "absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold",
-            "bg-primary text-primary-foreground"
-          )}
-        >
-          3
-        </Emblema>
-      </Botao>
+      <DropdownNotificacoes />
 
       {/* User avatar */}
       <Link

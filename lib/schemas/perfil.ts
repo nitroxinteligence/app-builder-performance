@@ -10,7 +10,20 @@ export const perfilUpdateSchema = z.object({
 })
 
 // ==========================================
+// PERFIL - ALTERAR SENHA
+// ==========================================
+
+export const alterarSenhaSchema = z.object({
+  novaSenha: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
+  confirmacao: z.string().min(1, 'Confirmação é obrigatória'),
+}).refine((data) => data.novaSenha === data.confirmacao, {
+  message: 'As senhas não conferem',
+  path: ['confirmacao'],
+})
+
+// ==========================================
 // TYPES INFERIDOS
 // ==========================================
 
 export type PerfilUpdateInput = z.infer<typeof perfilUpdateSchema>
+export type AlterarSenhaInput = z.infer<typeof alterarSenhaSchema>
