@@ -54,7 +54,6 @@ import {
   SeletorValor,
 } from '@/componentes/ui/seletor'
 import { cn } from '@/lib/utilidades'
-import { Sidebar } from '@/componentes/layout/sidebar'
 import { useAgenda } from '@/hooks/useAgenda'
 import {
   EVENT_CATEGORIES,
@@ -103,7 +102,6 @@ const labelStatus: Record<EventStatus, string> = {
 }
 
 export default function PaginaAgenda() {
-  const [sidebarAberta, setSidebarAberta] = React.useState(false)
   const [dataSelecionada, setDataSelecionada] = React.useState<Date>(new Date())
   const [novoEventoAberto, setNovoEventoAberto] = React.useState(false)
   const [eventoEditando, setEventoEditando] = React.useState<AgendaEvent | null>(null)
@@ -211,36 +209,18 @@ export default function PaginaAgenda() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-        <div
-          className={cn(
-            'flex min-h-screen flex-col transition-[padding] duration-300',
-            sidebarAberta ? 'lg:pl-56' : 'lg:pl-16'
-          )}
-        >
-          <main className="flex flex-1 items-center justify-center px-6 py-10">
-            <div className="text-center">
-              <p className="text-destructive">Erro ao carregar agenda</p>
-              <p className="text-sm text-muted-foreground">{error.message}</p>
-            </div>
-          </main>
+      <main className="flex flex-1 items-center justify-center px-6 py-10">
+        <div className="text-center">
+          <p className="text-destructive">Erro ao carregar agenda</p>
+          <p className="text-sm text-muted-foreground">{error.message}</p>
         </div>
-      </div>
+      </main>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          'flex min-h-screen flex-col transition-[padding] duration-300',
-          sidebarAberta ? 'lg:pl-56' : 'lg:pl-16'
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10">
+    <>
+      <main id="main-content" className="flex-1 px-6 py-10">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
             <section className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -462,7 +442,7 @@ export default function PaginaAgenda() {
               </Dialogo>
             </section>
 
-            <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <section className="grid gap-6 md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[minmax(0,1fr)_320px]">
               <div className="space-y-6">
                 <Cartao>
                   <CartaoCabecalho>
@@ -651,7 +631,6 @@ export default function PaginaAgenda() {
             </section>
           </div>
         </main>
-      </div>
 
       <Dialogo
         open={Boolean(eventoEditando)}
@@ -858,6 +837,6 @@ export default function PaginaAgenda() {
           </DialogoAlertaRodape>
         </DialogoAlertaConteudo>
       </DialogoAlerta>
-    </div>
+    </>
   )
 }

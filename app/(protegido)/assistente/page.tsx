@@ -11,7 +11,6 @@ import {
   DicaGatilho,
   ProvedorDica,
 } from "@/componentes/ui/dica";
-import { Sidebar } from "@/componentes/layout/sidebar";
 import { cn } from "@/lib/utilidades";
 import { useAuth } from "@/lib/providers/auth-provider";
 
@@ -28,7 +27,6 @@ export default function PaginaAssistente() {
   const [conversas, setConversas] = React.useState<ConversaAssistente[]>(
     conversasIniciais
   );
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
   const [conversaAtivaId, setConversaAtivaId] = React.useState(
     conversasIniciais[0]?.id ?? ""
   );
@@ -149,16 +147,8 @@ export default function PaginaAssistente() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <aside className="w-full border-b border-border bg-sidebar p-6 lg:fixed lg:left-0 lg:top-0 lg:z-30 lg:ml-16 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:transition-all lg:duration-300">
+    <>
+      <aside className="w-full border-b border-border bg-sidebar p-6 lg:fixed lg:left-0 lg:top-0 lg:z-30 lg:ml-16 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:transition-all lg:duration-300">
           <ProvedorDica delayDuration={150} skipDelayDuration={0}>
             <div className="flex h-full flex-col">
               <div className="flex items-center justify-between">
@@ -337,13 +327,8 @@ export default function PaginaAssistente() {
             </div>
           </div>
         </main>
-      </div>
-      <div
-        className={cn(
-          "fixed bottom-6 left-0 right-0 z-30 px-6",
-          sidebarAberta ? "lg:pl-80" : "lg:pl-24"
-        )}
-      >
+
+      <div className="fixed bottom-6 left-0 right-0 z-30 px-6 lg:pl-24">
         <div className="mx-auto w-full max-w-3xl lg:pl-64">
           <div className="flex items-center gap-2 rounded-full border border-border bg-[#F4F4F4] px-4 py-2">
             <textarea
@@ -377,6 +362,6 @@ export default function PaginaAssistente() {
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }

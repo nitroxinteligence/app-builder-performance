@@ -9,7 +9,7 @@ import { Botao } from "@/componentes/ui/botao";
 import { cn } from "@/lib/utilidades";
 import { signInWithEmail, signInWithOAuth } from "@/lib/supabase/auth";
 
-import { marcaSidebar } from "../inicio/dados-dashboard";
+import { marcaSidebar } from "@/app/(protegido)/inicio/dados-dashboard";
 
 export default function PaginaEntrar() {
   const router = useRouter();

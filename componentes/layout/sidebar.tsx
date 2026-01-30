@@ -31,7 +31,7 @@ import {
 } from "@/componentes/ui/menu-suspenso"
 import { cn } from "@/lib/utilidades"
 import { useAuth } from "@/lib/providers/auth-provider"
-import { marcaSidebar, secoesMenu } from "@/app/inicio/dados-dashboard"
+import { marcaSidebar, secoesMenu } from "@/app/(protegido)/inicio/dados-dashboard"
 
 interface SidebarProps {
   open: boolean

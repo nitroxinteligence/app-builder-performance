@@ -19,10 +19,8 @@ import {
 } from "@/componentes/ui/cartao";
 import { cn } from "@/lib/utilidades";
 import { useAuth } from "@/lib/providers/auth-provider";
-import { Sidebar } from "@/componentes/layout/sidebar";
 
 export default function PaginaPerfil() {
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
   const { user } = useAuth();
 
   const nomeUsuario = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Usuário";
@@ -85,16 +83,7 @@ export default function PaginaPerfil() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10">
+    <main id="main-content" className="flex-1 px-6 py-10">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
             <section className="flex items-center gap-3">
               <Link
@@ -323,8 +312,6 @@ export default function PaginaPerfil() {
               </div>
             </section>
           </div>
-        </main>
-      </div>
-    </div>
+    </main>
   );
 }

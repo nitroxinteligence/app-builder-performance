@@ -37,7 +37,6 @@ import {
 import { EsqueletoCartao, EsqueletoEstatistica } from "@/componentes/ui/esqueleto";
 import { EstadoVazioGenerico } from "@/componentes/ui/estado-vazio";
 import { ErrorBoundary } from "@/componentes/erro";
-import { Sidebar } from "@/componentes/layout/sidebar";
 import { cn } from "@/lib/utilidades";
 import { useAuth } from "@/lib/providers/auth-provider";
 
@@ -149,7 +148,6 @@ const ItemProgressoSemanal = React.memo(function ItemProgressoSemanal({ item }: 
 });
 
 function ConteudoPaginaInicio() {
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
   const { user } = useAuth();
   const {
     userLevel,
@@ -376,7 +374,7 @@ function ConteudoPaginaInicio() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
       <Dialogo open={dailyStartAberto} onOpenChange={atualizarAberturaDailyStart}>
         <DialogoConteudo className="max-w-4xl rounded-2xl border-border p-6" aria-describedby="daily-start-description">
           <div className="space-y-5">
@@ -472,15 +470,7 @@ function ConteudoPaginaInicio() {
         </DialogoConteudo>
       </Dialogo>
 
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10" role="main" aria-label="Conteúdo principal do painel">
+      <main id="main-content" className="flex-1 px-6 py-10" role="main" aria-label="Conteúdo principal do painel">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
             <section className="flex flex-col items-center gap-2 text-center" aria-labelledby="saudacao-titulo">
               <h1 id="saudacao-titulo" className="font-titulo text-2xl font-semibold text-foreground sm:text-3xl">
@@ -599,10 +589,9 @@ function ConteudoPaginaInicio() {
               {renderMissoesSemanais()}
             </section>
           </div>
-        </main>
-      </div>
+      </main>
       <AcoesRapidasInicio />
-    </div>
+    </>
   );
 }
 

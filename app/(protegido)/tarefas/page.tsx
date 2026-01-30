@@ -51,7 +51,6 @@ import { Calendario } from "@/componentes/ui/calendario";
 import { EsqueletoKanban } from "@/componentes/ui/esqueleto";
 import { EstadoVazioTarefas } from "@/componentes/ui/estado-vazio";
 import { ErrorBoundary } from "@/componentes/erro";
-import { Sidebar } from "@/componentes/layout/sidebar";
 import { cn } from "@/lib/utilidades";
 import { useAuth } from "@/lib/providers/auth-provider";
 
@@ -111,8 +110,6 @@ const formatarData = (data?: Date) =>
   data ? format(data, "dd/MM/yyyy", { locale: ptBR }) : "";
 
 export default function PaginaTarefas() {
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
-
   // Hooks do Supabase
   const { user } = useAuth();
   const { data: tarefas = [], isLoading: carregandoTarefas } = useTarefas();
@@ -369,18 +366,9 @@ export default function PaginaTarefas() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-background text-foreground">
-        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-        <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10">
+      <main id="main-content" className="flex-1 px-6 py-10">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-            <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-3">
                 <Link
                   href="/inicio"
@@ -933,12 +921,12 @@ export default function PaginaTarefas() {
               />
             ) : (
               <DragDropContext onDragEnd={aoFinalizarArraste}>
-                <section className="-mx-6 overflow-x-auto px-6 pb-2 lg:overflow-visible">
-                  <div className="flex min-w-[980px] gap-4 lg:min-w-0 lg:grid lg:grid-cols-3">
+                <section className="-mx-6 overflow-x-auto px-6 pb-2 md:overflow-visible">
+                  <div className="flex flex-col gap-4 md:flex-row md:min-w-[980px] lg:min-w-0 lg:grid lg:grid-cols-3">
                     {tarefasPorEstagio.map((coluna) => (
                     <div
                       key={coluna.id}
-                      className="flex w-[280px] flex-col gap-4 rounded-2xl border border-border bg-card p-4 lg:w-auto"
+                      className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-card p-4 md:w-[280px] lg:w-auto"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
@@ -1054,9 +1042,7 @@ export default function PaginaTarefas() {
               </DragDropContext>
             )}
           </div>
-        </main>
-      </div>
-      </div>
+      </main>
     </ErrorBoundary>
   );
 }

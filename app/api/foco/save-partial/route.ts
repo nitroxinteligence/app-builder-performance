@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { savePartialSession } from "@/app/foco/actions"
+import { savePartialSession } from "@/app/(protegido)/foco/actions"
 import type { FocusPause } from "@/lib/supabase/types"
 
 interface SavePartialRequest {

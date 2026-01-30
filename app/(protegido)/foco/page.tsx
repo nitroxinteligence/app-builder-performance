@@ -42,7 +42,6 @@ import {
   SeletorItem,
   SeletorValor,
 } from "@/componentes/ui/seletor"
-import { Sidebar } from "@/componentes/layout/sidebar"
 import { cn } from "@/lib/utilidades"
 import {
   cancelFocusSession,
@@ -77,11 +76,6 @@ const obterDuracaoPorModo = (modoId: string, duracaoCustomizada: number) => {
 }
 
 export default function PaginaFoco() {
-  // =========================================================================
-  // SIDEBAR STATE
-  // =========================================================================
-  const [sidebarAberta, setSidebarAberta] = React.useState(false)
-
   // =========================================================================
   // USER STATE
   // =========================================================================
@@ -786,7 +780,7 @@ export default function PaginaFoco() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
       {/* Exibição de Erro */}
       {erro && (
         <div className="fixed left-1/2 top-4 z-50 -translate-x-1/2">
@@ -877,17 +871,7 @@ export default function PaginaFoco() {
         </DialogoConteudo>
       </Dialogo>
 
-      {/* Sidebar */}
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      {/* Main Content */}
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10">
+      <main id="main-content" className="flex-1 px-6 py-10">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
             {/* Header */}
             <section className="flex items-center gap-3">
@@ -908,7 +892,7 @@ export default function PaginaFoco() {
 
             {/* Stats Cards */}
             {estatisticas && (
-              <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <section className="grid gap-4 grid-cols-2 md:grid-cols-4">
                 <Cartao>
                   <CartaoConteudo className="flex items-center gap-4 p-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -971,7 +955,7 @@ export default function PaginaFoco() {
             )}
 
             {/* Task and Mode Selection */}
-            <section className="grid gap-4 lg:grid-cols-2">
+            <section className="grid gap-4 md:grid-cols-2">
               <Cartao>
                 <CartaoConteudo className="space-y-3 p-5">
                   <div>
@@ -1070,8 +1054,8 @@ export default function PaginaFoco() {
             </section>
 
             {/* Timer */}
-            <section className="flex flex-col items-center gap-6 rounded-3xl border border-border bg-card px-6 py-12 text-center">
-              <div className="relative flex h-48 w-48 items-center justify-center">
+            <section className="flex flex-col items-center gap-6 rounded-3xl border border-border bg-card px-4 py-8 sm:px-6 sm:py-12 text-center">
+              <div className="relative flex h-36 w-36 sm:h-48 sm:w-48 items-center justify-center">
                 <div
                   className="absolute inset-0 rounded-[32px] bg-muted"
                   aria-hidden="true"
@@ -1275,7 +1259,6 @@ export default function PaginaFoco() {
             )}
           </div>
         </main>
-      </div>
-    </div>
+    </>
   )
 }

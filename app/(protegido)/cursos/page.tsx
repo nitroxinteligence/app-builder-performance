@@ -17,12 +17,9 @@ import {
   CartaoTitulo,
 } from "@/componentes/ui/cartao";
 import { Progresso } from "@/componentes/ui/progresso";
-import { cn } from "@/lib/utilidades";
-import { Sidebar } from "@/componentes/layout/sidebar";
 import { useCursosData } from "@/hooks/useCursos";
 
 export default function PaginaCursos() {
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
   const [categoriaAtiva, setCategoriaAtiva] = React.useState("Todos");
   const [busca, setBusca] = React.useState("");
 
@@ -57,52 +54,23 @@ export default function PaginaCursos() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-        <div
-          className={cn(
-            "flex min-h-screen flex-col transition-[padding] duration-300",
-            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-          )}
-        >
-          <main className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          </main>
-        </div>
-      </div>
+      <main className="flex flex-1 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-        <div
-          className={cn(
-            "flex min-h-screen flex-col transition-[padding] duration-300",
-            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-          )}
-        >
-          <main className="flex flex-1 items-center justify-center">
-            <p className="text-destructive">Erro ao carregar cursos: {error.message}</p>
-          </main>
-        </div>
-      </div>
+      <main className="flex flex-1 items-center justify-center">
+        <p className="text-destructive">Erro ao carregar cursos: {error.message}</p>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+    <main id="main-content" className="flex-1 px-6 py-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
             <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <h1 className="font-titulo text-2xl font-semibold">
@@ -316,9 +284,7 @@ export default function PaginaCursos() {
                 ))}
               </div>
             </section>
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }

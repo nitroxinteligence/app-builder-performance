@@ -53,7 +53,6 @@ import {
 } from "@/componentes/ui/seletor";
 import { cn } from "@/lib/utilidades";
 import { useAuth } from "@/lib/providers/auth-provider";
-import { Sidebar } from "@/componentes/layout/sidebar";
 
 // Hooks
 import {
@@ -392,7 +391,6 @@ export default function PaginaHabitos() {
   // UI STATE
   // ==========================================
 
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
   const [abaAtiva, setAbaAtiva] = React.useState<AbaHabitos>("individual");
   const [modalNovoHabitoAberto, setModalNovoHabitoAberto] = React.useState(false);
   const [modalNovoPlanoAberto, setModalNovoPlanoAberto] = React.useState(false);
@@ -1037,17 +1035,8 @@ export default function PaginaHabitos() {
   // ==========================================
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main id="main-content" className="flex-1 px-6 py-10">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+    <main id="main-content" className="flex-1 px-6 py-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
             <section className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <Link
@@ -1915,14 +1904,14 @@ export default function PaginaHabitos() {
                     </p>
                   </div>
                   <DragDropContext onDragEnd={aoFinalizarArrasteObjetivos}>
-                    <div className="-mx-6 overflow-x-auto px-6 pb-2 lg:overflow-visible">
-                      <div className="flex min-w-[980px] gap-4 lg:min-w-0 lg:grid lg:grid-cols-3">
+                    <div className="-mx-6 overflow-x-auto px-6 pb-2 md:overflow-visible">
+                      <div className="flex flex-col gap-4 md:flex-row md:min-w-[980px] lg:min-w-0 lg:grid lg:grid-cols-3">
                         {colunasStatus.map((coluna) => {
                           const itens = colunasObjetivos[coluna.id];
                           return (
                             <div
                               key={coluna.id}
-                              className="flex w-[300px] flex-col gap-4 rounded-2xl border border-border bg-card p-4 lg:w-auto"
+                              className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-card p-4 md:w-[300px] lg:w-auto"
                             >
                               <div className="flex items-start justify-between gap-3">
                                 <div>
@@ -2163,14 +2152,14 @@ export default function PaginaHabitos() {
                   </p>
                 </div>
                 <DragDropContext onDragEnd={aoFinalizarArrasteMetas}>
-                  <div className="-mx-6 overflow-x-auto px-6 pb-2 lg:overflow-visible">
-                    <div className="flex min-w-[980px] gap-4 lg:min-w-0 lg:grid lg:grid-cols-3">
+                  <div className="-mx-6 overflow-x-auto px-6 pb-2 md:overflow-visible">
+                    <div className="flex flex-col gap-4 md:flex-row md:min-w-[980px] lg:min-w-0 lg:grid lg:grid-cols-3">
                       {colunasStatus.map((coluna) => {
                         const itens = colunasMetas[coluna.id];
                         return (
                           <div
                             key={coluna.id}
-                            className="flex w-[300px] flex-col gap-4 rounded-2xl border border-border bg-card p-4 lg:w-auto"
+                            className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-card p-4 md:w-[300px] lg:w-auto"
                           >
                             <div className="flex items-start justify-between gap-3">
                               <div>
@@ -2296,7 +2285,7 @@ export default function PaginaHabitos() {
                 </CartaoDescricao>
               </CartaoCabecalho>
               <CartaoConteudo>
-                <div className="grid grid-cols-10 gap-1">
+                <div className="grid grid-cols-5 gap-1 sm:grid-cols-7 md:grid-cols-10">
                   {consistenciaUltimos30Dias.map((valor, index) => (
                     <span
                       key={`${valor}-${index}`}
@@ -2306,9 +2295,7 @@ export default function PaginaHabitos() {
                 </div>
               </CartaoConteudo>
             </Cartao>
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }

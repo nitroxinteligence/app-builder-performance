@@ -21,8 +21,6 @@ import {
   CartaoTitulo,
 } from "@/componentes/ui/cartao";
 import { Progresso } from "@/componentes/ui/progresso";
-import { Sidebar } from "@/componentes/layout/sidebar";
-import { cn } from "@/lib/utilidades";
 import { useCursoBySlug } from "@/hooks/useCursos";
 import type { CourseModuleWithLessons, LessonWithProgress } from "@/types/cursos";
 
@@ -30,51 +28,29 @@ export default function PaginaCurso() {
   const params = useParams();
   const cursoParam = params?.curso;
   const cursoSlug = Array.isArray(cursoParam) ? cursoParam[0] : cursoParam;
-  const [sidebarAberta, setSidebarAberta] = React.useState(false);
-
   const { data, isLoading, error } = useCursoBySlug(cursoSlug ?? "");
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-        <div
-          className={cn(
-            "flex min-h-screen flex-col transition-[padding] duration-300",
-            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-          )}
-        >
-          <main className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          </main>
-        </div>
-      </div>
+      <main className="flex flex-1 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </main>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-        <div
-          className={cn(
-            "flex min-h-screen flex-col transition-[padding] duration-300",
-            sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-          )}
-        >
-          <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
-            <h1 className="font-titulo text-2xl font-semibold">
-              Curso não encontrado
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {error?.message ?? "Não encontramos este curso no catálogo atual."}
-            </p>
-            <Botao asChild className="self-center">
-              <Link href="/cursos">Voltar para cursos</Link>
-            </Botao>
-          </main>
-        </div>
-      </div>
+      <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-16 text-center">
+        <h1 className="font-titulo text-2xl font-semibold">
+          Curso não encontrado
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {error?.message ?? "Não encontramos este curso no catálogo atual."}
+        </p>
+        <Botao asChild className="self-center">
+          <Link href="/cursos">Voltar para cursos</Link>
+        </Botao>
+      </main>
     );
   }
 
@@ -85,17 +61,8 @@ export default function PaginaCurso() {
     : "/cursos";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Sidebar open={sidebarAberta} onOpenChange={setSidebarAberta} />
-
-      <div
-        className={cn(
-          "flex min-h-screen flex-col transition-[padding] duration-300",
-          sidebarAberta ? "lg:pl-56" : "lg:pl-16"
-        )}
-      >
-        <main className="flex-1 px-6 py-10">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+    <main className="flex-1 px-6 py-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
             <section className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <Link
@@ -220,9 +187,7 @@ export default function PaginaCurso() {
                 </Cartao>
               </div>
             </section>
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }
