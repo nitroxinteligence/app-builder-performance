@@ -1,5 +1,5 @@
-import { createClient } from "./client"
-import type { Provider } from "@supabase/supabase-js"
+import { supabase } from './client'
+import type { Provider } from '@supabase/supabase-js'
 
 export type OAuthProvider = "google" | "apple"
 
@@ -19,7 +19,6 @@ export async function signInWithEmail(
   password: string
 ): Promise<AuthResult> {
   try {
-    const supabase = createClient()
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -48,7 +47,6 @@ export async function signUpWithEmail(
   metadata?: SignUpMetadata
 ): Promise<AuthResult> {
   try {
-    const supabase = createClient()
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -76,7 +74,6 @@ export async function signUpWithEmail(
 
 export async function signOut(): Promise<AuthResult> {
   try {
-    const supabase = createClient()
 
     const { error } = await supabase.auth.signOut()
 
@@ -98,7 +95,6 @@ export async function signOut(): Promise<AuthResult> {
 
 export async function resetPassword(email: string): Promise<AuthResult> {
   try {
-    const supabase = createClient()
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/redefinir-senha`,
@@ -122,7 +118,6 @@ export async function resetPassword(email: string): Promise<AuthResult> {
 
 export async function updatePassword(password: string): Promise<AuthResult> {
   try {
-    const supabase = createClient()
 
     const { error } = await supabase.auth.updateUser({
       password,
@@ -148,7 +143,6 @@ export async function signInWithOAuth(
   provider: OAuthProvider
 ): Promise<AuthResult> {
   try {
-    const supabase = createClient()
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider as Provider,

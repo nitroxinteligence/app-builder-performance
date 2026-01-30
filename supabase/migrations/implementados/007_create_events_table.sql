@@ -110,24 +110,6 @@ CREATE TRIGGER update_events_updated_at
   EXECUTE FUNCTION public.update_updated_at_column();
 
 -- ============================================================================
--- PART 7: SEED DATA (Development only - inserts only if mock user exists)
--- ============================================================================
-
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM public.users WHERE id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID) THEN
-    INSERT INTO public.events (id, user_id, titulo, descricao, data, horario_inicio, horario_fim, categoria, local, status, calendario)
-    VALUES
-      ('e0011111-1111-4111-8111-111111111111'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Reunião de alinhamento', 'Sprint e prioridades da semana.', CURRENT_DATE, '09:00', '09:45', 'Reunião', 'Google Meet', 'confirmado', 'Google'),
-      ('e0022222-2222-4222-8222-222222222222'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Deep work', 'Bloco de foco para entregas principais.', CURRENT_DATE, '10:00', '12:00', 'Bloco de foco', 'Sala silenciosa', 'foco', 'Manual'),
-      ('e0033333-3333-4333-8333-333333333333'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Call com cliente', 'Revisão do dashboard e próximos passos.', CURRENT_DATE, '15:30', '16:15', 'Reunião', 'Zoom', 'confirmado', 'Outlook'),
-      ('e0044444-4444-4444-8444-444444444444'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Mentoria Builder', 'Plano individual e hábitos da semana.', CURRENT_DATE + INTERVAL '1 day', '11:00', '11:40', 'Aula / Mentoria', 'Google Meet', 'pendente', 'Google'),
-      ('e0055555-5555-4555-8555-555555555555'::UUID, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::UUID, 'Treino funcional', 'Cardio + mobilidade.', CURRENT_DATE + INTERVAL '1 day', '18:30', '19:20', 'Pessoal', 'Academia', 'confirmado', 'Manual')
-    ON CONFLICT (id) DO NOTHING;
-  END IF;
-END $$;
-
--- ============================================================================
 -- VERIFICATION QUERY
 -- ============================================================================
 -- SELECT * FROM public.events WHERE user_id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';

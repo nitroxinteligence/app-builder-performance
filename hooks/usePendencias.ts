@@ -99,7 +99,7 @@ export function usePendencias() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: PENDENCIAS_KEY,
+    queryKey: [...PENDENCIAS_KEY, user?.id],
     queryFn: () => fetchPendencias(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -107,8 +107,10 @@ export function usePendencias() {
 }
 
 export function usePendencia(id: string | undefined) {
+  const { user } = useAuth()
+
   return useQuery({
-    queryKey: [...PENDENCIAS_KEY, id],
+    queryKey: [...PENDENCIAS_KEY, user?.id, id],
     queryFn: () => (id ? fetchPendencia(id) : null),
     enabled: !!id,
   })

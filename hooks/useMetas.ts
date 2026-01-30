@@ -424,7 +424,7 @@ export function useMetas() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: METAS_KEY,
+    queryKey: [...METAS_KEY, user?.id],
     queryFn: () => fetchMetas(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -432,8 +432,10 @@ export function useMetas() {
 }
 
 export function useMeta(id: string | undefined) {
+  const { user } = useAuth()
+
   return useQuery({
-    queryKey: [...METAS_KEY, id],
+    queryKey: [...METAS_KEY, user?.id, id],
     queryFn: () => (id ? fetchMeta(id) : null),
     enabled: !!id,
   })
@@ -505,7 +507,7 @@ export function useObjetivos() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: OBJETIVOS_KEY,
+    queryKey: [...OBJETIVOS_KEY, user?.id],
     queryFn: () => fetchObjetivos(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -513,8 +515,10 @@ export function useObjetivos() {
 }
 
 export function useObjetivo(id: string | undefined) {
+  const { user } = useAuth()
+
   return useQuery({
-    queryKey: [...OBJETIVOS_KEY, id],
+    queryKey: [...OBJETIVOS_KEY, user?.id, id],
     queryFn: () => (id ? fetchObjetivo(id) : null),
     enabled: !!id,
   })
@@ -624,7 +628,7 @@ export function useColunasObjetivo() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: COLUNAS_OBJETIVO_KEY,
+    queryKey: [...COLUNAS_OBJETIVO_KEY, user?.id],
     queryFn: () => fetchColunasObjetivo(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -694,8 +698,10 @@ export function useDeleteColunaObjetivo() {
 // ==========================================
 
 export function useMarcosMeta(metaId: string | undefined) {
+  const { user } = useAuth()
+
   return useQuery({
-    queryKey: [...MARCOS_META_KEY, metaId],
+    queryKey: [...MARCOS_META_KEY, user?.id, metaId],
     queryFn: () => (metaId ? fetchMarcosMeta(metaId) : []),
     enabled: !!metaId,
     staleTime: 1000 * 60 * 5,

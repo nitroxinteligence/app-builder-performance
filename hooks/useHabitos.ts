@@ -257,7 +257,7 @@ export function useHabitos() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: HABITOS_KEY,
+    queryKey: [...HABITOS_KEY, user?.id],
     queryFn: () => fetchHabitos(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -265,8 +265,10 @@ export function useHabitos() {
 }
 
 export function useHabito(id: string | undefined) {
+  const { user } = useAuth()
+
   return useQuery({
-    queryKey: [...HABITOS_KEY, id],
+    queryKey: [...HABITOS_KEY, user?.id, id],
     queryFn: () => (id ? fetchHabito(id) : null),
     enabled: !!id,
   })
@@ -338,7 +340,7 @@ export function useCategoriasHabitos() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: CATEGORIAS_HABITOS_KEY,
+    queryKey: [...CATEGORIAS_HABITOS_KEY, user?.id],
     queryFn: () => fetchCategoriasHabitos(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -411,7 +413,7 @@ export function useHistoricoHabitos(habitoId?: string) {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: habitoId ? [...HISTORICO_HABITOS_KEY, habitoId] : HISTORICO_HABITOS_KEY,
+    queryKey: habitoId ? [...HISTORICO_HABITOS_KEY, user?.id, habitoId] : [...HISTORICO_HABITOS_KEY, user?.id],
     queryFn: () => fetchHistoricoHabitos(user!.id, habitoId),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,

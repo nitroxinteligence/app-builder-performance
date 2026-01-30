@@ -15,12 +15,13 @@ const LEVEL_TITLES: Record<number, string> = {
   10: 'Mestre',
 }
 
-const XP_PER_LEVEL = 500
-const XP_GROWTH_FACTOR = 1.2
-
 // ==========================================
 // FUNÇÕES UTILITÁRIAS
 // ==========================================
+
+// Canonical level formula — aligned with backend: FLOOR(SQRT(xp/100)) + 1
+// XP needed per level: level N requires (N-1)^2 * 100 total XP
+import { calcularNivel, xpParaNivel, progressoNivel } from './calculo-nivel'
 
 export function getLevelTitle(level: number): string {
   if (level >= 10) return 'Mestre'
@@ -28,29 +29,22 @@ export function getLevelTitle(level: number): string {
 }
 
 export function calculateXpForLevel(level: number): number {
-  if (level <= 1) return 0
-  return Math.floor(XP_PER_LEVEL * Math.pow(XP_GROWTH_FACTOR, level - 1))
+  return xpParaNivel(level)
 }
 
 export function calculateXpProgress(
   totalXp: number,
   currentLevel: number
 ): { xpAtual: number; xpTotal: number; percentual: number } {
-  const xpForCurrentLevel = calculateXpForLevel(currentLevel)
-  const xpForNextLevel = calculateXpForLevel(currentLevel + 1)
-  const xpNeeded = xpForNextLevel - xpForCurrentLevel
-  const xpProgress = totalXp - xpForCurrentLevel
-  const percentual =
-    xpNeeded === 0
-      ? 100
-      : Math.min(100, Math.max(0, Math.round((xpProgress / xpNeeded) * 100)))
-
+  const progresso = progressoNivel(totalXp)
   return {
-    xpAtual: Math.max(0, xpProgress),
-    xpTotal: Math.max(1, xpNeeded),
-    percentual,
+    xpAtual: progresso.atual,
+    xpTotal: Math.max(1, progresso.necessario),
+    percentual: progresso.porcentagem,
   }
 }
+
+export { calcularNivel }
 
 export function formatFocusTime(seconds: number): string {
   if (seconds < 60) {

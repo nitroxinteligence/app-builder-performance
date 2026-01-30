@@ -153,7 +153,7 @@ export function useTarefas() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: TAREFAS_KEY,
+    queryKey: [...TAREFAS_KEY, user?.id],
     queryFn: () => fetchTarefas(user!.id),
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -161,8 +161,10 @@ export function useTarefas() {
 }
 
 export function useTarefa(id: string | undefined) {
+  const { user } = useAuth()
+
   return useQuery({
-    queryKey: [...TAREFAS_KEY, id],
+    queryKey: [...TAREFAS_KEY, user?.id, id],
     queryFn: () => (id ? fetchTarefa(id) : null),
     enabled: !!id,
   })
