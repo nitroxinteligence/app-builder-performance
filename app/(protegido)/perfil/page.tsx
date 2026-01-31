@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import {
-  ArrowLeft,
   Camera,
   Check,
   Loader2,
@@ -170,13 +168,6 @@ export default function PaginaPerfil() {
     <main id="main-content" className="flex-1 px-6 py-10">
       <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
         <SecaoAnimada className="flex items-center gap-3">
-          <Link
-            href="/inicio"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-            aria-label="Voltar para início"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
           <div>
             <h1 className="font-titulo text-2xl font-semibold">Perfil</h1>
             <p className="text-sm text-muted-foreground">
@@ -188,7 +179,7 @@ export default function PaginaPerfil() {
         <SecaoAnimada className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-6">
             {/* Informações pessoais */}
-            <Cartao className="shadow-none">
+            <Cartao>
               <CartaoCabecalho>
                 <CartaoTitulo className="text-base">
                   Informações pessoais
@@ -251,7 +242,7 @@ export default function PaginaPerfil() {
             </Cartao>
 
             {/* Segurança */}
-            <Cartao className="shadow-none">
+            <Cartao>
               <CartaoCabecalho>
                 <CartaoTitulo className="text-base">Segurança</CartaoTitulo>
                 <CartaoDescricao>
@@ -327,7 +318,7 @@ export default function PaginaPerfil() {
             </Cartao>
 
             {/* Preferências */}
-            <Cartao className="shadow-none">
+            <Cartao>
               <CartaoCabecalho>
                 <CartaoTitulo className="text-base">
                   Preferências
@@ -364,7 +355,7 @@ export default function PaginaPerfil() {
 
           <div className="space-y-4">
             {/* Foto do perfil */}
-            <Cartao className="shadow-none">
+            <Cartao>
               <CartaoConteudo className="space-y-4 p-5">
                 <div className="flex items-center gap-3">
                   <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-sm font-semibold text-secondary-foreground">
@@ -456,7 +447,7 @@ export default function PaginaPerfil() {
             </Cartao>
 
             {/* Status da conta */}
-            <Cartao className="shadow-none">
+            <Cartao>
               <CartaoConteudo className="space-y-3 p-5">
                 <CartaoTitulo className="text-base">
                   Status da conta
@@ -467,7 +458,7 @@ export default function PaginaPerfil() {
                     Conta verificada
                   </Emblema>
                 </div>
-                <div className="rounded-xl border border-border bg-secondary/40 px-4 py-3 text-xs text-muted-foreground">
+                <div className="rounded-xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] px-4 py-3 text-xs text-muted-foreground">
                   Mantenha seus dados atualizados para garantir acesso às aulas
                   e conquistas.
                 </div>

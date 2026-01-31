@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
-  ArrowLeft,
   CheckCircle2,
   ChevronLeft,
   Clock,
@@ -102,13 +101,6 @@ export default function PaginaAula() {
     <main className="flex-1 px-6 py-10">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
             <section className="flex items-center gap-3">
-              <Link
-                href={`/cursos/${curso.slug}`}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-                aria-label="Voltar para curso"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
               <div>
                 <h1 className="font-titulo text-2xl font-semibold">
                   {aulaAtual.titulo}

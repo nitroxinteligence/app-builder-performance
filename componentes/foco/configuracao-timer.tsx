@@ -103,7 +103,7 @@ export function ConfiguracaoTimer({
             </SeletorConteudo>
           </Seletor>
           {modoSelecionado === "custom" && !sessaoIniciada ? (
-            <div className="flex flex-col gap-2 rounded-xl border border-border bg-muted/40 p-3">
+            <div className="flex flex-col gap-2 rounded-xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] p-3">
               <label
                 htmlFor="duracao-personalizada"
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"

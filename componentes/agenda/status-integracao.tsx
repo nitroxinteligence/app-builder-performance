@@ -51,7 +51,7 @@ function ProviderRow({
   isDisconnecting,
 }: ProviderRowProps) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-border bg-background/60 px-3 py-2">
+    <div className="flex items-center justify-between rounded-xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] px-3 py-2">
       <div className="flex flex-col gap-0.5">
         <div className="flex items-center gap-2 text-sm font-medium">
           <CalendarDays className="h-4 w-4 text-muted-foreground" />

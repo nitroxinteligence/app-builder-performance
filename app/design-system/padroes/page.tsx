@@ -149,7 +149,7 @@ export default function PadroesPage() {
                   {itens.map((item) => (
                     <div
                       key={item}
-                      className="rounded-md border border-border bg-card p-3 text-sm shadow-sm"
+                      className="rounded-md border border-border bg-card p-3 text-sm"
                     >
                       {item}
                     </div>

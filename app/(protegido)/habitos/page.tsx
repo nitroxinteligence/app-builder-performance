@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 import { Botao } from "@/componentes/ui/botao";
 import { AnimacaoPagina, SecaoAnimada } from "@/componentes/ui/animacoes";
@@ -121,13 +120,6 @@ export default function PaginaHabitos() {
         {/* Header */}
         <SecaoAnimada className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Link
-              href="/inicio"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-              aria-label="Voltar para início"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
             <div>
               <h1 className="font-titulo text-2xl font-semibold">Hábitos</h1>
               <p className="text-sm text-muted-foreground">

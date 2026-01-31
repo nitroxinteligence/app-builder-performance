@@ -1,9 +1,7 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import {
-  ArrowLeft,
   Check,
   Loader2,
   Plus,
@@ -114,13 +112,6 @@ export function FiltrosTarefas({
   return (
     <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3">
-        <Link
-          href="/inicio"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-          aria-label="Voltar para inicio"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
         <div>
           <h1 className="font-titulo text-2xl font-semibold">Tarefas</h1>
           <p className="text-sm text-muted-foreground">

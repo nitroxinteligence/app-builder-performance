@@ -10,7 +10,7 @@ export function ColorSwatch({ nome, variavel, className }: ColorSwatchProps) {
   return (
     <div className={cn("flex flex-col items-center gap-2", className)}>
       <div
-        className="h-16 w-16 rounded-lg border border-border shadow-sm"
+        className="h-16 w-16 rounded-lg border border-border"
         style={{ backgroundColor: `var(${variavel})` }}
       />
       <div className="text-center">

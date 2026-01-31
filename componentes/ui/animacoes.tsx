@@ -138,7 +138,7 @@ export function NotificacaoXp({ xp, visivel, onSaiu }: PropsNotificacaoXp) {
           initial="oculto"
           animate="visivel"
           exit="saindo"
-          className="fixed right-4 top-4 z-50 flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary shadow-lg backdrop-blur-sm"
+          className="fixed right-4 top-4 z-50 flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary backdrop-blur-sm"
         >
           <span className="text-lg">⚡</span>
           +{xp} XP

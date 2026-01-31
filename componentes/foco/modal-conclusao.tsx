@@ -63,7 +63,7 @@ export function ModalConclusao({
                     ease: "easeInOut",
                     repeat: 1,
                   }}
-                  className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--warning)] text-white shadow-lg"
+                  className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--warning)] text-white"
                 >
                   <Star className="h-8 w-8" />
                 </motion.div>
@@ -89,7 +89,7 @@ export function ModalConclusao({
           variants={variantesEscala}
           initial="oculto"
           animate="visivel"
-          className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground"
+          className="rounded-xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] p-4 text-sm text-muted-foreground"
         >
           <p className="font-medium text-foreground">
             {tituloTarefa ?? "Sessao livre"}

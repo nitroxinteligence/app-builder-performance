@@ -1,8 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 
 import { Botao } from "@/componentes/ui/botao"
 import { AnimacaoPagina, SecaoAnimada } from "@/componentes/ui/animacoes"
@@ -240,13 +238,6 @@ export default function PaginaFoco() {
           <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-10">
             {/* Header */}
             <SecaoAnimada className="flex items-center gap-3">
-              <Link
-                href="/inicio"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-                aria-label="Voltar para início"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
               <div>
                 <h1 className="font-titulo text-2xl font-semibold">Foco</h1>
                 <p className="text-sm text-muted-foreground">

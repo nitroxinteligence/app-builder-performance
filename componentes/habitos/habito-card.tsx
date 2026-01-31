@@ -28,7 +28,7 @@ export function HabitoCard({
       aria-pressed={habito.feitoHoje}
       disabled={disabled}
       transition={transicaoRapida}
-      className="flex w-full items-center gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2.5 text-left transition-colors hover:bg-secondary/50 disabled:opacity-50"
+      className="flex w-full items-center gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-[#F5F5F5] dark:bg-[#1E1E1E] px-3 py-2.5 text-left transition-colors hover:bg-secondary/50 disabled:opacity-50"
     >
       <span
         className={cn(

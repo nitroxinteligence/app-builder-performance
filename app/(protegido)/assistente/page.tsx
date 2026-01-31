@@ -288,7 +288,7 @@ export default function PaginaAssistente() {
                         onClick={() => enviarMensagem(cartao.acao)}
                         className="text-left"
                       >
-                        <Cartao className="h-full shadow-none transition hover:bg-secondary/50">
+                        <Cartao className="h-full transition hover:bg-secondary/50">
                           <CartaoConteudo className="flex h-full flex-col gap-4 p-4">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                               <cartao.icone className="h-4 w-4" />
@@ -415,7 +415,7 @@ export default function PaginaAssistente() {
             </div>
           ) : null}
 
-          <div className="flex items-center gap-2 rounded-full border border-border bg-[#F4F4F4] dark:bg-neutral-800 px-4 py-2">
+          <div className="flex items-center gap-2 rounded-full border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] px-4 py-2">
             <Botao
               variant="ghost"
               size="icon"

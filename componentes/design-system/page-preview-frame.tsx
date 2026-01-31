@@ -21,7 +21,7 @@ export function PagePreviewFrame({
           <p className="text-xs text-muted-foreground">{descricao}</p>
         )}
       </div>
-      <div className="overflow-hidden rounded-lg border border-border shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-border">
         <div className="flex items-center gap-1.5 border-b border-border bg-muted/50 px-3 py-2">
           <div className="h-2.5 w-2.5 rounded-full bg-destructive/60" />
           <div className="h-2.5 w-2.5 rounded-full bg-chart-5/60" />

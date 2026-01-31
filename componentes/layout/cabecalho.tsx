@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ChevronRight, Menu, Search } from "lucide-react"
+import { ChevronRight, Menu, Search, Star } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/componentes/ui/avatar"
 import { Botao } from "@/componentes/ui/botao"
@@ -11,6 +11,7 @@ import { Entrada } from "@/componentes/ui/entrada"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { obterBreadcrumbs, obterTituloPagina } from "@/lib/navegacao"
 import { DropdownNotificacoes } from "@/componentes/layout/dropdown-notificacoes"
+import { useUserLevel } from "@/hooks/useDashboard"
 
 interface CabecalhoProps {
   onToggleSidebar?: () => void
@@ -21,6 +22,8 @@ export function Cabecalho({ onToggleSidebar }: CabecalhoProps) {
   const { user } = useAuth()
   const tituloPagina = obterTituloPagina(pathname)
   const breadcrumbs = obterBreadcrumbs(pathname)
+
+  const { data: userLevel } = useUserLevel()
 
   const nomeUsuario =
     user?.user_metadata?.full_name ||
@@ -34,7 +37,7 @@ export function Cabecalho({ onToggleSidebar }: CabecalhoProps) {
     .toUpperCase()
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-white dark:bg-neutral-900 px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-card px-6">
       {/* Mobile sidebar toggle */}
       <Botao
         variant="ghost"
@@ -99,6 +102,29 @@ export function Cabecalho({ onToggleSidebar }: CabecalhoProps) {
           aria-label="Buscar no app"
         />
       </div>
+
+      {/* XP Level Badge */}
+      {userLevel && (
+        <div className="hidden items-center gap-2 lg:flex">
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="flex items-center gap-1.5 rounded-full bg-[#F5F5F5] px-3 py-1 dark:bg-[#1E1E1E]">
+              <Star className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-semibold text-foreground">
+                Lv.{userLevel.nivel}
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                {userLevel.percentual}%
+              </span>
+            </div>
+            <div className="h-0.5 w-full max-w-[80px] overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${userLevel.percentual}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Notifications */}
       <DropdownNotificacoes />

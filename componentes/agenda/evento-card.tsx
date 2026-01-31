@@ -72,7 +72,7 @@ export function EventoCard({ evento, onEditar, onExcluir }: EventoCardProps) {
     <motion.div
       transition={transicaoRapida}
       className={cn(
-        "flex flex-col gap-2 rounded-2xl border border-[color:var(--borda-cartao)] border-l-4 bg-card p-4",
+        "flex flex-col gap-2 rounded-2xl border border-[color:var(--borda-cartao)] border-l-4 bg-[#F5F5F5] dark:bg-[#1E1E1E] p-4",
         estilosCategoria[categoriaKey]
       )}
     >

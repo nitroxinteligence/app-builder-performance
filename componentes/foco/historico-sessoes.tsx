@@ -51,10 +51,10 @@ export function HistoricoSessoes({
         {historico.map((sessao) => (
           <div
             key={sessao.id}
-            className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
+            className="flex items-center justify-between rounded-xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] p-4"
           >
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-card">
                 <Timer className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>

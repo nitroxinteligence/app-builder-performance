@@ -1,9 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Loader2, Plus } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
@@ -249,13 +248,6 @@ export default function PaginaAgenda() {
         <AnimacaoPagina className="mx-auto flex w-full max-w-6xl flex-col gap-8">
           <SecaoAnimada className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Link
-                href="/inicio"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-                aria-label="Voltar para inicio"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
               <div>
                 <h1 className="font-titulo text-2xl font-semibold">Agenda</h1>
                 <p className="text-sm text-muted-foreground">

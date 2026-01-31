@@ -130,7 +130,7 @@ function ConteudoPaginaInicio() {
               </DialogoTitulo>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-5" id="daily-start-description">
+            <div className="rounded-2xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] p-5" id="daily-start-description">
               <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <WandSparkles className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                 Builder Assistant
@@ -147,7 +147,7 @@ function ConteudoPaginaInicio() {
               {estatisticasDailyStart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4"
+                  className="flex flex-col gap-2 rounded-2xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] p-4"
                   role="listitem"
                 >
                   <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-muted-foreground">
@@ -169,7 +169,7 @@ function ConteudoPaginaInicio() {
               ))}
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-5">
+            <div className="rounded-2xl border border-border bg-[#F5F5F5] dark:bg-[#1E1E1E] p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <CalendarCheck className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
@@ -242,7 +242,7 @@ function ConteudoPaginaInicio() {
             <DivAnimada className="h-20 animate-pulse rounded-2xl bg-muted" />
           ) : (
             <SecaoAnimada
-              className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5 shadow-sm"
+              className="rounded-2xl border border-[color:var(--borda-cartao)] bg-card p-5"
               aria-label="Progresso de nivel"
             >
               <div className="flex items-center justify-between">

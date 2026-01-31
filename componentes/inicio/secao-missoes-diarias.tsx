@@ -51,7 +51,7 @@ export function SecaoMissoesDiarias({ missoes }: PropsSecaoMissoesDiarias) {
               "flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors",
               missao.concluida
                 ? "bg-[var(--success-soft)]"
-                : "bg-muted/50"
+                : "bg-[#F5F5F5] dark:bg-[#1E1E1E]"
             )}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center">

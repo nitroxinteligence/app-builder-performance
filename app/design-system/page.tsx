@@ -65,7 +65,7 @@ export default function DesignSystemOverview() {
           <Link
             key={href}
             href={href}
-            className="group rounded-lg border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
+            className="group rounded-lg border border-border bg-card p-5 transition-all hover:border-primary/30"
           >
             <div className="mb-3 flex items-center justify-between">
               <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10">

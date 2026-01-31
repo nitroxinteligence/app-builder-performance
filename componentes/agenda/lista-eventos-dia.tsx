@@ -94,7 +94,7 @@ export function ListaEventosDia({
             proximosEventos.map((evento) => (
               <div
                 key={evento.id}
-                className="flex items-center justify-between gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-card px-3 py-2 text-sm"
+                className="flex items-center justify-between gap-3 rounded-[var(--radius)] border border-[color:var(--borda-cartao)] bg-[#F5F5F5] dark:bg-[#1E1E1E] px-3 py-2 text-sm"
               >
                 <div>
                   <p className="font-medium">{evento.titulo}</p>
